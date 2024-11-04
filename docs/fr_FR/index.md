@@ -1,4 +1,4 @@
-# Plugin template
+# OpenHASP pour Jeedom
 
 Ce "template de plugin" sert de base à la réalisation de plugins pour **Jeedom**.
 

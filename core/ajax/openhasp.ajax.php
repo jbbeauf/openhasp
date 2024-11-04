@@ -29,7 +29,33 @@ try {
   */
     ajax::init();
 
+    /* Bouton Valider l'adresse IP */
+    if (init('action') == 'validateConfigByIp') {
+      $eqLogic = openhasp::byId(init('id'));
+      if (!is_object($eqLogic)) {
+        throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
+      }
+      ajax::success($eqLogic->validateConfigByIp(init('ipAddress'), init('httpUsername'), init('httpPassword')));
+    }
 
+    /* Bouton Valider la configuration MQTT */
+    if (init('action') == 'validateConfigByMqtt') {
+      $eqLogic = openhasp::byId(init('id'));
+      if (!is_object($eqLogic)) {
+        throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
+      }
+      ajax::success($eqLogic->validateConfigByMqtt(init('rootTopic'), init('rootName')));
+    }
+
+    /* Bouton Charger les objets de la page */
+    if (init('action') == 'importCommands') {
+      $eqLogic = openhasp::byId(init('id'));
+      if (!is_object($eqLogic)) {
+        throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
+      }
+
+      ajax::success($eqLogic->importCommands());
+    }
 
     throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));
     /*     * *********Catch exeption*************** */

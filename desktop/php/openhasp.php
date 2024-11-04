@@ -3,7 +3,7 @@ if (!isConnect('admin')) {
 	throw new Exception('{{401 - Accès non autorisé}}');
 }
 // Déclaration des variables obligatoires
-$plugin = plugin::byId('template');
+$plugin = plugin::byId('openhasp');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 ?>
@@ -25,7 +25,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				<span>{{Configuration}}</span>
 			</div>
 		</div>
-		<legend><i class="fas fa-table"></i> {{Mes templates}}</legend>
+		<legend><i class="fas fa-table"></i> {{Mes équipements}}</legend>
 		<?php
 		if (count($eqLogics) == 0) {
 			echo '<br><div class="text-center" style="font-size:1.2em;font-weight:bold;">{{Aucun équipement Template trouvé, cliquer sur "Ajouter" pour commencer}}</div>';
@@ -72,8 +72,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		<!-- Onglets -->
 		<ul class="nav nav-tabs" role="tablist">
 			<li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fas fa-arrow-circle-left"></i></a></li>
-			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
-			<li role="presentation"><a href="#commandtab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-list"></i> {{Commandes}}</a></li>
+			<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Configuration Equipement}}</a></li>
+			<li role="presentation"><a href="#commandtabgeneral" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-list"></i> {{Commandes générales}}</a></li>
 		</ul>
 		<div class="tab-content">
 			<!-- Onglet de configuration de l'équipement -->
@@ -126,13 +126,31 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
-							<legend><i class="fas fa-cogs"></i> {{Paramètres spécifiques}}</legend>
+							<legend><i class="fas fa-cogs"></i> {{Paramètres spécifiques de l'écran}}</legend>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Nom du paramètre n°1}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le paramètre n°1 de l'équipement}}"></i></sup>
+								<label class="col-sm control-label"> {{Confirguration de l'équipement : avec son adresse IP ou sinon avec ses paramèters MQTT :}}<label>
+							</div>
+							<legend>{{1. Configuration par Adresse IP}}</legend>
+							<div class="form-group">
+								<label class="col-sm-4 control-label"> {{Adresse IP de l'écran}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez l'adresse IP de l'écran}}"></i></sup>
+								</label>
+								<div class="col-sm-5">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="confIpAddress" placeholder="{{Adresse IP de l'écran}}">
+								</div>
+								<div class="col-sm-1">
+									<a class="btn btn-sm btn-success roundedLeft" id="bt_validateConfigByIp"><i class="fas"></i><span class="hidden-xs"> {{Valider IP}}</span></a>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label"> {{Configuration HTTP}}<label>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label"> {{Nom d'utilisateur}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le nom d'utilisateur}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="param1" placeholder="{{Paramètre n°1}}">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="confIphttpUsername" placeholder="{{Nom d'utilisateur}}">
 								</div>
 							</div>
 							<div class="form-group">
@@ -140,36 +158,90 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le mot de passe}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control inputPassword" data-l1key="configuration" data-l2key="password">
+									<input type="text" class="eqLogicAttr form-control inputPassword" data-l1key="configuration" data-l2key="confIphttpPassword">
 								</div>
 							</div>
-							<!-- Exemple de champ de saisie du cron d'auto-actualisation avec assistant -->
-							<!-- La fonction cron de la classe du plugin doit contenir le code prévu pour que ce champ soit fonctionnel -->
+							<legend>{{2. Configuration par MQTT}}</legend>
+							<span class="eqLogicAttr tooltips label label-default hidden" data-l1key="configuration" data-l2key="validateConfigByMqttRequested"></span>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Auto-actualisation}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Fréquence de rafraîchissement des commandes infos de l'équipement}}"></i></sup>
+								<label class="col-sm-4 control-label"> {{Topic racine}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le topic root}}"></i></sup>
 								</label>
-								<div class="col-sm-6">
-									<div class="input-group">
-										<input type="text" class="eqLogicAttr form-control roundedLeft" data-l1key="configuration" data-l2key="autorefresh" placeholder="{{Cliquer sur ? pour afficher l'assistant cron}}">
-										<span class="input-group-btn">
-											<a class="btn btn-default cursor jeeHelper roundedRight" data-helper="cron" title="Assistant cron">
-												<i class="fas fa-question-circle"></i>
-											</a>
-										</span>
-									</div>
+								<div class="col-sm-5">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="confMqttRootTopic" placeholder="{{Topic root}}">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label"> {{Nom d'hôte}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le nom de l'hôte}}"></i></sup>
+								</label>
+								<div class="col-sm-5">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="confMqttRootName" placeholder="{{Nom d'hôte}}">
+								</div>
+								<div class="col-sm-1">
+									<a class="btn btn-sm btn-success roundedLeft" id="bt_validateConfigByMqtt"><i class="fas"></i><span class="hidden-xs"> {{Valider MQTT}}</span></a>
 								</div>
 							</div>
 						</div>
 
 						<!-- Partie droite de l'onglet "Équipement" -->
-						<!-- Affiche un champ de commentaire par défaut mais vous pouvez y mettre ce que vous voulez -->
 						<div class="col-lg-6">
 							<legend><i class="fas fa-info"></i> {{Informations}}</legend>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Description}}</label>
-								<div class="col-sm-6">
+								<label class="col-sm-2 control-label">{{Description}}</label>
+								<div class="col-sm-7">
 									<textarea class="form-control eqLogicAttr autogrow" data-l1key="comment"></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{OpenHASP version}}</label>
+								<div class="col-sm-7">
+									<span class="eqLogicAttr tooltips label label-default" data-l1key="configuration" data-l2key="openhasp_version"></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm control-label">{{MQTT}}</label>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{Addresse Broker}}</label>
+								<div class="col-sm-7">
+									<span class="eqLogicAttr tooltips label label-default" data-l1key="configuration" data-l2key="mqtt_broker"></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{Topic racine}}</label>
+								<div class="col-sm-7">
+									<span class="eqLogicAttr tooltips label label-default" data-l1key="configuration" data-l2key="mqtt_topic_root"></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{Nom d'hôte}}</label>
+								<div class="col-sm-7">
+									<span class="eqLogicAttr tooltips label label-default" data-l1key="configuration" data-l2key="mqtt_name"></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm control-label">{{WIFI}}</label>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{SSID}}</label>
+								<div class="col-sm-7">
+									<span class="eqLogicAttr tooltips label label-default" data-l1key="configuration" data-l2key="wifi_ssid"></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{IP}}</label>
+								<div class="col-sm-7">
+									<span class="eqLogicAttr tooltips label label-default" data-l1key="configuration" data-l2key="wifi_ip"></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm control-label">{{Graphique}}</label>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{Page JSONL}}</label>
+								<div class="col-sm-7">
+									<span class="eqLogicAttr tooltips label label-default" data-l1key="configuration" data-l2key="hasp_pages"></span>
 								</div>
 							</div>
 						</div>
@@ -178,19 +250,23 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			</div><!-- /.tabpanel #eqlogictab-->
 
 			<!-- Onglet des commandes de l'équipement -->
-			<div role="tabpanel" class="tab-pane" id="commandtab">
-				<a class="btn btn-default btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
+			<div role="tabpanel" class="tab-pane" id="commandtabgeneral">
+				<div class="pull-right">
+					<a class="btn btn-default btn-sm cmdAction"id="bt_importCommands" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Importer les commandes}}
+					</a> <a class="btn btn-default btn-sm cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
+				</div>
 				<br><br>
 				<div class="table-responsive">
 					<table id="table_cmd" class="table table-bordered table-condensed">
 						<thead>
 							<tr>
-								<th class="hidden-xs" style="min-width:50px;width:70px;">ID</th>
-								<th style="min-width:200px;width:350px;">{{Nom}}</th>
-								<th>{{Type}}</th>
-								<th style="min-width:260px;">{{Options}}</th>
+								<th class="hidden-xs" style="min-width:50px;width:70px;"> ID</th>
+								<th style="min-width:150px;width:300px;">{{Nom}}</th>
+								<th style="width:130px;">{{Type}}</th>
+								<th>{{Paramètres}}</th>
 								<th>{{Etat}}</th>
-								<th style="min-width:80px;width:200px;">{{Actions}}</th>
+								<th style="min-width:260px;width:400px;">{{Options}}</th>
+								<th style="min-width:80px;width:180px;">{{Actions}}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -204,6 +280,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 </div><!-- /.row row-overflow -->
 
 <!-- Inclusion du fichier javascript du plugin (dossier, nom_du_fichier, extension_du_fichier, id_du_plugin) -->
-<?php include_file('desktop', 'template', 'js', 'template'); ?>
+<?php include_file('desktop', 'openhasp', 'js', 'openhasp'); ?>
 <!-- Inclusion du fichier javascript du core - NE PAS MODIFIER NI SUPPRIMER -->
 <?php include_file('core', 'plugin.template', 'js'); ?>
