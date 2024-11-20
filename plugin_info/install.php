@@ -66,5 +66,6 @@ function openhasp_remove() {
     $cron = null;
   }
 
+  /* Se désabonner de tout ce qui est lié au plugin courant */
   mqtt2::removePluginTopicByPlugin('openhasp');
 }
