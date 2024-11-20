@@ -157,6 +157,12 @@ class openhasp extends eqLogic {
           $counter += 1;
         }
       }
+      /* Cas particulier : suppression d'un équipement avec discovery actif */
+      if (1 == config::byKey('mqtt::discovery::running', __CLASS__)) {
+        if ($_topic == config::byKey('mqtt::discovery::rootTopic',  __CLASS__)) {
+          $counter += 1;
+        }        
+      }
       if (0 == $counter) {
         mqtt2::removePluginTopic($_topic);
         log::add(__CLASS__, 'info', __('Désabonnement au topic MQTT', __FILE__) . ' ' . $_topic);
@@ -190,6 +196,8 @@ class openhasp extends eqLogic {
           if (is_object($cron)) {
             $cron->stop();
           }
+          $mqttRootTopic = config::byKey('mqtt::discovery::rootTopic',  __CLASS__);
+          self::handleMqttSubscription('unsuscribe', $mqttRootTopic);
           config::save('mqtt::discovery::rootTopic', '',  __CLASS__);
           config::save('mqtt::discovery::duration::elapsed', -1,  __CLASS__);
         break;
@@ -256,6 +264,29 @@ class openhasp extends eqLogic {
     }
 
     config::save('mqtt::discovery::duration::elapsed', $discoveryDurationElapsed + 1,  __CLASS__);    
+  }
+
+
+  public static function cron10() {
+    /* Boucle sur chaque équipement du plugin openhasp pour se ré-abonner */
+    foreach (eqLogic::byType(__CLASS__, true) as $openhasp) {
+      $topic = $openhasp->getConfiguration('conf::mqtt::rootTopic');
+      if ('' != $topic) {
+        self::handleMqttSubscription('suscribe', $topic);
+      }
+    }
+  }
+
+  public static function cron5() {
+    /* Suppression du daemon discovery */
+    /* On peut pas le supprimer dans la fonction mqttDiscovery quand elle est appelée par ce même daemon */
+    if (0 == config::byKey('mqtt::discovery::running', __CLASS__)) {
+      $cron = cron::byClassAndFunction('openhasp', 'mqttDiscoveryCron');
+      if (is_object($cron)) {
+        $cron->remove();
+        $cron = null;
+      }
+    }
   }
   
   public static function checkAndGetValue($valueToCheck, $defaultValue)
@@ -576,18 +607,27 @@ class openhasp extends eqLogic {
     //   $action->setConfiguration('message','0');
     //   $action->save();
     // }
+
+    /* S'abonner au topic MQTT */
+    if ($this->getIsEnable()) {
+      $rootTopic = $this->getConfiguration('conf::mqtt::rootTopic');
+      if ('' != $rootTopic) {
+        self::handleMqttSubscription('suscribe', $rootTopic);
+      }
+    }
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
   public function preRemove() {
-    $rootTopic = $this->getConfiguration('conf::mqtt::rootTopic');
-    if ('' != $rootTopic) {
-      self::handleMqttSubscription('unsuscribe', $rootTopic);
-    }
+
   }
 
   // Fonction exécutée automatiquement après la suppression de l'équipement
   public function postRemove() {
+    $rootTopic = $this->getConfiguration('conf::mqtt::rootTopic');
+    if ('' != $rootTopic) {
+      self::handleMqttSubscription('unsuscribe', $rootTopic);
+    }
   }
 
   /**
