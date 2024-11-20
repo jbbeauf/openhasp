@@ -757,7 +757,6 @@ class openhasp extends eqLogic {
     $objects = $this->extractObjectsFromJsonl($jsonlCleared);
     $numberOfObjectsAdded = 0;
     foreach ($objects as $object) {
-      // log::add(__CLASS__, 'debug', 'Object');
       /* On saute les objets qui ont des actions associées : c'est du fonctionnement interne à l'écran */
       if (isset($object['action'])) {
         continue;
@@ -768,9 +767,13 @@ class openhasp extends eqLogic {
         $object['obj'] = 'btn_toggle';
       }
 
+      /* Le texte d'un objet peut être vide : on affichera son id à la place */
+      if ('' == $object['text']) {
+        $object['text'] = $object['id'];
+      }
+
       $objectReference = 'p' . $object['page'] . 'b' . $object['id'];
       // log::add(__CLASS__, 'debug', ' - Reference = ' . $objectReference . ' - Object = ' . print_r($object, true));
-
       if (in_array($object['obj'], array('btn'))) {
         if ('btn' == $object['obj']) {
           $displayableTypeName = __('Bouton', __FILE__);
