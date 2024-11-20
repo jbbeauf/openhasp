@@ -23,5 +23,30 @@ if (!isConnect()) {
 }
 ?>
 <form class="form-horizontal">
-
+  <fieldset>
+    <div class="form-group">
+      <label class="col-md-4 control-label">{{Liste des topics racine}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Liste des topics racine MQTT pour la fonction Discovery. 1 topic par ligne, sans caractère /}}"></i></sup>
+      </label>
+      <div class="col-md-7">
+        <textarea class="configKey form-control autogrow" data-l1key="mqtt::topic::roots"></textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-4 control-label"> {{Durée de l'inclusion automatique}}  <sub>({{minutes}})</sub>
+        <sup><i class="fas fa-question-circle tooltips" title="{{Renseignez la durée de l'inclusion automatique en minutes}}"></i></sup>
+      </label>
+      <div class="col-sm-5">
+        <input class="configKey form-control" data-l1key="mqtt::discovery::duration::maximum" placeholder="{{Durée de l'inclusion automatique en minutes}}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-md-4 control-label">{{Remplacement des caractères unicode affichés}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Remplacer les caractères unicodes par un texte. 1 caractères par ligne selon ce modèle \uXXXX:texte}}"></i></sup>
+      </label>
+      <div class="col-md-7">
+        <textarea class="configKey form-control autogrow" data-l1key="text::unicode"></textarea>
+      </div>
+    </div>
+  </fieldset>
 </form>

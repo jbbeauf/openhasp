@@ -15,7 +15,15 @@
 */
 
 /* Permet la réorganisation des commandes dans l'équipement */
-$("#table_cmd").sortable({
+$("#table_cmd_general").sortable({
+  axis: "y",
+  cursor: "move",
+  items: ".cmd",
+  placeholder: "ui-state-highlight",
+  tolerance: "intersect",
+  forcePlaceholderSize: true
+})
+$("#table_cmd_pages").sortable({
   axis: "y",
   cursor: "move",
   items: ".cmd",
@@ -30,8 +38,13 @@ function addCmdToTable(_cmd) {
   }
   if (!isset(_cmd.configuration)) {
     _cmd.configuration = {}
+
   }
-  var tr = '<tr class="cmd" data-cmd_id="' + init(_cmd.id) + '">'
+  var classPage = '';
+  if ('specific' == _cmd.configuration.type && '' != _cmd.configuration.page) {
+    classPage = 'page_' + _cmd.configuration.page
+  }
+  var tr = '<tr class="cmd ' + classPage + '" data-cmd_id="' + init(_cmd.id) + '">'
   tr += '<td class="hidden-xs">'
   tr += '<span class="cmdAttr" data-l1key="id"></span>'
   tr += '</td>'
@@ -76,8 +89,8 @@ function addCmdToTable(_cmd) {
   }
   tr += ' <i class="fas fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i></td>'
   tr += '</tr>'
-  $('#table_cmd tbody').append(tr)
-  var tr = $('#table_cmd tbody tr').last()
+  $('#table_cmd_' + init(_cmd.configuration.type) + '  tbody').append(tr)
+  var tr = $('#table_cmd_' + init(_cmd.configuration.type) + ' tbody tr').last()
   jeedom.eqLogic.buildSelectCmd({
     id: $('.eqLogicAttr[data-l1key=id]').value(),
     filter: { type: 'info' },
@@ -92,7 +105,17 @@ function addCmdToTable(_cmd) {
   })
 }
 
-$('#table_cmd').on('change', '.cmdAttr[data-l1key=type]', function() {
+/**
+ * ????
+ */
+$('#table_cmd_general').on('change', '.cmdAttr[data-l1key=type]', function() {
+  let tr = $(this).closest('tr')
+  tr.find('.cmdType').hide()
+  if ($(this).value() != '') {
+    tr.find('.cmdType.' + $(this).value()).show()
+  }
+})
+$('#table_cmd_pages').on('change', '.cmdAttr[data-l1key=type]', function() {
   let tr = $(this).closest('tr')
   tr.find('.cmdType').hide()
   if ($(this).value() != '') {
@@ -100,40 +123,19 @@ $('#table_cmd').on('change', '.cmdAttr[data-l1key=type]', function() {
   }
 })
 
-// /* */
-// $('#bt_statusUpdate').off('click').on('click', function() {
-//   $.ajax({
-//     type: "POST",
-//     url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
-//     data: {
-//       action: "statusUpdate",
-//       id: $('.eqLogicAttr[data-l1key=id]').value(),
-//       mqttTopic: $('.eqLogicAttr[data-l1key=configuration][data-l2key=mqttTopic]').value(),
-//       mqttHostname: $('.eqLogicAttr[data-l1key=configuration][data-l2key=mqttHostname]').value()
-//     },
-//     dataType: 'json',
-//     error: function(error) {
-//       $.fn.showAlert({ message: error.message, level: 'danger' })
-//     },
-//     success: function(data) {
-//       if (data.state != 'ok') {
-//         $.fn.showAlert({ message: data.result, level: 'danger' })
-//         return
-//       }
-//       $.fn.showAlert({ message: '{{Opération réalisée avec succès}}', level: 'success' })
-//     }
-//   })
-// })
-
-/* */
+/**
+ * Equimement ouvert
+ * - Onglet "Commandes générales"
+ *   - Bouton "Importer les commandes"
+ */
 $('#bt_importCommands').off('click').on('click', function() {
   $.ajax({
     type: "POST",
     url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
     data: {
       action: "importCommands",
-      id: $('.eqLogicAttr[data-l1key=id]').value(),
-      pageName: $('.eqLogicAttr[data-l1key=configuration][data-l2key=hasp_pages]').value()
+      id: $('.eqLogicAttr[data-l1key=id]').value()
+      // pageName: $('.eqLogicAttr[data-l1key=configuration][data-l2key=conf::startLayout]').value()
     },
     dataType: 'json',
     error: function(error) {
@@ -149,7 +151,11 @@ $('#bt_importCommands').off('click').on('click', function() {
   })
 })
 
-/* */
+/**
+ * Equimement ouvert
+ * - Onglet "Configuration Equipement"
+ *   - Bouton "Valider IP"
+ */
 $('#bt_validateConfigByIp').off('click').on('click', function() {
   $.ajax({
     type: "POST",
@@ -157,9 +163,9 @@ $('#bt_validateConfigByIp').off('click').on('click', function() {
     data: {
       action: "validateConfigByIp",
       id: $('.eqLogicAttr[data-l1key=id]').value(),
-      ipAddress: $('.eqLogicAttr[data-l1key=configuration][data-l2key=confIpAddress]').value(),
-      httpUsername: $('.eqLogicAttr[data-l1key=configuration][data-l2key=confIpHttpUsername]').value(),
-      httpPassword: $('.eqLogicAttr[data-l1key=configuration][data-l2key=confIphttpPassword]').value()
+      ipAddress: $('.eqLogicAttr[data-l1key=configuration][data-l2key=updateConf_byIp_ip]').value(),
+      httpUsername: $('.eqLogicAttr[data-l1key=configuration][data-l2key=updateConf_byIp_http_username]').value(),
+      httpPassword: $('.eqLogicAttr[data-l1key=configuration][data-l2key=updateConf_byIp_http_password]').value()
     },
     dataType: 'json',
     error: function(error) {
@@ -170,12 +176,16 @@ $('#bt_validateConfigByIp').off('click').on('click', function() {
         $.fn.showAlert({ message: data.result, level: 'danger' })
         return
       }
-      $.fn.showAlert({ message: '{{Opération réalisée avec succès}}', level: 'success' })
+      $.fn.showAlert({ message: '{{Configuration réalisée avec succès}}', level: 'success' })
     }
   })
 })
 
-/* */
+/**
+ * Equimement ouvert
+ * - Onglet "Configuration Equipement"
+ *   - Bouton "Valider MQTT"
+ */
 $('#bt_validateConfigByMqtt').off('click').on('click', function() {
   $.ajax({
     type: "POST",
@@ -183,8 +193,8 @@ $('#bt_validateConfigByMqtt').off('click').on('click', function() {
     data: {
       action: "validateConfigByMqtt",
       id: $('.eqLogicAttr[data-l1key=id]').value(),
-      rootTopic: $('.eqLogicAttr[data-l1key=configuration][data-l2key=confMqttRootTopic]').value(),
-      rootName: $('.eqLogicAttr[data-l1key=configuration][data-l2key=confMqttRootName]').value()
+      rootTopic: $('.eqLogicAttr[data-l1key=configuration][data-l2key=updateConf_byMqtt_topic]').value(),
+      rootName: $('.eqLogicAttr[data-l1key=configuration][data-l2key=updateConf_byMqtt_name]').value()
     },
     dataType: 'json',
     error: function(error) {
@@ -195,15 +205,153 @@ $('#bt_validateConfigByMqtt').off('click').on('click', function() {
         $.fn.showAlert({ message: data.result, level: 'danger' })
         return
       }
-      $.fn.showAlert({ message: '{{Opération réalisée avec succès}}', level: 'success' })
+      $.fn.showAlert({ message: '{{Configuration réalisée avec succès}}', level: 'success' })
     }
   })
 })
 
-$('body').off('openhasp::loadObjects').on('openhasp::loadObjects', function (_event, _options) {
+/**
+ * Evènement reçu du serveur
+ * - Recharger la page de l'équipement ouvert
+ */
+$('body').off('openhasp::equipment::reload').on('openhasp::equipment::reload', function (_event, _options) {
   if (_options != '') {
       jeeFrontEnd.modifyWithoutSave = false;
       modifyWithoutSave = false; // Mais pourquoi ?!
       window.location.href = 'index.php?v=d&m=openhasp&p=openhasp&id=' + _options;
   }
+});
+
+/**
+ * Evènement reçu du serveur
+ * - Recharger la page principale du plugin si elle est affichée
+ */
+$('body').off('openhasp::MainPage::reloadIfVisible').on('openhasp::MainPage::reloadIfVisible', function (_event, _options) {
+  try {
+    if (isVisible(bt_discoveryStop)) {
+      window.location.href = 'index.php?v=d&m=openhasp&p=openhasp';
+    }
+  } catch(e)  {}
+});
+
+/**
+ * Evènement reçu du serveur
+ * - Changer les boutons pour activer/désactiver le mode inclusion automatique si affichés
+ */
+$('body').off('openhasp::MainPage::setDiscoveryButtonDisable').on('openhasp::MainPage::setDiscoveryButtonDisable', function (_event, _options) {
+  if (_options != '') {
+    try {
+      if (isVisible(document.getElementById(_options))) {
+        $('#bt_discoveryStart').removeClass('hidden');
+        $('#bt_discoveryStop').addClass('hidden');
+      }
+    } catch(e)  {
+      // console.log(e); --> 99% l'élément _options ne doit pas exister : sûrement page non affichée
+    }
+    $('#div_alert').showAlert({message: 'openHASP : {{Arrêt du mode inclusion automatique}}', level: 'success'});
+  }  
+});
+
+/**
+ * Page principale du plugin
+ * - Bouton "Activer l'inclusion automatique"
+ */
+$('#bt_discoveryStart').off('click').on('click', function () {
+  jeedom.openhasp.utils.promptMqttTopic("{{Topic racine MQTT}} ?", "{{Sélectionner le topic racine pour lancer l'inclusion automatique}}</br>{{Aller sur la page de configuration du plugin pour modifier la liste des topic racine disponibles.}}</br>", function (mqttRootTopic) {
+    jeedom.openhasp.mqtt.discovery({
+      mqttRootTopic : mqttRootTopic,
+      mode : 1,
+      error: function (error) {
+        $('#div_alert').showAlert({message: error.message, level: 'danger'});
+      },
+      success: function () {
+        $('#div_alert').showAlert({message: '{{Lancement du mode inclusion automatique}}', level: 'success'});
+        $('#bt_discoveryStart').addClass('hidden');
+        $('#bt_discoveryStop').removeClass('hidden');
+      }
+    });
   });
+});
+
+/**
+ * Page principale du plugin
+ * - Bouton "Désactiver l'inclusion automatique"
+ */
+$('#bt_discoveryStop').off('click').on('click', function () {
+  jeedom.openhasp.mqtt.discovery({
+    mode : 0,
+    error: function (error) {
+      $('#div_alert').showAlert({message: error.message, level: 'danger'});
+    },
+    success: function () {
+      $('#div_alert').showAlert({message: '{{Arrêt du mode inclusion automatique}}', level: 'success'});
+      $('#bt_discoveryStart').removeClass('hidden');
+      $('#bt_discoveryStop').addClass('hidden');
+    }
+  });
+});
+
+/**
+ * Equimement ouvert
+ * - Onglet "Configuration Equipement"
+ *   - Bouton "Ouvrir dans nouvel onglet"
+ */
+$('#bt_openInNewWindow').off('click').on('click', function () {
+  var ip = $('.eqLogicAttr[data-l1key=configuration][data-l2key="conf::wifi::ip"]').value();
+  if ('' != ip) {
+    window.open('http://' + ip, '_blank', '' );
+  }
+});
+
+/**
+ * Equimement ouvert
+ * - Onglet "Commandes générales"
+ *   - Bouton "Ajouter une commande"
+ */
+$("#bt_addCommandGeneral").on('click', function(event) {
+  addCmdToTable({ configuration: { type : 'general'} })
+  modifyWithoutSave = true
+})
+
+/**
+ * Equimement ouvert
+ * - Onglet "Commandes spécifiques"
+ *   - Bouton "Ajouter une commande"
+ */
+$("#bt_addCommandSpecific").on('click', function(event) {
+  addCmdToTable({ configuration: { type : 'specific'} })
+  modifyWithoutSave = true
+})
+
+  
+/**
+ * Vérifie si un élément est visible ou non
+ * Crédit : https://stackoverflow.com/questions/19669786/check-if-element-is-visible-in-dom
+ * @param {object} elem - Elément à vérifier
+ * @returns {boolean} True : l'élément est visible - False : l'élément n'est pas visible
+ */
+// 
+function isVisible(elem) {
+  if (!(elem instanceof Element)) throw Error('DomUtil: elem is not an element.');
+  const style = getComputedStyle(elem);
+  if (style.display === 'none') return false;
+  if (style.visibility !== 'visible') return false;
+  if (style.opacity < 0.1) return false;
+  if (elem.offsetWidth + elem.offsetHeight + elem.getBoundingClientRect().height +
+      elem.getBoundingClientRect().width === 0) {
+      return false;
+  }
+  const elemCenter   = {
+      x: elem.getBoundingClientRect().left + elem.offsetWidth / 2,
+      y: elem.getBoundingClientRect().top + elem.offsetHeight / 2
+  };
+  if (elemCenter.x < 0) return false;
+  if (elemCenter.x > (document.documentElement.clientWidth || window.innerWidth)) return false;
+  if (elemCenter.y < 0) return false;
+  if (elemCenter.y > (document.documentElement.clientHeight || window.innerHeight)) return false;
+  let pointContainer = document.elementFromPoint(elemCenter.x, elemCenter.y);
+  do {
+      if (pointContainer === elem) return true;
+  } while (pointContainer = pointContainer.parentNode);
+  return false;
+}

@@ -35,7 +35,7 @@ try {
       if (!is_object($eqLogic)) {
         throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
       }
-      ajax::success($eqLogic->validateConfigByIp(init('ipAddress'), init('httpUsername'), init('httpPassword')));
+      ajax::success($eqLogic->validateConfigByIp(init('ipAddress'), init('httpUsername'), init('httpPassword'), true));
     }
 
     /* Bouton Valider la configuration MQTT */
@@ -55,6 +55,11 @@ try {
       }
 
       ajax::success($eqLogic->importCommands());
+    }
+
+    /* Boutons pour découverte automatique */
+    if (init('action') == 'discovery') {      
+      ajax::success(openhasp::mqttDiscovery(init('mode'), init('mqttRootTopic')));
     }
 
     throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));

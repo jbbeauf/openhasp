@@ -1,0 +1,6 @@
+  body[data-type="plugin"] #table_cmd_general td input.cmdAttr {
+    display: inline-block
+  }
+  body[data-type="plugin"] #table_cmd_specific td input.cmdAttr {
+    display: inline-block
+  }

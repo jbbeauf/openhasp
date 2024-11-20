@@ -1,9 +1,9 @@
 {
 	"id": "openhasp",
-	"name": "OpenHASP for Jeedom",
+	"name": "openHASP",
 	"pluginVersion": "0.1",
 	"description": {
-		"fr_FR": "Plugin pour gérer des écrans sous OpenHASP"
+		"fr_FR": "Plugin pour gérer des écrans multifonctions sous openHASP"
 	},
 	"licence": "AGPL",
 	"author": "jbbeauf",

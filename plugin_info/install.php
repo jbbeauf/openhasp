@@ -20,6 +20,8 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 // Fonction exécutée automatiquement après l'installation du plugin
 function openhasp_install() {
     log::add(__CLASS__, 'debug', __('Installation de openhasp...', __FILE__));
+
+    /* Liste des dépendances et leur installation : merci au plugin vlx2mqtt ! */
     $depPlugins = array(
       'mqtt2' => 'MQTT Manager'
     );
@@ -44,6 +46,11 @@ function openhasp_install() {
         }
       }
     }
+
+    /* Ajout du topic par défaut utilisé par openHASP */
+    config::save('mqtt::topic::roots', "hasp", 'openhasp'); /* hasp est le topic racine par défaut dans openHASP*/
+    config::save('mqtt::discovery::duration::maximum', "12", 'openhasp'); /* 12 min par défaut*/
+    config::save('text::unicode', "\uE141:PREV\n\uE2DC:HOME\n\uE142:NEXT", 'openhasp'); /* 12 min par défaut*/
 }
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
@@ -53,4 +60,11 @@ function openhasp_update() {
 
 // Fonction exécutée automatiquement après la suppression du plugin
 function openhasp_remove() {
+  $cron = cron::byClassAndFunction('openhasp', 'mqttDiscoveryCron');
+  if (is_object($cron)) {
+    $cron->remove();
+    $cron = null;
+  }
+
+  mqtt2::removePluginTopicByPlugin('openhasp');
 }
