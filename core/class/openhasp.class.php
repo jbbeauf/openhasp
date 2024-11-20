@@ -833,41 +833,41 @@ class openhasp extends eqLogic {
         }
       }
 
-      // if (in_array($object['obj'], array('cpicker'))) {
-      //   if ('cpicker' == $object['obj']) {
-      //     $displayableTypeName = __('Sélecteur de couleurs', __FILE__);
-      //   }
-      //   log::add(__CLASS__, 'debug', $displayableTypeName . ' = ' . $object['text']);
-      //   $info = $this->getCmd(null, 'state/' . $objectReference . '/color');
-      //   if (!is_object($info)) {
-      //     $info = new openhaspCmd();
-      //     $info->setLogicalId('state/' . $objectReference . '/color');
-      //     $info->setEqLogic_id($this->getId());
-      //     $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['text']);
-      //     $info->setType('info');
-      //     $info->setSubType('string');
-      //     $info->setConfiguration('type', 'specific');
-      //     $info->setConfiguration('page',  $object['page']);
-      //     $info->save();
-      //     $numberOfObjectsAdded++;
-      //   }
-      //   /* TODO : couleur envoyée (command) != couleur reçue (state), à investiguer */
-      //   $action = $this->getCmd(null, 'command/' . $objectReference . '.color');
-      //   if (!is_object($action)) {
-      //     $action = new openhaspCmd();
-      //     $action->setLogicalId('command/' . $objectReference . '.color');
-      //     $action->setEqLogic_id($this->getId());
-      //     $action->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . __('Sélecteur de couleurs', __FILE__) . ' ' . $object['text'] . ' ' . __('Commande', __FILE__));
-      //     $action->setType('action');
-      //     $action->setSubType('color');
-      //     $action->setValue($info->getId()); /* $info précédente */
-      //     $action->setConfiguration('message','#color#');
-      //     $action->setConfiguration('type', 'specific');
-      //     $action->setConfiguration('page',  $object['page']);
-      //     $action->save();
-      //     $numberOfObjectsAdded++;
-      //   }
-      // }
+      if (in_array($object['obj'], array('cpicker'))) {
+        if ('cpicker' == $object['obj']) {
+          $displayableTypeName = __('Sélecteur de couleurs', __FILE__);
+        }
+        // log::add(__CLASS__, 'debug', $displayableTypeName . ' = ' . $object['text']);
+        $info = $this->getCmd(null, 'state/' . $objectReference . '/color');
+        if (!is_object($info)) {
+          $info = new openhaspCmd();
+          $info->setLogicalId('state/' . $objectReference . '/color');
+          $info->setEqLogic_id($this->getId());
+          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['text']);
+          $info->setType('info');
+          $info->setSubType('string');
+          $info->setConfiguration('type', 'specific');
+          $info->setConfiguration('page',  $object['page']);
+          $info->save();
+          $numberOfObjectsAdded++;
+        }
+        /* TODO : couleur envoyée (command) != couleur reçue (state), à investiguer */
+        $action = $this->getCmd(null, 'command/' . $objectReference . '.color');
+        if (!is_object($action)) {
+          $action = new openhaspCmd();
+          $action->setLogicalId('command/' . $objectReference . '.color');
+          $action->setEqLogic_id($this->getId());
+          $action->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . __('Sélecteur de couleurs', __FILE__) . ' ' . $object['text'] . ' ' . __('Commande', __FILE__));
+          $action->setType('action');
+          $action->setSubType('color');
+          $action->setValue($info->getId()); /* $info précédente */
+          $action->setConfiguration('message','#color#');
+          $action->setConfiguration('type', 'specific');
+          $action->setConfiguration('page',  $object['page']);
+          $action->save();
+          $numberOfObjectsAdded++;
+        }
+      }
 
       if (in_array($object['obj'], array('arc', 'bar', 'gauge', 'led', 'linemeter', 'slider'))) {
         if ('arc' == $object['obj']) {
