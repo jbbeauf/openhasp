@@ -23,7 +23,7 @@ $("#table_cmd_general").sortable({
   tolerance: "intersect",
   forcePlaceholderSize: true
 })
-$("#table_cmd_pages").sortable({
+$("#table_cmd_specific").sortable({
   axis: "y",
   cursor: "move",
   items: ".cmd",
@@ -38,12 +38,13 @@ function addCmdToTable(_cmd) {
   }
   if (!isset(_cmd.configuration)) {
     _cmd.configuration = {}
-
   }
+
   var classPage = '';
   if ('specific' == _cmd.configuration.type && '' != _cmd.configuration.page) {
     classPage = 'page_' + _cmd.configuration.page
   }
+
   var tr = '<tr class="cmd ' + classPage + '" data-cmd_id="' + init(_cmd.id) + '">'
   tr += '<td class="hidden-xs">'
   tr += '<span class="cmdAttr" data-l1key="id"></span>'
