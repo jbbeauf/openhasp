@@ -192,11 +192,11 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 							<legend>2. {{Configuration par MQTT}}</legend>
 							<span class="eqLogicAttr tooltips label label-default hidden" data-l1key="configuration" data-l2key="validateConfigByMqttRequested"></span>
 							<div class="form-group">
-								<label class="col-sm-4 control-label"> {{Topic racine}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le topic root}}"></i></sup>
+								<label class="col-sm-4 control-label"> {{Sujet racine}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le sujet racine MQTT}}"></i></sup>
 								</label>
 								<div class="col-sm-5">
-									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="updateConf_byMqtt_topic" placeholder="{{Topic root}}">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="updateConf_byMqtt_topic" placeholder="{{Sujet racine}}">
 								</div>
 							</div>
 							<div class="form-group">
@@ -237,7 +237,7 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">{{Topic racine}}</label>
+								<label class="col-sm-3 control-label">{{Sujet racine}}</label>
 								<div class="col-sm-7">
 									<span class="eqLogicAttr tooltips label label-default" data-l1key="configuration" data-l2key="conf::mqtt::rootTopic"></span>
 								</div>
@@ -306,11 +306,11 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 			<!-- Onglet des commandes spécifiques de l'équipement -->
 			<div role="tabpanel" class="tab-pane" id="commandtabspecific">
 				<div class="form-group">
-					<div class="pull-left">
+					<div class="pull-left" id="filter_page">
 						<!-- <label class="control-label" style="margin-top:5px;">{{Filtre sur les pages}}</label> -->
 					</div>
 					<div class="pull-right">
-						<a class="btn btn-default btn-sm cmdAction"id="bt_importCommands" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Importer les commandes}}
+						<a class="btn btn-default btn-sm cmdAction"id="bt_importCommands" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Importer les objets de l'écran}}
 						</a> <a class="btn btn-default btn-sm cmdAction" id="bt_addCommandSpecific" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
 					</div>
 				</div>

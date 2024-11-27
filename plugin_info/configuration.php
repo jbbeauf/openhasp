@@ -25,8 +25,8 @@ if (!isConnect()) {
 <form class="form-horizontal">
   <fieldset>
     <div class="form-group">
-      <label class="col-md-4 control-label">{{Liste des topics racine}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Liste des topics racine MQTT pour la fonction Discovery. 1 topic par ligne, sans caractère /}}"></i></sup>
+      <label class="col-md-4 control-label">{{Liste des sujets racine MQTT}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Liste des sujets racine MQTT pour la fonction Discovery. 1 sujet par ligne, sans caractère /}}"></i></sup>
       </label>
       <div class="col-md-7">
         <textarea class="configKey form-control autogrow" data-l1key="mqtt::topic::roots"></textarea>
@@ -42,7 +42,7 @@ if (!isConnect()) {
     </div>
     <div class="form-group">
       <label class="col-md-4 control-label">{{Remplacement des caractères unicode affichés}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Remplacer les caractères unicodes par un texte. 1 caractères par ligne selon ce modèle \uXXXX:texte}}"></i></sup>
+        <sup><i class="fas fa-question-circle tooltips" title="{{Remplacer les caractères unicodes par un texte. 1 caractère par ligne selon ce modèle \uXXXX:texte}}"></i></sup>
       </label>
       <div class="col-md-7">
         <textarea class="configKey form-control autogrow" data-l1key="text::unicode"></textarea>

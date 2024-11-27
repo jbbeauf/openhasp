@@ -43,7 +43,7 @@ class openhasp extends eqLogic {
    * @param AssociativeArray $_message Message MQTT, retourné par la fonction json_decode()
    */ 
    public static function handleMqttMessage($_message) {
-    // log::add(__CLASS__, 'debug', ' MQTT Message brut reçu : ' . print_r($_message,true));
+    log::add(__CLASS__, 'debug', 'handleMqttMessage MQTT Message brut reçu : ' . print_r($_message,true));
     /* Mode discovery en cours : traitement à part */
     if (1 == config::byKey('mqtt::discovery::running', 'openhasp')) {
       $topic = config::byKey('mqtt::discovery::rootTopic', 'openhasp');
@@ -123,7 +123,7 @@ class openhasp extends eqLogic {
           }
           /* Si le message mqtt reçu correspond à la commande courante : on la met à jour */
           if ($cmdToBeUpdated) {
-            // log::add(__CLASS__, 'debug', 'Equipement ' . $openhasp->getHumanName() . ' - Mise à jour commande ' . $cmd->getHumanName() . ' avec valeur ' . $subMessage);
+            log::add(__CLASS__, 'debug', 'handleMqttMessage Equipement ' . $openhasp->getHumanName() . ' - Mise à jour commande ' . $cmd->getHumanName() . ' avec valeur ' . $subMessage);
             $openhasp->checkAndUpdateCmd($cmd->getLogicalId(), $subMessage);
             $equipmentUpdated = true;
           }
@@ -137,7 +137,7 @@ class openhasp extends eqLogic {
   }
 
   public static function handleMqttSubscription($_action = 'suscribe', $_topic) {
-    // log::add(__CLASS__, 'debug', ' MQTT subscription action = ' . print_r($_action,true) . ' - topic = ' . print_r($_topic, true));
+    log::add(__CLASS__, 'debug', 'handleMqttSubscription MQTT subscription action = ' . print_r($_action,true) . ' - topic = ' . print_r($_topic, true));
     if (!class_exists('mqtt2')) {
       include_file('core', 'mqtt2', 'class', 'mqtt2');
     }
@@ -176,14 +176,14 @@ class openhasp extends eqLogic {
         include_file('core', 'mqtt2', 'class', 'mqtt2');
       }
       mqtt2::publish($_topic, $_value);
-      // log::add(__CLASS__, 'debug', 'MQTT - Publication Topic ' . $_topic . ' - Valeur ' . $_value);
+      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic ' . $_topic . ' - Valeur ' . $_value);
     } catch (\Throwable $th) {
       log::add(__CLASS__, 'error', $this->getHumanName() . ' ' . __('Erreur lors de l\'éxécution de la commande', __FILE__) . ' : ' . $th);
     }
   }
   
   public static function mqttDiscovery($_mode, $_mqttRootTopic) {
-    // log::add(__CLASS__, 'debug', 'mqttDiscovery mode=' . $_mode . ' - mqttRootTopic=' . $_mqttRootTopic);
+    log::add(__CLASS__, 'debug', 'mqttDiscovery mode=' . $_mode . ' - mqttRootTopic=' . $_mqttRootTopic);
     switch ($_mode) {
       case 0:
         log::add(__CLASS__, 'info', __('Arrêt du mode inclusion automatique', __FILE__));
@@ -237,7 +237,7 @@ class openhasp extends eqLogic {
   }
 
   public static function mqttDiscoveryCron() {
-    // log::add('openhasp', 'debug', 'openHAPS mqttDiscoveryCron running = ' . config::byKey('mqtt::discovery::running', __CLASS__) . ' discoveryDurationElapsed = ' . config::byKey('mqtt::discovery::duration::elapsed',  __CLASS__) . ' - discoveryDurationMaximum = ' . config::byKey('mqtt::discovery::duration::maximum',  __CLASS__));
+    log::add('openhasp', 'debug', 'mqttDiscoveryCron running = ' . config::byKey('mqtt::discovery::running', __CLASS__) . ' discoveryDurationElapsed = ' . config::byKey('mqtt::discovery::duration::elapsed',  __CLASS__) . ' - discoveryDurationMaximum = ' . config::byKey('mqtt::discovery::duration::maximum',  __CLASS__));
     if (0 == config::byKey('mqtt::discovery::running', __CLASS__)) {
       return;
     }
@@ -273,11 +273,9 @@ class openhasp extends eqLogic {
       $topic = $openhasp->getConfiguration('conf::mqtt::rootTopic');
       if ('' != $topic) {
         self::handleMqttSubscription('suscribe', $topic);
-      }
     }
   }
 
-  public static function cron5() {
     /* Suppression du daemon discovery */
     /* On peut pas le supprimer dans la fonction mqttDiscovery quand elle est appelée par ce même daemon */
     if (0 == config::byKey('mqtt::discovery::running', __CLASS__)) {
@@ -370,7 +368,7 @@ class openhasp extends eqLogic {
         }
       }
     }
-    // log::add(__CLASS__, 'debug', 'extractObjectsFromJsonl return = ' . print_r($return, true));
+    log::add(__CLASS__, 'debug', 'extractObjectsFromJsonl return = ' . print_r($return, true));
 		return $return;
 	}
 
@@ -773,12 +771,13 @@ class openhasp extends eqLogic {
       }
 
       $objectReference = 'p' . $object['page'] . 'b' . $object['id'];
-      // log::add(__CLASS__, 'debug', ' - Reference = ' . $objectReference . ' - Object = ' . print_r($object, true));
+      log::add(__CLASS__, 'debug', 'importCommands - Reference = ' . $objectReference . ' - Object = ' . print_r($object, true));
+      
       if (in_array($object['obj'], array('btn'))) {
         if ('btn' == $object['obj']) {
           $displayableTypeName = __('Bouton', __FILE__);
         }
-        // log::add(__CLASS__, 'debug', $displayableTypeName . ' = ' . $object['text']);
+        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['text']);
         $info = $this->getCmd(null, 'state/' . $objectReference . '/event');
         if (!is_object($info)) {
           $info = new openhaspCmd();
@@ -804,7 +803,7 @@ class openhasp extends eqLogic {
         if ('btn_toggle' == $object['obj']) {
           $displayableTypeName = __('Bouton Toggle', __FILE__);
         }
-        // log::add(__CLASS__, 'debug', $displayableTypeName . ' = ' . $object['text']);
+        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['text']);
         $info = $this->getCmd(null, 'state/' . $objectReference . '/val');
         if (!is_object($info)) {
           $info = new openhaspCmd();
@@ -840,7 +839,7 @@ class openhasp extends eqLogic {
         if ('cpicker' == $object['obj']) {
           $displayableTypeName = __('Sélecteur de couleurs', __FILE__);
         }
-        // log::add(__CLASS__, 'debug', $displayableTypeName . ' = ' . $object['text']);
+        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['text']);
         $info = $this->getCmd(null, 'state/' . $objectReference . '/color');
         if (!is_object($info)) {
           $info = new openhaspCmd();
@@ -903,7 +902,7 @@ class openhasp extends eqLogic {
           $defaultMin = 0;
           $defaultMax = 100;
         }
-        // log::add(__CLASS__, 'debug', $displayableTypeName . ' = ' . $object['text']);
+        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['text']);
         $info = $this->getCmd(null, 'state/' . $objectReference . '/val');
         if (!is_object($info)) {
           $info = new openhaspCmd();
@@ -938,7 +937,7 @@ class openhasp extends eqLogic {
     }
 
     if ($numberOfObjectsAdded > 0 ) {
-      // log::add(__CLASS__, 'debug', $numberOfObjectsAdded . ' objet(s) ajouté(s)');
+      log::add(__CLASS__, 'debug', 'importCommands ' . $numberOfObjectsAdded . ' objet(s) ajouté(s)');
       $this->save(true);
       $this->setChanged(0);
       event::add('openhasp::equipment::reload', $this->getId());
