@@ -47,7 +47,7 @@ function openhasp_install() {
       }
     }
 
-    /* Ajout du topic par défaut utilisé par openHASP */
+    /* Configuration par défaut lors de l'installation */
     config::save('mqtt::topic::roots', "hasp", 'openhasp'); /* hasp est le topic racine par défaut dans openHASP*/
     config::save('mqtt::discovery::duration::maximum', "12", 'openhasp'); /* 12 min par défaut*/
     $file = __DIR__ . '/../../data/TextReplaceUnicode.txt';
