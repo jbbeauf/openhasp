@@ -273,11 +273,9 @@ class openhasp extends eqLogic {
       $topic = $openhasp->getConfiguration('conf::mqtt::rootTopic');
       if ('' != $topic) {
         self::handleMqttSubscription('suscribe', $topic);
-      }
     }
   }
 
-  public static function cron5() {
     /* Suppression du daemon discovery */
     /* On peut pas le supprimer dans la fonction mqttDiscovery quand elle est appelée par ce même daemon */
     if (0 == config::byKey('mqtt::discovery::running', __CLASS__)) {
