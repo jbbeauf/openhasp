@@ -178,7 +178,7 @@ L'écran communique via MQTT avec le broker (configuration, commande et informat
     1. Le plugin va récupérer les informations MQTT, WIFI et Graphique via HTTP
     1. En cas de succès, la page est rechargée et les informations de l'équipement sont rafraîchies
   * Si vous avez restreint l'accès HTTP de votre écran en définissant un nom d'utilisateur et un mot de passe
-    * Vous devez renseigner les 2 informations quand de cliquer sur "Valider IP"
+    * Vous devez renseigner les 2 informations avant de cliquer sur "Valider IP"
     * La documentation est assez claire sur l'intérêt de faire cela dans votre écran : [All HTTP communication is unencrypted and setting credentials is only a simple security measure!](https://www.openhasp.com/latest/firmware/configuration/http/ (Voir la note en début de page))
   * Le plugin openHASP est capable de communiquer avec l'écran via MQTT : commandes générales et commandes spécifiques avec import automatique des objets de l'écran
 * ***Configuration par MQTT***
@@ -230,7 +230,7 @@ La page des commandes spécifiques sert à afficher les commandes créées autom
 Cette fonction est disponible si l'écran a été configuré avec son adresse ip, voir [§8.1 Page Configuration Equipement](#81-page-configuration-equipement)
 Vous pouvez également ajouter une commande personnalisée en cliquant sur le bouton "Ajouter une commande".
 
-Pour créées automatiquement les commandes à partir des objets de l'écran, cliquer sur le bouton "Importer les objets de l'écran"
+Pour créer automatiquement les commandes à partir des objets de l'écran, cliquer sur le bouton "Importer les objets de l'écran"
 1. Le plugin openHASP va télécharger la page JSONL utilisée par l'écran au démarrage 
 1. Des commandes info / actions vont être créées pour tous les objets supportés
     * Nom de la commande info au format : "Page X - TYPE_OBJET TEXT_OBJET"
