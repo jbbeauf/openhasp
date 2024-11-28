@@ -153,6 +153,17 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 									<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked>{{Visible}}</label>
 								</div>
 							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{Rafraîchir automatiquement}}</label>
+								<div class="col-sm-6">
+									<select id="sel_autoRefresh" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="conf::autoRefresh" >
+										<option value="0">{{Non}}</option>
+										<option value="1">{{Toutes les minutes}}</option>
+										<option value="2">{{Toutes les 5 minutes}}</option>
+										<option value="3">{{Toutes les 10 minutes}}</option>
+									</select>
+								</div>
+							</div>
 
 							<legend><i class="fas fa-cogs"></i> {{Configuration de l'écran}}</legend>
 							<div class="form-group">

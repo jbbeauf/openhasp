@@ -266,6 +266,31 @@ class openhasp extends eqLogic {
     config::save('mqtt::discovery::duration::elapsed', $discoveryDurationElapsed + 1,  __CLASS__);    
   }
 
+  public static function cron() {
+    /* Auto-refresh - Boucle sur chaque équipement du plugin openhasp */
+    foreach (eqLogic::byType(__CLASS__, true) as $openhasp) {
+      $autoRefresh = $openhasp->getConfiguration('conf::autoRefresh');
+      if ('1' == $autoRefresh) {
+        $cmd = $openhasp->getCmd(null, 'command/statusupdate');
+        if (!is_object($cmd)) {
+          $cmd->execute();
+        }
+      }
+    }
+  }
+
+  public static function cron5() {
+    /* Auto-refresh - Boucle sur chaque équipement du plugin openhasp */
+    foreach (eqLogic::byType(__CLASS__, true) as $openhasp) {
+      $autoRefresh = $openhasp->getConfiguration('conf::autoRefresh');
+      if ('2' == $autoRefresh) {
+        $cmd = $openhasp->getCmd(null, 'command/statusupdate');
+        if (!is_object($cmd)) {
+          $cmd->execute();
+        }
+      }
+    }
+  }
 
   public static function cron10() {
     /* Boucle sur chaque équipement du plugin openhasp pour se ré-abonner */
@@ -273,8 +298,8 @@ class openhasp extends eqLogic {
       $topic = $openhasp->getConfiguration('conf::mqtt::rootTopic');
       if ('' != $topic) {
         self::handleMqttSubscription('suscribe', $topic);
+      }
     }
-  }
 
     /* Suppression du daemon discovery */
     /* On peut pas le supprimer dans la fonction mqttDiscovery quand elle est appelée par ce même daemon */
@@ -283,6 +308,17 @@ class openhasp extends eqLogic {
       if (is_object($cron)) {
         $cron->remove();
         $cron = null;
+      }
+    }
+
+    /* Auto-refresh - Boucle sur chaque équipement du plugin openhasp */
+    foreach (eqLogic::byType(__CLASS__, true) as $openhasp) {
+      $autoRefresh = $openhasp->getConfiguration('conf::autoRefresh');
+      if ('3' == $autoRefresh) {
+        $cmd = $openhasp->getCmd(null, 'command/statusupdate');
+        if (!is_object($cmd)) {
+          $cmd->execute();
+        }
       }
     }
   }
@@ -399,6 +435,7 @@ class openhasp extends eqLogic {
     $this->setIsEnable(1);
     $this->setIsVisible(1);
     $this->setConfiguration('validateConfigByMqttRequested', 0);
+    $this->setConfiguration('conf::autoRefresh', '0'); // Rafraîchissement automatique désactivé par défaut à la création de l'équipement
   }
 
   // Fonction exécutée automatiquement après la création de l'équipement

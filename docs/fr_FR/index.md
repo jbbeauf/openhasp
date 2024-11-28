@@ -98,10 +98,16 @@ Mettre 1 caractère par ligne selon ce modèle \uXXXX:texte
   >> \uE045:DOWN
 
 ### 6.3 Fonctionnalités
-Le cron10 est utilisé.
-Il permet toutes les 10 minutes de : 
-* Se ré-abonner au sujet MQTT pour chaque équipement
-* Supprimer le Cron mqttDiscoveryCron, créé lors de l'inclusion automatique
+Voici la liste des cron utilisés et ce qu'ils font :
+* **cron** (toutes les minutes)
+  * Faire un rafraîchissement automatique des équipements configurés
+* **cron5** (toutes les 5 minutes)
+  * Faire un rafraîchissement automatique des équipements configurés
+* **cron10** (toutes les 10 minutes)
+  * Se ré-abonnement aux sujets racines MQTT de chaque équipement
+  * Supprimer le cron mqttDiscoveryCron, créé lors de l'inclusion automatique
+  * Faire un rafraîchissement automatique des équipements configurés
+
 
 ### 7. Page Gestion du plugin
 
@@ -144,7 +150,22 @@ Cette zone permet d'afficher tous les équipements openHASP existants.
 #### 8.1 Page Configuration Equipement
 
 **Paramèters généraux**
-Paramètres communs à tous les objets Jeedom.
+
+Paramètres communs à tous les objets Jeedom :
+* Nom de l'équipement
+* Objet parent
+* Catégorie
+* Options
+
+Paramètre spécifique à un équipement openHASP :
+* Rafraîchir automatiquement
+ Option pour envoyer périodiquement une demande de mise à jour de toutes les valeurs des commandes info disponibles
+ Valeurs possibles :
+   * Non - valeur par défaut
+   * Toutes les minutes
+   * Toutes les 5 minutes
+   * Toutes les 10 minutes
+ 
 
 **Configuration de l'écran**
 L'écran communique via MQTT avec le broker (configuration, commande et information) mais est également accessible en direct via HTTP (configuration uniquement).
