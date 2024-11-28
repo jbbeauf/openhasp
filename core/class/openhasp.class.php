@@ -136,7 +136,7 @@ class openhasp extends eqLogic {
 
   }
 
-  public static function handleMqttSubscription($_action = 'suscribe', $_topic) {
+  public static function handleMqttSubscription($_action, $_topic) {
     log::add(__CLASS__, 'debug', 'handleMqttSubscription MQTT subscription action = ' . print_r($_action,true) . ' - topic = ' . print_r($_topic, true));
     if (!class_exists('mqtt2')) {
       include_file('core', 'mqtt2', 'class', 'mqtt2');
