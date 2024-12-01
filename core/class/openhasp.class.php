@@ -872,6 +872,98 @@ class openhasp extends eqLogic {
         }
       }
 
+      if (in_array($object['obj'], array('roller', 'dropdown'))) {
+        if ('roller' == $object['obj']) {
+          $displayableTypeName = __('Liste tournate', __FILE__);
+        }
+        if ('dropdown' == $object['obj']) {
+          $displayableTypeName = __('Liste déroulante', __FILE__);
+        }
+        $rollerOptions = $object['options'];
+        $rollerOptionsArray = explode("\n", $rollerOptions);
+        for($i = 0; $i < count($rollerOptionsArray); $i++) {
+            $rollerOptionsArray[$i] = $i . '|' . $rollerOptionsArray[$i];
+        }
+        $listoptions = implode(";", $rollerOptionsArray);
+        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['id']);
+        $info = $this->getCmd(null, 'state/' . $objectReference . '/val');
+        if (!is_object($info)) {
+          $info = new openhaspCmd();
+          $info->setLogicalId('state/' . $objectReference . '/val');
+          $info->setEqLogic_id($this->getId());
+          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['id'] . ' ' . __('Valeur', __FILE__));
+          $info->setType('info');
+          $info->setSubType('string');
+          $info->setConfiguration('type', 'specific');
+          $info->setConfiguration('page',  $object['page']);
+          $info->save();
+          $numberOfObjectsAdded++;
+        }
+        $action = $this->getCmd(null, 'command/' . $objectReference . '.val');
+        if (!is_object($action)) {
+          $action = new openhaspCmd();
+          $action->setLogicalId('command/' . $objectReference . '.val');
+          $action->setEqLogic_id($this->getId());
+          $action->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['id'] . ' ' . __('Commande', __FILE__));
+          $action->setType('action');
+          $action->setSubType('select');
+          $action->setValue($info->getId()); /* $info précédente */
+          $action->setConfiguration('message','#select#');
+          $action->setConfiguration('listValue', $listoptions);
+          $action->setConfiguration('type', 'specific');
+          $action->setConfiguration('page',  $object['page']);
+          $action->save();
+          $numberOfObjectsAdded++;
+        }
+        $info = $this->getCmd(null, 'state/' . $objectReference . '/text');
+        if (!is_object($info)) {
+          $info = new openhaspCmd();
+          $info->setLogicalId('state/' . $objectReference . '/text');
+          $info->setEqLogic_id($this->getId());
+          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['id']. ' ' . __('Texte', __FILE__));
+          $info->setType('info');
+          $info->setSubType('string');
+          $info->setConfiguration('type', 'specific');
+          $info->setConfiguration('page',  $object['page']);
+          $info->save();
+          $numberOfObjectsAdded++;
+        }
+      }
+
+      if (in_array($object['obj'], array('qrcode',))) {
+        if ('qrcode' == $object['obj']) {
+          $displayableTypeName = __('Qrcode', __FILE__);
+        }
+        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['text']);
+        $info = $this->getCmd(null, 'state/' . $objectReference . '/text');
+        if (!is_object($info)) {
+          $info = new openhaspCmd();
+          $info->setLogicalId('state/' . $objectReference . '/text');
+          $info->setEqLogic_id($this->getId());
+          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['id']);
+          $info->setType('info');
+          $info->setSubType('string');
+          $info->setConfiguration('type', 'specific');
+          $info->setConfiguration('page',  $object['page']);
+          $info->save();
+          $numberOfObjectsAdded++;
+        }
+        $action = $this->getCmd(null, 'command/' . $objectReference . '.text');
+        if (!is_object($action)) {
+          $action = new openhaspCmd();
+          $action->setLogicalId('command/' . $objectReference . '.text');
+          $action->setEqLogic_id($this->getId());
+          $action->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['id'] . ' ' . __('Commande', __FILE__));
+          $action->setType('action');
+          $action->setSubType('other');
+          $action->setValue($info->getId()); /* $info précédente */
+          $action->setConfiguration('type', 'specific');
+          $action->setConfiguration('page',  $object['page']);
+          $action->save();
+          $numberOfObjectsAdded++;
+        }
+      }
+
       if (in_array($object['obj'], array('cpicker'))) {
         if ('cpicker' == $object['obj']) {
           $displayableTypeName = __('Sélecteur de couleurs', __FILE__);
