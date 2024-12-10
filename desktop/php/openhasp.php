@@ -318,7 +318,8 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 			<div role="tabpanel" class="tab-pane" id="commandtabspecific">
 				<div class="form-group">
 					<div class="pull-left" id="filter_page">
-						<!-- <label class="control-label" style="margin-top:5px;">{{Filtre sur les pages}}</label> -->
+						<label class="control-label" style="margin-top:5px;"><i>&nbsp&nbsp;{{Filtre sur les pages}}</i></label>
+						<a class="btn btn-success btn-sm commandPageFilter" style="margin-top:5px;" page="all" id="btn_commandPageFilterAllPages">{{Toutes les pages}}</a>
 					</div>
 					<div class="pull-right">
 						<a class="btn btn-default btn-sm cmdAction"id="bt_importCommands" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Importer les objets de l'écran}}
@@ -331,6 +332,7 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 						<thead>
 							<tr>
 								<th class="hidden-xs" style="min-width:50px;width:70px;"> ID</th>
+								<th style="width:50px;">{{Page}}</th>
 								<th style="min-width:150px;width:300px;">{{Nom}}</th>
 								<th style="width:130px;">{{Type}}</th>
 								<th>{{Paramètres}}</th>

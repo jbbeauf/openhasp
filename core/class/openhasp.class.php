@@ -417,13 +417,13 @@ class openhasp extends eqLogic {
 
     /* Vérifie si l'adresse IP est valide : c'est à dire au bon format */
     if (!filter_var($_ip, FILTER_VALIDATE_IP)) {
-      throw new Exception(__("Échec vérification IP : Adresse IP invalide", __FILE__) . ' ' . $ipAddress);
+      throw new Exception(__("Échec vérification IP : Adresse IP invalide", __FILE__) . ' ' . $_ip);
     }
 
     /* Vérifie si l'adresse IP est joingnable : ping */
 		exec(system::getCmdSudo() . 'ping -n -c 1 -t 255 ' . $_ip . ' 2>&1 > /dev/null', $output, $return_val);
 		if (0 != $return_val) {
-      throw new Exception(__("Échec vérification IP : Impossible de se connecter à l'hôte ayant pour adresse IP", __FILE__) . ' ' . $ipAddress);
+      throw new Exception(__("Échec vérification IP : Impossible de se connecter à l'hôte ayant pour adresse IP", __FILE__) . ' ' . $_ip);
     }
   }
 
