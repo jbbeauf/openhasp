@@ -55,11 +55,23 @@ function addCmdToTable(_cmd) {
     }
   }
   var tr = '<tr class="cmd ' + classPage + '" data-cmd_id="' + init(_cmd.id) + '">'
-  tr += '<td class="hidden-xs">'
-  tr += '<span class="cmdAttr" data-l1key="id"></span>'
-  tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="type">' + _cmd.configuration.type + '</span>'
-  tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="page">' + _cmd.configuration.page + '</span>'
-  tr += '</td>'
+
+  if ('specific' == _cmd.configuration.type) {
+    tr += '<td class="hidden-xs">'
+    tr += '<span class="cmdAttr" data-l1key="id"></span>'
+    tr += '</td>'
+    tr += '<td>'
+    tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="type">' + _cmd.configuration.type + '</span>'
+    tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="page"/>'
+    tr += '</td>'
+  } else {
+    tr += '<td class="hidden-xs">'
+    tr += '<span class="cmdAttr" data-l1key="id"></span>'
+    tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="type">' + _cmd.configuration.type + '</span>'
+    tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="page" style="width:30%;max-width:80px;display:inline-block;margin-right:2px;">' + _cmd.configuration.page + '</span>'
+    tr += '</td>'
+  }
+
   tr += '<td>'
   tr += '<div class="input-group">'
   tr += '<input class="cmdAttr form-control input-sm roundedLeft" data-l1key="name" placeholder="{{Nom de la commande}}">'

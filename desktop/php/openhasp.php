@@ -332,6 +332,7 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 						<thead>
 							<tr>
 								<th class="hidden-xs" style="min-width:50px;width:70px;"> ID</th>
+								<th style="width:50px;">{{Page}}</th>
 								<th style="min-width:150px;width:300px;">{{Nom}}</th>
 								<th style="width:130px;">{{Type}}</th>
 								<th>{{Paramètres}}</th>
