@@ -139,7 +139,6 @@ function addCmdToTable(_cmd) {
       $('#filter_page').append('<a class="btn btn-default btn-sm commandPageFilter" style="margin-top:5px;" page="' + _cmd.configuration.page + '">{{Page}}  ' + _cmd.configuration.page + '</a> ')
     }
   }
-  console.log('addCmdToTable : ' + _cmd.id + ' - ' + classPage)
 }
 
 /**
