@@ -113,7 +113,7 @@ class openhasp extends eqLogic {
           $subMessage = $message;
           $cmdToBeUpdated = true;
           /* On regarde si le message mqtt reçu correspond à la commande courante */
-          foreach(explode('/', $cmd->getLogicalId()) as $subTopic){
+          foreach(explode('/', str_replace('.', '/', $cmd->getLogicalId())) as $subTopic){
             if (isset($subMessage[$subTopic])) {
               $subMessage = $subMessage[$subTopic];
             } else {
