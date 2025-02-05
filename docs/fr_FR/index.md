@@ -84,18 +84,30 @@ Durée maximale en minute de l'inclusion automatique
     </ul>
   </details>
 
-* **Remplacement des caractères unicode affichés**
-openHASP utilise des polices de caractères incluant des caractères spéciaux sous forme d'icône.
+* **Gestion des caractères Unicode**
+openHASP utilise par défaut une police de caractères incluant des caractères spéciaux sous forme d'icône.
 La liste complète des icônes disponibles sous openHASP est disponible [ici](https://www.openhasp.com/latest/design/fonts/ (Fonts))
-Ces caractères spéciaux n'étant pas directement supportées par Jeedom, ils peuvent être convertis en texte.
-Mettre 1 caractère par ligne selon ce modèle \uXXXX:texte
-  > *Valeur par défaut*
-  >> \uE141:PREV
-  >> \uE2DC:HOME
-  >> \uE142:NEXT
-  >> \uE05D:UP
-  >> \uE4DB:STOP
-  >> \uE045:DOWN
+Ces caractères spéciaux ne sont pas directement supportées dans l'affichage Jeedom.
+  * **Affichage des caractères unicode**
+  Choix de l'affichage des caractères unicode reçus : 
+    1. Option "Ne pas modifier"
+    Les caractères unicode reçus seront affichés tel quel dans jeedom : par exemple "Volet ouvert " 
+    2. Option "Utiliser le format \uXXXX (par défaut)"
+    Les caractères unicode reçus seront affichés au format \uXXXX dans jeedom : par exemple "Volet ouvert \uF11E"
+    3. Option "Remplacer par le texte correspondant"
+    Les caractères unicode reçus seront par le texte correspondant dans jeedom (voir ci-dessouspour *la configuration du remplacement par le texte*"* et la liste des *correspondances des caractères unicodes affichés*): par exemple "Volet ouvert {{window-shutter-open}}"
+  * **Configuration pour le remplacement par le texte correspondant**     
+  Personalisation des caratères qui encadrent le texte correspondant au caractère unicode
+  C'est utilisé pour
+    * Texte reçu de l'écran si l'option "Remplacer par le texte correspondant" est sélectionnée
+    * Texte envoyé à l'écran dans tous les cas
+  
+    Vous pouvez modifier les *Séparateur début* et *Séparateur fin*
+    Ne pas laisser vide
+    Les valeurs par défaut sont "{{" et "}}" --> exemple de texte reçu "Volet ouvert {{window-shutter-open}}" 
+  * **Correspondance des caractères unicode affichés**
+  Liste de tous les caractères unicodes supportés par openHASP
+  Format utilisé : 1 caractère par ligne selon ce modèle \uXXXX:texte-de-remplacement
 
 ### 6.3 Fonctionnalités
 Voici la liste des cron utilisés et ce qu'ils font :
@@ -258,8 +270,8 @@ Liste des objets openHASP (version 0.7.0)
 | line      |                | non :x:                              | [Line](https://www.openhasp.com/0.7.0/design/objects/#line)                   |                                            |                                                     |                                       |
 | img       |                | non :x:                              | [Image](https://www.openhasp.com/0.7.0/design/objects/#image)                 |                                            |                                                     |                                       |
 | cpicker   |                | oui :white_check_mark:               | [Color picker](https://www.openhasp.com/0.7.0/design/objects/#color-picker)   | Page x - Bouton Sélecteur de couleurs TEXT | Page x - Bouton Sélecteur de couleurs TEXT Commande | #RRGGBB                               |
-| roller    |                | non :x:                              | [Roller](https://www.openhasp.com/0.7.0/design/objects/#roller)               |                                            |                                                     |                                       |
-| dropdown  |                | non :x:                              | [Dropdown List](https://www.openhasp.com/0.7.0/design/objects/#dropdown-list) |                                            |                                                     |                                       |
+| roller    |                | oui :white_check_mark:                              | [Roller](https://www.openhasp.com/0.7.0/design/objects/#roller)               |  - Page x - Bouton Liste tournante ID Valeur<br/> - Page x - Bouton Liste tournante ID Texte                                     | Page x - Bouton Liste tournate ID Commande                                                    | Liste avec les valeurs de la propriété "option" de l'objet                                      |
+| dropdown  |                |oui :white_check_mark:                              | [Dropdown List](https://www.openhasp.com/0.7.0/design/objects/#dropdown-list) |  - Page x - Bouton Liste déroulante ID Valeur<br/> - Page x - Bouton Liste déroulante ID Texte                                     | Page x - Bouton Liste déroulante ID Commande                                                    | Liste avec les valeurs de la propriété "option" de l'objet                                       |
 | btnmatrix |                | non :x:                              | [Button Matrix](https://www.openhasp.com/0.7.0/design/objects/#button-matrix) |                                            |                                                     |                                       |
 | msgbox    |                | non :x:                              | [Messagebox](https://www.openhasp.com/0.7.0/design/objects/#messagebox)       |                                            |                                                     |                                       |
 | tabview   |                | non :x:                              | [Tabview](https://www.openhasp.com/0.7.0/design/objects/#tabview)             |                                            |                                                     |                                       |
@@ -269,11 +281,14 @@ Liste des objets openHASP (version 0.7.0)
 | arc       |                | oui :white_check_mark:               | [Arc](https://www.openhasp.com/0.7.0/design/objects/#arc)                     | Page x - Bouton Arc TEXT                   | Page x - Bouton Arc TEXT Commande                   | 0 à 100                               |
 | linemeter |                | oui :white_check_mark:               | [Line Meter](https://www.openhasp.com/0.7.0/design/objects/#line-meter)       | Page x - Bouton Line meter TEXT            | Page x - Bouton Line meter TEXT Commande            | 0 à 100                               |
 | gauge     |                | oui :white_check_mark:               | [Gauge](https://www.openhasp.com/0.7.0/design/objects/#gauge)                 | Page x - Bouton Jauge TEXT                 | Page x - Bouton Jauge TEXT Commande                 | 0 à 100                               |
-| qrcode    |                | non :x:                              | [Qrcode](https://www.openhasp.com/0.7.0/design/objects/#qrcode)               |                                            |                                                     |                                       |
+| qrcode    |                | oui :white_check_mark:                               | [Qrcode](https://www.openhasp.com/0.7.0/design/objects/#qrcode)               | Page x - Qrcode ID                                       | Page x - Qrcode ID Commande                                                    | Texte de 122 caractères maximum                                     |
 
 > &ast; _non supporté_ = l'objet sera ignoré par le plugin openHASP lors de l'import des objets de l'écran et aucune commande ne lui sera créé automatiquement
 > L'objet reste utilisable avec une commande ajoutée manuellement
 
+> _Page x_ : remplace x par le numéro de la page
+> _TEXT_ : remplace TEXT par la propriété "text" de l'objet, correspond souvent au texte affiché
+> _ID_ : remplace ID par la propriété "id" de l'objet
 
 
 # 9. Liens utiles

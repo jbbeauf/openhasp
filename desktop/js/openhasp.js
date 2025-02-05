@@ -39,16 +39,39 @@ function addCmdToTable(_cmd) {
   if (!isset(_cmd.configuration)) {
     _cmd.configuration = {}
   }
+  if (!isset(_cmd.configuration.type)) {
+    _cmd.configuration.type = 'general'
+  }
+  if ('specific' == _cmd.configuration.type && !isset(_cmd.configuration.page)) {
+    _cmd.configuration.page = 'all'
+  }
 
   var classPage = '';
   if ('specific' == _cmd.configuration.type && '' != _cmd.configuration.page) {
     classPage = 'page_' + _cmd.configuration.page
+    if (0 ==  $('#table_cmd_' + init(_cmd.configuration.type) + ' tbody').children().length) {
+      $('#filter_page').find("a.btn-success").removeClass('btn-success')
+      $('#btn_commandPageFilterAllPages').addClass('btn-success')
+    }
+  }
+  var tr = '<tr class="cmd ' + classPage + '" data-cmd_id="' + init(_cmd.id) + '">'
+
+  if ('specific' == _cmd.configuration.type) {
+    tr += '<td class="hidden-xs">'
+    tr += '<span class="cmdAttr" data-l1key="id"></span>'
+    tr += '</td>'
+    tr += '<td>'
+    tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="type">' + _cmd.configuration.type + '</span>'
+    tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="page"/>'
+    tr += '</td>'
+  } else {
+    tr += '<td class="hidden-xs">'
+    tr += '<span class="cmdAttr" data-l1key="id"></span>'
+    tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="type">' + _cmd.configuration.type + '</span>'
+    tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="page" style="width:30%;max-width:80px;display:inline-block;margin-right:2px;">' + _cmd.configuration.page + '</span>'
+    tr += '</td>'
   }
 
-  var tr = '<tr class="cmd ' + classPage + '" data-cmd_id="' + init(_cmd.id) + '">'
-  tr += '<td class="hidden-xs">'
-  tr += '<span class="cmdAttr" data-l1key="id"></span>'
-  tr += '</td>'
   tr += '<td>'
   tr += '<div class="input-group">'
   tr += '<input class="cmdAttr form-control input-sm roundedLeft" data-l1key="name" placeholder="{{Nom de la commande}}">'
@@ -104,6 +127,18 @@ function addCmdToTable(_cmd) {
       jeedom.cmd.changeType(tr, init(_cmd.subType))
     }
   })
+  if ('' != classPage) {
+    var addNewFilter = 1
+    $('#filter_page').find("a").each(function() {
+      if (_cmd.configuration.page == $(this).attr('page')) {
+        addNewFilter = 0
+        return false
+      }
+    });
+    if (1 == addNewFilter) {
+      $('#filter_page').append('<a class="btn btn-default btn-sm commandPageFilter" style="margin-top:5px;" page="' + _cmd.configuration.page + '">{{Page}}  ' + _cmd.configuration.page + '</a> ')
+    }
+  }
 }
 
 /**
@@ -320,7 +355,7 @@ $("#bt_addCommandGeneral").on('click', function(event) {
  *   - Bouton "Ajouter une commande"
  */
 $("#bt_addCommandSpecific").on('click', function(event) {
-  addCmdToTable({ configuration: { type : 'specific'} })
+  addCmdToTable({ configuration: { type : 'specific', page : 'all'} })
   modifyWithoutSave = true
 })
 
@@ -356,3 +391,20 @@ function isVisible(elem) {
   } while (pointContainer = pointContainer.parentNode);
   return false;
 }
+
+/**
+ * Equimement ouvert
+ * - Onglet "Commandes spécifiques"
+ *   - Bouton de filtre sur les pages
+ */
+$('#filter_page').on('click', 'a.commandPageFilter', function() {
+  $('#filter_page').find("a.btn-success").removeClass('btn-success')
+  $(this).addClass('btn-success')
+  if ('all' != $(this).attr('page')) {
+    $('#table_cmd_specific').find('tbody>tr:not(.page_' + $(this).attr('page') + ')').hide()
+    $('#table_cmd_specific').find('tbody>tr.page_' + $(this).attr('page')).show()
+    $('#table_cmd_specific').find('tbody>tr.page_all').show()
+  } else {
+    $('#table_cmd_specific').find('tbody>tr').show()
+  }
+})

@@ -40,9 +40,38 @@ if (!isConnect()) {
         <input class="configKey form-control" data-l1key="mqtt::discovery::duration::maximum" placeholder="{{Durée de l'inclusion automatique en minutes}}">
       </div>
     </div>
+    <br/>
     <div class="form-group">
-      <label class="col-md-4 control-label">{{Remplacement des caractères unicode affichés}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Remplacer les caractères unicodes par un texte. 1 caractère par ligne selon ce modèle \uXXXX:texte}}"></i></sup>
+      <label class="col-md-4 control-label">{{Gestion des caractères Unicode}}</label>
+    </div>
+    <div class="form-group">
+      <label class="col-md-4 control-label">{{Affichage des caractères unicode}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Affichage des caractères unicode (voir documentation)}}"></i></sup>
+      </label>
+      <div class="col-md-7">
+        <select class="configKey form-control" data-l1key="unicode::replace::option">
+          <option value="no">{{Ne pas modifier}}</option>
+          <option value="hex">{{Utiliser le format \uXXXX (par défaut)}}</option>
+          <option value="text">{{Remplacer par le texte correspondant}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+			<label class="col-lg-4 control-label">{{Configuration pour le remplacement par le texte correspondant}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Séparateurs de début et de fin pour le remplacement des caractères unicode par le texte correspondant}}"></i></sup>
+      </label>
+			<div class="col-lg-3">
+				<div class="input-group" style="width:100%">
+					<span class="input-group-addon roundedLeft">Séparateur début</span>
+					<input type="text" class="configKey form-control" data-l1key="unicode::replace::text::begin" placeholder="{{" style="width: 70px;" />
+					<span class="input-group-addon">Séparateur fin</span>
+					<input type="text" class="configKey form-control roundedRight" data-l1key="unicode::replace::text::end" placeholder="}}" style="width: 70px;" />
+				</div>
+			</div>
+		</div>
+    <div class="form-group">
+      <label class="col-md-4 control-label">{{Correspondance des caractères unicode affichés}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Correspondance des caractères unicodes par un texte. 1 caractère par ligne selon ce modèle \uXXXX:texte}}"></i></sup>
       </label>
       <div class="col-md-7">
         <textarea class="configKey form-control autogrow" data-l1key="text::unicode"></textarea>
