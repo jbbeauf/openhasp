@@ -46,22 +46,39 @@ function openhasp_install() {
         }
       }
     }
-
+  }
+  
+  // Fonction exécutée automatiquement après la mise à jour du plugin
+  function openhasp_update() {
     /* Configuration par défaut lors de l'installation */
-    config::save('mqtt::topic::roots', "hasp", 'openhasp'); /* hasp est le topic racine par défaut dans openHASP*/
-    config::save('mqtt::discovery::duration::maximum', "12", 'openhasp'); /* 12 min par défaut*/
-    config::save('unicode::replace::option', "hex", 'openhasp'); /* Utiliser le format \uXXXX par défaut*/
-    config::save('unicode::replace::text::begin', "{{", 'openhasp'); /* Séparateur de début '{{' par défaut*/
-    config::save('unicode::replace::text::end', "}}", 'openhasp'); /* Séparateur de fin '{{' par défaut*/
-    $file = __DIR__ . '/../data/TextReplaceUnicode.txt';
-    if (file_exists($file)) {
-      config::save('text::unicode', file_get_contents($file), 'openhasp'); /* Chargement du fichier par défaut */
+    if ('' ==  config::byKey('mqtt::topic::roots', 'openhasp')) {
+      config::save('mqtt::topic::roots', "hasp", 'openhasp'); /* hasp est le topic racine par défaut dans openHASP*/
     }
-}
 
-// Fonction exécutée automatiquement après la mise à jour du plugin
-function openhasp_update() {
-    log::add(__CLASS__, 'debug', __('openhasp_update...', __FILE__));
+    if ('' ==  config::byKey('mqtt::discovery::duration::maximum', 'openhasp')) {
+      config::save('mqtt::discovery::duration::maximum', "12", 'openhasp'); /* 12 min par défaut*/
+    }
+
+    if ('' ==  config::byKey('unicode::replace::option', 'openhasp')) {
+      config::save('unicode::replace::option', "hex", 'openhasp'); /* Utiliser le format \uXXXX par défaut*/
+    }
+
+    if ('' ==  config::byKey('unicode::replace::text::begin', 'openhasp')) {
+      config::save('unicode::replace::text::begin', "{{", 'openhasp'); /* Séparateur de début '{{' par défaut*/
+    }
+
+    if ('' ==  config::byKey('unicode::replace::text::end', 'openhasp')) {
+      config::save('unicode::replace::text::end', "}}", 'openhasp'); /* Séparateur de fin '{{' par défaut*/
+    }
+
+    if ('' ==  config::byKey('text::unicode', 'openhasp')) {
+      $file = __DIR__ . '/../data/TextReplaceUnicode.txt';
+      if (file_exists($file)) {
+        config::save('text::unicode', file_get_contents($file), 'openhasp'); /* Chargement du fichier par défaut */
+      } else {
+        config::save('text::unicode', '\uE004;account', 'openhasp'); /* Si le fichier n'est pas trouvé (pourquoi pas) : juste un exemple par défaut */
+      }
+    }
 }
 
 // Fonction exécutée automatiquement après la suppression du plugin
