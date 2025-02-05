@@ -1,5 +1,9 @@
 # Changelog plugin openHASP - beta
 
+# 05/02/2025 / 1.3
+ - Refonte gestion caractères unicode reçus et envoyés avec l'écran
+ - Correction bug qui empêchait les Info xxx.text ou xxx.val de s'afficher (commande Info)
+
 # 10/12/2024 / 1.2
  - Ajout filtre par page dans les commandes spécifiques
 
