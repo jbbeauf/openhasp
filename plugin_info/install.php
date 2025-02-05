@@ -53,7 +53,7 @@ function openhasp_install() {
     config::save('unicode::replace::option', "hex", 'openhasp'); /* Utiliser le format \uXXXX par défaut*/
     config::save('unicode::replace::text::begin', "{{", 'openhasp'); /* Séparateur de début '{{' par défaut*/
     config::save('unicode::replace::text::end', "}}", 'openhasp'); /* Séparateur de fin '{{' par défaut*/
-    $file = __DIR__ . '../data/TextReplaceUnicode.txt';
+    $file = __DIR__ . '/../data/TextReplaceUnicode.txt';
     if (file_exists($file)) {
       config::save('text::unicode', file_get_contents($file), 'openhasp'); /* Chargement du fichier par défaut */
     }
