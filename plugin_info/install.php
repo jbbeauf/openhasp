@@ -46,11 +46,24 @@ function openhasp_install() {
         }
       }
     }
+
+    /* Configuration par défaut lors de l'installation */
+    config::save('mqtt::topic::roots', "hasp", 'openhasp'); /* hasp est le topic racine par défaut dans openHASP*/
+    config::save('mqtt::discovery::duration::maximum', "12", 'openhasp'); /* 12 min par défaut*/
+    config::save('unicode::replace::option', "hex", 'openhasp'); /* Utiliser le format \uXXXX par défaut*/
+    config::save('unicode::replace::text::begin', "{{", 'openhasp'); /* Séparateur de début '{{' par défaut*/
+    config::save('unicode::replace::text::end', "}}", 'openhasp'); /* Séparateur de fin '{{' par défaut*/
+    $file = __DIR__ . '/../data/TextReplaceUnicode.txt';
+    if (file_exists($file)) {
+      config::save('text::unicode', file_get_contents($file), 'openhasp'); /* Chargement du fichier par défaut */
+    } else {
+      config::save('text::unicode', '\uE004;account', 'openhasp'); /* Si le fichier n'est pas trouvé (pourquoi pas) : juste un exemple par défaut */
+    }
   }
   
   // Fonction exécutée automatiquement après la mise à jour du plugin
   function openhasp_update() {
-    /* Configuration par défaut lors de l'installation */
+    /* Configuration par défaut lors de la mise à jour */
     if ('' ==  config::byKey('mqtt::topic::roots', 'openhasp')) {
       config::save('mqtt::topic::roots', "hasp", 'openhasp'); /* hasp est le topic racine par défaut dans openHASP*/
     }
