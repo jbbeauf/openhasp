@@ -50,7 +50,10 @@ function openhasp_install() {
     /* Configuration par défaut lors de l'installation */
     config::save('mqtt::topic::roots', "hasp", 'openhasp'); /* hasp est le topic racine par défaut dans openHASP*/
     config::save('mqtt::discovery::duration::maximum', "12", 'openhasp'); /* 12 min par défaut*/
-    $file = __DIR__ . '/../../data/TextReplaceUnicode.txt';
+    config::save('unicode::replace::option', "UnicodeHex", 'openhasp'); /* Utiliser le format \uXXXX par défaut*/
+    config::save('unicode::replace::text::begin', "{{", 'openhasp'); /* Séparateur de début '{{' par défaut*/
+    config::save('unicode::replace::text::end', "}}", 'openhasp'); /* Séparateur de fin '{{' par défaut*/
+    $file = __DIR__ . '../../data/TextReplaceUnicode.txt';
     if (file_exists($file)) {
       config::save('text::unicode', file_get_contents($file), 'openhasp'); /* Chargement du fichier par défaut */
     }

@@ -84,18 +84,30 @@ Durée maximale en minute de l'inclusion automatique
     </ul>
   </details>
 
-* **Remplacement des caractères unicode affichés**
-openHASP utilise des polices de caractères incluant des caractères spéciaux sous forme d'icône.
+* **Gestion des caractères Unicode**
+openHASP utilise par défaut une police de caractères incluant des caractères spéciaux sous forme d'icône.
 La liste complète des icônes disponibles sous openHASP est disponible [ici](https://www.openhasp.com/latest/design/fonts/ (Fonts))
-Ces caractères spéciaux n'étant pas directement supportées par Jeedom, ils peuvent être convertis en texte.
-Mettre 1 caractère par ligne selon ce modèle \uXXXX:texte
-  > *Valeur par défaut*
-  >> \uE141:PREV
-  >> \uE2DC:HOME
-  >> \uE142:NEXT
-  >> \uE05D:UP
-  >> \uE4DB:STOP
-  >> \uE045:DOWN
+Ces caractères spéciaux ne sont pas directement supportées dans l'affichage Jeedom.
+  * **Affichage des caractères unicode**
+  Choix de l'affichage des caractères unicode reçus : 
+    1. Option "Ne pas modifier"
+    Les caractères unicode reçus seront affichés tel quel dans jeedom : par exemple "Volet ouvert " 
+    2. Option "Utiliser le format \uXXXX (par défaut)"
+    Les caractères unicode reçus seront affichés au format \uXXXX dans jeedom : par exemple "Volet ouvert \uF11E"
+    3. Option "Remplacer par le texte correspondant"
+    Les caractères unicode reçus seront par le texte correspondant dans jeedom (voir ci-dessouspour *la configuration du remplacement par le texte*"* et la liste des *correspondances des caractères unicodes affichés*): par exemple "Volet ouvert {{window-shutter-open}}"
+  * **Configuration pour le remplacement par le texte correspondant**     
+  Personalisation des caratères qui encadrent le texte correspondant au caractère unicode
+  C'est utilisé pour
+    * Texte reçu de l'écran si l'option "Remplacer par le texte correspondant" est sélectionnée
+    * Texte envoyé à l'écran dans tous les cas
+  
+    Vous pouvez modifier les *Séparateur début* et *Séparateur fin*
+    Ne pas laisser vide
+    Les valeurs par défaut sont "{{" et "}}" --> exemple de texte reçu "Volet ouvert {{window-shutter-open}}" 
+  * **Correspondance des caractères unicode affichés**
+  Liste de tous les caractères unicodes supportés par openHASP
+  Format utilisé : 1 caractère par ligne selon ce modèle \uXXXX:texte-de-remplacement
 
 ### 6.3 Fonctionnalités
 Voici la liste des cron utilisés et ce qu'ils font :

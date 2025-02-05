@@ -123,6 +123,7 @@ class openhasp extends eqLogic {
           }
           /* Si le message mqtt reçu correspond à la commande courante : on la met à jour */
           if ($cmdToBeUpdated) {
+            $subMessage = self::convertReceivedTextToReadableText($subMessage);
             log::add(__CLASS__, 'debug', 'handleMqttMessage Equipement ' . $openhasp->getHumanName() . ' - Mise à jour commande ' . $cmd->getHumanName() . ' avec valeur ' . $subMessage);
             $openhasp->checkAndUpdateCmd($cmd->getLogicalId(), $subMessage);
             $equipmentUpdated = true;
@@ -175,8 +176,9 @@ class openhasp extends eqLogic {
       if (!class_exists('mqtt2')) {
         include_file('core', 'mqtt2', 'class', 'mqtt2');
       }
-      mqtt2::publish($_topic, $_value);
-      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic ' . $_topic . ' - Valeur ' . $_value);
+      $sendValue = self::convertUnicodeInTextToSend($_value);
+      mqtt2::publish($_topic, $sendValue);
+      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic ' . $_topic . ' - Valeur ' . $sendValue);
     } catch (\Throwable $th) {
       log::add(__CLASS__, 'error', $this->getHumanName() . ' ' . __('Erreur lors de l\'éxécution de la commande', __FILE__) . ' : ' . $th);
     }
@@ -363,33 +365,154 @@ class openhasp extends eqLogic {
 		return $return;
 	}
 
-  public static function replaceUnicodeCharacters($_text) {
-    $return = $_text;
 
-    $listUnicodeElements = preg_split ('/\r?\n/', config::byKey('text::unicode', 'openhasp'));
-    foreach ($listUnicodeElements as $unicodeElement) {
-      $unicodeElementSplitted = explode(':', $unicodeElement);
-      $return = str_replace($unicodeElementSplitted[0], $unicodeElementSplitted[1], $return);
+  /*
+  * Name: replaceUnicodeCharacter
+  * Descr: Return displayable character for given unicode
+  */
+  public static function replaceUnicodeCharacter($unicodeCharacter) {
+    $return = '';
+    
+    // Configuration du plugin : Remplacer les caractères unicode en utilisant le format \uXXXX 
+    if ('hex' == config::byKey('unicode::replace::option', 'openhasp')) {
+      $return = '\\u' . strtoupper(dechex($unicodeCharacter));
     }
-
-    // log::add(__CLASS__, 'debug', 'replaceUnicodeCharacters  in ' . print_r($_text, true));
-    // log::add(__CLASS__, 'debug', 'replaceUnicodeCharacters out ' . print_r($return, true));
+    
+    // Configuration du plugin : Remplacer les caractères unicode en utilisant le texte correspondant
+    if ('text' == config::byKey('unicode::replace::option', 'openhasp')) {
+      $UnicodeAllElements = preg_replace ('/\r?\n/', '|/-(|', config::byKey('text::unicode', 'openhasp')); // Oui il ne faudrait pas que cette chaîne '|/-(|' soit utilisée comme texte
+      $UnicodeAllElements =  $UnicodeAllElements . '|/-(|'; // Pour trouver le dernier élément
+      $posUnicode = strpos(strtoupper($UnicodeAllElements), strtoupper(dechex($unicodeCharacter)));
+      if (true == $posUnicode) {
+        $posUnicode1 = strpos($UnicodeAllElements, ';', $posUnicode);
+        $posUnicode2 = strpos($UnicodeAllElements, '|/-(|', $posUnicode);
+        $return = config::byKey('unicode::replace::text::begin', 'openhasp') . substr($UnicodeAllElements, $posUnicode1+1, $posUnicode2 - $posUnicode1 - 1) . config::byKey('unicode::replace::text::end', 'openhasp');
+      } else {
+        $return = '\\u' . strtoupper(dechex($characterUnicode));
+      }
+    }
+    
+    log::add(__CLASS__, 'debug','replaceUnicodeCharacter - INPUT>' . $unicodeCharacter . '<   OUTPUT>' . $return . '<');
     return $return;
   }
-	// /***/
 
-   /*
+  /*
+	* Name: convertReceivedTextToReadableText
+	* Descr: Make received text readable by replacing all unicode characters into input UTF-8 text
+ 	*/
+  public static function convertReceivedTextToReadableText($_text) {
+    $return = '';
+
+    // Configuration du plugin : Ne pas remplacer les caractères unicode
+    if ('no' == config::byKey('unicode::replace::option', 'openhasp')) {
+      return $_text;
+    }  
+    
+    $textArray = str_split($_text, 1);
+    for ($iCounter = 0 ;  $iCounter < count($textArray) ; /* Incrémentation dans la boucle */ ) { 
+        $charNo1 = ord($textArray[$iCounter++]);
+        if ($charNo1 >= 0 && $charNo1 < 128) {
+            /* UCS code : 0x00000000 - 0x0000007F */
+            $return = $return . chr($charNo1);
+        } else {
+            $charNo2 = ord($textArray[$iCounter++]);
+              if ($charNo1 >= 192 && $charNo1 < 224) {
+                /* UCS code : 0x00000080 - 0x000007FF */
+                $characterUnicode = (($charNo1 & 0x1F) << 6) + ($charNo2 & 0x3F);
+                $return = $return . mb_chr($characterUnicode);
+            } else {
+              $charNo3 = ord($textArray[$iCounter++]);
+              if ($charNo1 >= 224 && $charNo1 < 240) {
+                  /* UCS code : 0x00000800 - 0x0000FFFF */
+                  /* Correspond à tous les exemples disponibles dans la doc openHASP */
+                  $characterUnicode = (($charNo1 & 0xF) << 12) + (($charNo2 & 0x3F) << 6) + ($charNo3 & 0x3F);
+                  $return = $return . self::replaceUnicodeCharacter($characterUnicode);
+              } else {
+                $charNo4 = ord($textArray[$iCounter++]);
+                if ($charNo1 >= 240 && $charNo1 < 248) {
+                      /* UCS code : 0x00010000 - 0x001FFFFF */
+                      /* Aucun exemple dans la doc openHASP mais on fait comme si ça fonctionnait pareil */
+                      $characterUnicode = (($charNo1 & 0x7) << 18) + (($charNo2 & 0x3F) << 12) + (($charNo3 & 0x3F) << 6) + ($charNo4 & 0x3F);
+                      $return = $return . self::replaceUnicodeCharacter($characterUnicode);
+                } else {
+                  $return = $return + '????';
+                }
+              }
+            }
+        }
+    }
+    return $return;
+  }
+
+    /*
+	* Name: convertUnicodeInTextToSend
+	* Descr: Make text to send corectly encoded : replace \uxxxx and text-unicode-equivalent
+ 	*/
+  public static function convertUnicodeInTextToSend($_text) {
+    // Remplacer le texte correspondant à un caractère unicode par son code \uXXXX
+    $charBegin = config::byKey('unicode::replace::text::begin', 'openhasp');
+    $charBegin = '\\' . implode('\\', str_split($charBegin)); // <3 caractères spéciaux possibles dans la regex
+    $charEnd = config::byKey('unicode::replace::text::end', 'openhasp');
+    $charEnd = '\\' . implode('\\', str_split($charEnd)); // <3 caractères spéciaux possibles dans la regex
+    $pattern = '/'. $charBegin  . '[^' . $charEnd . ']+' . $charEnd . '/';
+    $return = preg_replace_callback(
+      $pattern,
+      function ($matches) {
+        $charBegin = config::byKey('unicode::replace::text::begin', 'openhasp');
+        $charEnd = config::byKey('unicode::replace::text::end', 'openhasp');
+        $textUnicode = substr($matches[0], strlen($charBegin), strlen($matches[0]) - strlen($charBegin) - strlen($charEnd));
+        $UnicodeAllElements = preg_replace ('/\r?\n/', '|/-(|', config::byKey('text::unicode', 'openhasp')); // Oui il ne faudrait pas que cette chaîne '|/-(|' soit utilisée comme texte
+        $UnicodeAllElements =  '|/-(|' . $UnicodeAllElements; // Pour trouver le premier élément
+        $posText = strpos(strtoupper($UnicodeAllElements), strtoupper($textUnicode));
+        if (true == $posText) {
+          $posUnicode1 = strrpos($UnicodeAllElements, '|/-(|', $posText -strlen($UnicodeAllElements));
+          return substr($UnicodeAllElements, $posUnicode1+5, $posText - $posUnicode1 - 6);
+        } else {
+          return $matches[0]; // retour par défaut si pas de correspondance trouvée
+        }
+      },
+      $_text
+    );
+    
+    // Remplacement du \uxxxx par le caractère unicode correspondant
+    $return = preg_replace_callback(
+      '/\\\\[uU][A-Fa-f0-9]{4}/',  //   \uXXXX ou \UXXXX --> uniquement 4 caractères !!! Trop compliqué de gérer les auters cas comme \uABC : est ce que les C est pour l'unicode ou un caractère ascii après l'unicode \uAB ?
+      function ($matches) {
+        $characterUnicode = hexdec(substr($matches[0], 2));
+        if ($characterUnicode >= 0 && $characterUnicode <= 0x7F) {
+            return $characterUnicode;
+        }
+        if ($characterUnicode >= 0x80 && $characterUnicode <= 0x7FF) {
+            return chr(0xC0 + (($characterUnicode>>6)&0x1F)) . chr(0x80 + ($characterUnicode&0x3F));
+        }
+        if ($characterUnicode >= 0x800 && $characterUnicode <= 0xFFFF) {
+            return chr(0xE0 + (($characterUnicode>>12)&0xF)) . chr(0x80 + (($characterUnicode>>6)&0x3F)) . chr(0x80 + ($characterUnicode&0x3F));
+        }
+        /* Juste pour le plaisir je garde cette convertion mais ne sera jamais appelé avec {4} du pattern cherché*/
+        if ($characterUnicode >= 0x10000 && $characterUnicode <= 0x1FFFFF) {
+            return chr(0xF0 + (($characterUnicode>>18)&0x7)) . chr(0x80 + (($characterUnicode>>12)&0x3F)) .chr(0x80 + (($characterUnicode>>6)&0x3F)) . chr(0x80 + ($characterUnicode&0x3F));
+        }
+        return $matches[0]; // retour par défaut si pas de correspondance trouvé
+      },
+      $return
+    );
+
+    return $return;
+  }
+
+  /*
 	* Name: extractObjectsFromJsonl
 	* Descr: Convert data from jsonl file into proper array
  	*/
 	public static function extractObjectsFromJsonl($_jsonl) {
 		$return = array();
     $page = -1;
-    $jsonl = preg_replace('/\s+/', '', $_jsonl);
+    $jsonl = preg_replace('/}\s+/', '}', $_jsonl);
+    $jsonl = preg_replace('/\s+{/', '{', $_jsonl);
     foreach (explode('}{', '}' . $jsonl . '{') as $element)
     {
       if ('' != $element) {
-        $elementDecoded = json_decode('{' . $element . '}', true, 512, JSON_INVALID_UTF8_IGNORE);
+        $elementDecoded = json_decode('{' . $element . '}', true, 2147483647, JSON_INVALID_UTF8_IGNORE );
         if (array_key_exists('page', $elementDecoded) || array_key_exists('id', $elementDecoded)) {
           if (array_key_exists('page', $elementDecoded)) {
               $page = $elementDecoded['page'];
@@ -788,8 +911,7 @@ class openhasp extends eqLogic {
 
     $url = 'http://' . $ip . $pageName;
     $jsonl = self::getAsJsonl($url);
-    $jsonlCleared = self::replaceUnicodeCharacters($jsonl);
-    $objects = $this->extractObjectsFromJsonl($jsonlCleared);
+    $objects = $this->extractObjectsFromJsonl($jsonl);
     $numberOfObjectsAdded = 0;
     foreach ($objects as $object) {
       /* On saute les objets qui ont des actions associées : c'est du fonctionnement interne à l'écran */
@@ -802,9 +924,13 @@ class openhasp extends eqLogic {
         $object['obj'] = 'btn_toggle';
       }
 
-      /* Le texte d'un objet peut être vide : on affichera son id à la place */
+      /* La propriété text contient ce qui est affiché (bref le texte) */
       if ('' == $object['text']) {
-        $object['text'] = $object['id'];
+        /* Le texte d'un objet peut être vide : on affichera son type et son id à la place */
+        $object['text'] = $object['obj'] . ' ' . $object['id'];
+      } else {
+        /* Gestion de l'unicode pour les objets qui ont la propriété 'text' définie */
+        $object['text'] = self::convertReceivedTextToReadableText($object['text']);
       }
 
       $objectReference = 'p' . $object['page'] . 'b' . $object['id'];
