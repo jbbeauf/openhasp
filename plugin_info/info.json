@@ -8,18 +8,21 @@
 	"licence": "AGPL",
 	"author": "jbbeauf",
 	"require": "4.2",
-	"os" : {
-		"min" : 10,
-		"max" : 12.99
+	"os": {
+		"min": 10,
+		"max": 12.99
 	},
 	"category": "devicecommunication",
 	"hasDependency": true,
 	"hasOwnDeamon": false,
 	"maxDependancyInstallTime": 0,
-	"changelog_beta": "https:\/\/jbbeauf.github.io\/openhasp\/#language#\/changelog_beta",
-    "changelog" : "https:\/\/jbbeauf.github.io\/openhasp\/#language#\/changelog",
-    "documentation" : "https:\/\/jbbeauf.github.io\/openhasp\/#language#",
+	"changelog_beta": "https://jbbeauf.github.io/openhasp/#language#/changelog_beta",
+	"changelog": "https://jbbeauf.github.io/openhasp/#language#/changelog",
+	"documentation": "https://jbbeauf.github.io/openhasp/#language#",
 	"language": [
+		"de_DE",
+		"en_US",
+		"es_ES",
 		"fr_FR"
 	],
 	"compatibility": [
