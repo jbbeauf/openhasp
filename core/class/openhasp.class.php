@@ -176,9 +176,10 @@ class openhasp extends eqLogic {
       if (!class_exists('mqtt2')) {
         include_file('core', 'mqtt2', 'class', 'mqtt2');
       }
+      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication BRUT - Topic >' . $_topic . '< - _value >' . $_value . '<');
       $sendValue = self::convertUnicodeInTextToSend($_value);
       mqtt2::publish($_topic, $sendValue);
-      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic ' . $_topic . ' - Valeur ' . $sendValue);
+      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication APRES_UNICODE_CONVERT - Topic >' . $_topic . '< - sendValue >' . $sendValue . '<');
     } catch (\Throwable $th) {
       log::add(__CLASS__, 'error', $this->getHumanName() . ' ' . __('Erreur lors de l\'éxécution de la commande', __FILE__) . ' : ' . $th);
     }
@@ -448,13 +449,24 @@ class openhasp extends eqLogic {
 	* Name: convertUnicodeInTextToSend
 	* Descr: Make text to send corectly encoded : replace \uxxxx and text-unicode-equivalent
  	*/
-  public static function convertUnicodeInTextToSend($_text) {
+  public static function convertUnicodeInTextToSend($_text) {    
+    log::add(__CLASS__, 'debug','convertUnicodeInTextToSend DEBUT - $_text >' . $_text . '<');
+    
+    if ('' == $_text ) {
+      log::add(__CLASS__, 'debug','convertUnicodeInTextToSend FIN TEXTE VIDE');
+      return '';
+    }
     // Remplacer le texte correspondant à un caractère unicode par son code \uXXXX
     $charBegin = config::byKey('unicode::replace::text::begin', 'openhasp');
+    log::add(__CLASS__, 'debug','convertUnicodeInTextToSend - $charBegin >' . $charBegin . '<');
     $charBegin = '\\' . implode('\\', str_split($charBegin)); // <3 caractères spéciaux possibles dans la regex
+    log::add(__CLASS__, 'debug','convertUnicodeInTextToSend - $charBegin >' . $charBegin . '<');
     $charEnd = config::byKey('unicode::replace::text::end', 'openhasp');
+    log::add(__CLASS__, 'debug','convertUnicodeInTextToSend - $charEnd >' . $charEnd . '<');
     $charEnd = '\\' . implode('\\', str_split($charEnd)); // <3 caractères spéciaux possibles dans la regex
+    log::add(__CLASS__, 'debug','convertUnicodeInTextToSend - $charEnd >' . $charEnd . '<');
     $pattern = '/'. $charBegin  . '[^' . $charEnd . ']+' . $charEnd . '/';
+    log::add(__CLASS__, 'debug','convertUnicodeInTextToSend - $pattern >' . $pattern . '<');
     $return = preg_replace_callback(
       $pattern,
       function ($matches) {
@@ -473,6 +485,7 @@ class openhasp extends eqLogic {
       },
       $_text
     );
+    log::add(__CLASS__, 'debug','convertUnicodeInTextToSend - $return >' . $return . '<');
     
     // Remplacement du \uxxxx par le caractère unicode correspondant
     $return = preg_replace_callback(
@@ -480,23 +493,25 @@ class openhasp extends eqLogic {
       function ($matches) {
         $characterUnicode = hexdec(substr($matches[0], 2));
         if ($characterUnicode >= 0 && $characterUnicode <= 0x7F) {
-            return $characterUnicode;
+          return $characterUnicode;
         }
         if ($characterUnicode >= 0x80 && $characterUnicode <= 0x7FF) {
-            return chr(0xC0 + (($characterUnicode>>6)&0x1F)) . chr(0x80 + ($characterUnicode&0x3F));
+          return chr(0xC0 + (($characterUnicode>>6)&0x1F)) . chr(0x80 + ($characterUnicode&0x3F));
         }
         if ($characterUnicode >= 0x800 && $characterUnicode <= 0xFFFF) {
-            return chr(0xE0 + (($characterUnicode>>12)&0xF)) . chr(0x80 + (($characterUnicode>>6)&0x3F)) . chr(0x80 + ($characterUnicode&0x3F));
+          return chr(0xE0 + (($characterUnicode>>12)&0xF)) . chr(0x80 + (($characterUnicode>>6)&0x3F)) . chr(0x80 + ($characterUnicode&0x3F));
         }
         /* Juste pour le plaisir je garde cette convertion mais ne sera jamais appelé avec {4} du pattern cherché*/
         if ($characterUnicode >= 0x10000 && $characterUnicode <= 0x1FFFFF) {
             return chr(0xF0 + (($characterUnicode>>18)&0x7)) . chr(0x80 + (($characterUnicode>>12)&0x3F)) .chr(0x80 + (($characterUnicode>>6)&0x3F)) . chr(0x80 + ($characterUnicode&0x3F));
-        }
-        return $matches[0]; // retour par défaut si pas de correspondance trouvé
+          }
+          return $matches[0]; // retour par défaut si pas de correspondance trouvé
       },
       $return
     );
-
+    log::add(__CLASS__, 'debug','convertUnicodeInTextToSend - $return >' . $return . '<');
+    
+    log::add(__CLASS__, 'debug','convertUnicodeInTextToSend FIN - $return >' . $return . '<');  
     return $return;
   }
 
@@ -1228,16 +1243,20 @@ class openhaspCmd extends cmd {
       return;
     }
 
+    log::add('openhasp', 'debug','execute DEBUT - Exécution d une commande !!!');
+
     $eqLogic = $this->getEqLogic();
     $rootTopic = $eqLogic->getConfiguration('conf::mqtt::rootTopic');
+    log::add('openhasp', 'debug', 'execute - rootTopic - >' . $rootTopic . '<');
     $rootName = $eqLogic->getConfiguration('conf::mqtt::name');
-
+    log::add('openhasp', 'debug', 'execute - rootName - >' . $rootName . '<');
+    
     /* Vérification que le sujet racine et le nom d'hôte ne sont pas vide */
     if ('' == $rootName || '' == $rootTopic)
     {
       throw new Exception(__("Configurer d\'abord l'équipement", __FILE__));
     }
-
+    
 		/* Cas du bouton Refresh */
 		if ($this->getLogicalId() == 'command/statusupdate') {
       /* Publie sur MQTT une demande d'actualisation de l'état pour les commandes générales */
@@ -1256,25 +1275,38 @@ class openhaspCmd extends cmd {
 			return;
 		}
 		/***/
-
+    
     $topicCmd = $this->getLogicalId();
+    log::add('openhasp', 'debug', 'execute - topicCmd - >' . $topicCmd . '<');
     $value = $this->getConfiguration('message');
+    log::add('openhasp', 'debug', 'execute - value - >' . $value . '<');
     switch ($this->getSubType()) {
       case 'slider':
+        log::add('openhasp', 'debug', 'execute - case slider');
         $value = str_replace('#slider#', $_options['slider'], $value);
+        log::add('openhasp', 'debug', 'execute - value - >' . $value . '<');
         break;
       case 'color':
-          $value = str_replace('#color#', $_options['color'], $value);
-          break;
+        log::add('openhasp', 'debug', 'execute - case color');
+        $value = str_replace('#color#', $_options['color'], $value);
+        log::add('openhasp', 'debug', 'execute - value - >' . $value . '<');
+        break;
       case 'select':
+        log::add('openhasp', 'debug', 'execute - case select');
         $value = str_replace('#select#', $_options['select'], $value);
+        log::add('openhasp', 'debug', 'execute - value - >' . $value . '<');
         break;
       case 'message':
+        log::add('openhasp', 'debug', 'execute - case message');
         $value = str_replace('#message#', $_options['message'], $value);
+        log::add('openhasp', 'debug', 'execute - value - >' . $value . '<');
         $value = str_replace('#title#', $_options['title'], $value);
+        log::add('openhasp', 'debug', 'execute - value - >' . $value . '<');
         break;
-    }
+      }
+    log::add('openhasp', 'debug', 'execute - value avant evaluate - >' . $value . '<');
     $value = jeedom::evaluateExpression($value);
+    log::add('openhasp', 'debug', 'execute - value apres evaluate - >' . $value . '<');
 
     $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, $value);
     /* Demande d'actualisation = commande sans valeur */
