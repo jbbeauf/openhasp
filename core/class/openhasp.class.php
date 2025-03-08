@@ -178,7 +178,7 @@ class openhasp extends eqLogic {
       }
       $sendValue = self::convertUnicodeInTextToSend($_value);
       mqtt2::publish($_topic, $sendValue);
-      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic ' . $_topic . ' - Valeur ' . $sendValue);
+      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic >' . $_topic . '< - Valeur >' . $sendValue . '<');
     } catch (\Throwable $th) {
       log::add(__CLASS__, 'error', $this->getHumanName() . ' ' . __('Erreur lors de l\'éxécution de la commande', __FILE__) . ' : ' . $th);
     }
@@ -613,135 +613,135 @@ class openhasp extends eqLogic {
       $info->save();
     }
     
-    /* Commande Info Adresse IP */
-    $info = $this->getCmd(null, 'state/statusupdate/ip');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/statusupdate/ip');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('IP', __FILE__));
-      $info->setType('info');
-      $info->setSubType('string');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
+    // /* Commande Info Adresse IP */
+    // $info = $this->getCmd(null, 'state/statusupdate/ip');
+    // if (!is_object($info)) {
+    //   $info = new openhaspCmd();
+    //   $info->setLogicalId('state/statusupdate/ip');
+    //   $info->setEqLogic_id($this->getId());
+    //   $info->setName(__('IP', __FILE__));
+    //   $info->setType('info');
+    //   $info->setSubType('string');
+    //   $info->setOrder($commandOrder++);
+    //   $info->setConfiguration('type', 'general');
+    //   $info->save();
+    // }
     
-    /* Commande Info Largeur de l'écran en pixel */
-    $info = $this->getCmd(null, 'state/statusupdate/tftWidth');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/statusupdate/tftWidth');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('Largeur écran', __FILE__));
-      $info->setType('info');
-      $info->setSubType('numeric');
-      $info->setUnite('px');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
+    // /* Commande Info Largeur de l'écran en pixel */
+    // $info = $this->getCmd(null, 'state/statusupdate/tftWidth');
+    // if (!is_object($info)) {
+    //   $info = new openhaspCmd();
+    //   $info->setLogicalId('state/statusupdate/tftWidth');
+    //   $info->setEqLogic_id($this->getId());
+    //   $info->setName(__('Largeur écran', __FILE__));
+    //   $info->setType('info');
+    //   $info->setSubType('numeric');
+    //   $info->setUnite('px');
+    //   $info->setOrder($commandOrder++);
+    //   $info->setConfiguration('type', 'general');
+    //   $info->save();
+    // }
     
-    /* Commande Info Hauteur de l'écran en pixel */
-    $info = $this->getCmd(null, 'state/statusupdate/tftHeight');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/statusupdate/tftHeight');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('Hauteur écran', __FILE__));
-      $info->setType('info');
-      $info->setSubType('numeric');
-      $info->setUnite('px');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
+    // /* Commande Info Hauteur de l'écran en pixel */
+    // $info = $this->getCmd(null, 'state/statusupdate/tftHeight');
+    // if (!is_object($info)) {
+    //   $info = new openhaspCmd();
+    //   $info->setLogicalId('state/statusupdate/tftHeight');
+    //   $info->setEqLogic_id($this->getId());
+    //   $info->setName(__('Hauteur écran', __FILE__));
+    //   $info->setType('info');
+    //   $info->setSubType('numeric');
+    //   $info->setUnite('px');
+    //   $info->setOrder($commandOrder++);
+    //   $info->setConfiguration('type', 'general');
+    //   $info->save();
+    // }
     
-    /* Commande Info / Action Numéro de la page courante */
-    $info = $this->getCmd(null, 'state/page');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/page');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('Page courante', __FILE__));
-      $info->setType('info');
-      $info->setSubType('numeric');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
-    $action = $this->getCmd(null, 'command/page');
-    if (!is_object($action)) {
-      $action = new openhaspCmd();
-      $action->setLogicalId('command/page');
-      $action->setEqLogic_id($this->getId());
-      $action->setName(__('Page courante', __FILE__) . ' ' . __('Commande', __FILE__));
-      $action->setType('action');
-      $action->setSubType('slider');
-      $action->setValue($info->getId());
-      $action->setConfiguration('message','#slider#');
-      $action->setConfiguration('minValue','1');
-      $action->setOrder($commandOrder++);
-      $action->setConfiguration('type', 'general');
-      $action->save();
-      // $numberOfObjectsAdded++;
-    }
+    // /* Commande Info / Action Numéro de la page courante */
+    // $info = $this->getCmd(null, 'state/page');
+    // if (!is_object($info)) {
+    //   $info = new openhaspCmd();
+    //   $info->setLogicalId('state/page');
+    //   $info->setEqLogic_id($this->getId());
+    //   $info->setName(__('Page courante', __FILE__));
+    //   $info->setType('info');
+    //   $info->setSubType('numeric');
+    //   $info->setOrder($commandOrder++);
+    //   $info->setConfiguration('type', 'general');
+    //   $info->save();
+    // }
+    // $action = $this->getCmd(null, 'command/page');
+    // if (!is_object($action)) {
+    //   $action = new openhaspCmd();
+    //   $action->setLogicalId('command/page');
+    //   $action->setEqLogic_id($this->getId());
+    //   $action->setName(__('Page courante', __FILE__) . ' ' . __('Commande', __FILE__));
+    //   $action->setType('action');
+    //   $action->setSubType('slider');
+    //   $action->setValue($info->getId());
+    //   $action->setConfiguration('message','#slider#');
+    //   $action->setConfiguration('minValue','1');
+    //   $action->setOrder($commandOrder++);
+    //   $action->setConfiguration('type', 'general');
+    //   $action->save();
+    //   // $numberOfObjectsAdded++;
+    // }
     
-    /* Commande Info / Action pour la mise en veille de l'écran */
-    $info = $this->getCmd(null, 'state/idle');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/idle');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('Veille de l\'écran', __FILE__));
-      $info->setType('info');
-      $info->setSubType('string');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
-    $action = $this->getCmd(null, 'command/idle');
-    if (!is_object($action)) {
-      $action = new openhaspCmd();
-      $action->setLogicalId('command/idle');
-      $action->setEqLogic_id($this->getId());
-      $action->setName(__('Veille de l\'écran', __FILE__) . ' ' . __('Commande', __FILE__));
-      $action->setType('action');
-      $action->setSubType('select');
-      $action->setValue($info->getId());
-      $action->setConfiguration('message','#select#');
-      $action->setConfiguration('listValue','off|OFF;short|Court;long|Long');
-      $action->setOrder($commandOrder++);
-      $action->setConfiguration('type', 'general');
-      $action->save();
-      // $numberOfObjectsAdded++;
-    }
+    // /* Commande Info / Action pour la mise en veille de l'écran */
+    // $info = $this->getCmd(null, 'state/idle');
+    // if (!is_object($info)) {
+    //   $info = new openhaspCmd();
+    //   $info->setLogicalId('state/idle');
+    //   $info->setEqLogic_id($this->getId());
+    //   $info->setName(__('Veille de l\'écran', __FILE__));
+    //   $info->setType('info');
+    //   $info->setSubType('string');
+    //   $info->setOrder($commandOrder++);
+    //   $info->setConfiguration('type', 'general');
+    //   $info->save();
+    // }
+    // $action = $this->getCmd(null, 'command/idle');
+    // if (!is_object($action)) {
+    //   $action = new openhaspCmd();
+    //   $action->setLogicalId('command/idle');
+    //   $action->setEqLogic_id($this->getId());
+    //   $action->setName(__('Veille de l\'écran', __FILE__) . ' ' . __('Commande', __FILE__));
+    //   $action->setType('action');
+    //   $action->setSubType('select');
+    //   $action->setValue($info->getId());
+    //   $action->setConfiguration('message','#select#');
+    //   $action->setConfiguration('listValue','off|OFF;short|Court;long|Long');
+    //   $action->setOrder($commandOrder++);
+    //   $action->setConfiguration('type', 'general');
+    //   $action->save();
+    //   // $numberOfObjectsAdded++;
+    // }
     
-    /* Commande Info / Action pour l'état et la luminosité de l'écran */
-    $info = $this->getCmd(null, 'state/backlight/state');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/backlight/state');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('État de l\'écran', __FILE__));
-      $info->setType('info');
-      $info->setSubType('string');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
-    $info = $this->getCmd(null, 'state/backlight/brightness');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/backlight/brightness');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('Luminosité de l\'écran', __FILE__));
-      $info->setType('info');
-      $info->setSubType('numeric');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
+    // /* Commande Info / Action pour l'état et la luminosité de l'écran */
+    // $info = $this->getCmd(null, 'state/backlight/state');
+    // if (!is_object($info)) {
+    //   $info = new openhaspCmd();
+    //   $info->setLogicalId('state/backlight/state');
+    //   $info->setEqLogic_id($this->getId());
+    //   $info->setName(__('État de l\'écran', __FILE__));
+    //   $info->setType('info');
+    //   $info->setSubType('string');
+    //   $info->setOrder($commandOrder++);
+    //   $info->setConfiguration('type', 'general');
+    //   $info->save();
+    // }
+    // $info = $this->getCmd(null, 'state/backlight/brightness');
+    // if (!is_object($info)) {
+    //   $info = new openhaspCmd();
+    //   $info->setLogicalId('state/backlight/brightness');
+    //   $info->setEqLogic_id($this->getId());
+    //   $info->setName(__('Luminosité de l\'écran', __FILE__));
+    //   $info->setType('info');
+    //   $info->setSubType('numeric');
+    //   $info->setOrder($commandOrder++);
+    //   $info->setConfiguration('type', 'general');
+    //   $info->save();
+    // }
     // $action = $this->getCmd(null, 'command/backlight', null, true);
     // if (!is_array($action) && !is_object($action)) {
     //   $action = new openhaspCmd();
@@ -1196,6 +1196,26 @@ class openhasp extends eqLogic {
       $this->save(true);
       $this->setChanged(0);
       event::add('openhasp::equipment::reload', $this->getId());
+    }
+  }
+
+
+  public function commandCreateNew($key, $typeCommand, $type, $format, $name, $parameter) {
+    log::add(__CLASS__, 'debug', 'commandCreateNew ' . $key . ' ' . $typeCommand . ' ' . $type . ' ' . $format . ' ' . $name . ' ' . $parameter . ' ' );
+    $newCommand = $this->getCmd(null, $parameter);
+    $newCommandOrder = count($this->getCmd(null)) + 1;
+    if (!is_object($newCommand)) {
+      $newCommand = new openhaspCmd();
+      $newCommand->setLogicalId($parameter);
+      $newCommand->setEqLogic_id($this->getId());
+      $newCommand->setName($name);
+      $newCommand->setType($type);
+      $newCommand->setSubType($format);
+      $newCommand->setOrder($newCommandOrder);
+      $newCommand->setConfiguration('type', $typeCommand);
+      $newCommand->save(true);
+    } else {
+      throw new Exception(__("commandCreateNew erreur : commande déjà existante", __FILE__) . ' "' . $parameter . '"');
     }
   }
 

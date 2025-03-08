@@ -62,6 +62,16 @@ try {
       ajax::success(openhasp::mqttDiscovery(init('mode'), init('mqttRootTopic')));
     }
 
+    /* Commande : nouvelle */
+    if (init('action') == 'commandCreateNew') {
+      $eqLogic = openhasp::byId(init('id'));
+      if (!is_object($eqLogic)) {
+        throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
+      }
+
+      ajax::success($eqLogic->commandCreateNew(init('key'), init('typeCommand'), init('type'), init('format'), init('name'), init('parameter')));
+    }
+
     throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));
     /*     * *********Catch exeption*************** */
 }

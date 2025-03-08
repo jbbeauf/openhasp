@@ -292,7 +292,8 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 			<!-- Onglet des commandes générales de l'équipement -->
 			<div role="tabpanel" class="tab-pane" id="commandtabgeneral">
 				<div class="pull-right">
-					<a class="btn btn-default btn-sm cmdAction" id="bt_addCommandGeneral" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
+					<a class="btn btn-default btn-sm cmdAction" id="bt_manageCommandGeneral" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Gérer les commandes générales}}
+					</a> <a class="btn btn-default btn-sm cmdAction" id="bt_addCommandGeneral" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
 				</div>
 				<br><br>
 				<div class="table-responsive">

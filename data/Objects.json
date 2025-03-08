@@ -1,0 +1,82 @@
+{
+  "all": {
+    "page" : {
+      "type" : "number",
+      "min" : 0,
+      "max" : 12,
+      "Description" : "ID of the page the object appears on"
+    },
+    "groupid" : {
+      "type" : "number",
+      "default" : 0,
+      "min" : 0,
+      "max" : 15,
+      "Description" : "ID of the GPIO group the object belongs to"
+    },
+    "x" : {
+      "type" : "number",
+      "default" : 0,
+      "min" : 0,
+      "Description" : "Horizontal position on the page"
+    },
+    "y" : {
+      "type" : "number",
+      "default" : 0,
+      "min" : 0,
+      "Description" : "Vertical position on the page"
+    },
+    "w" : {
+      "type" : "number",
+      "default" : 0,
+      "min" : 0,
+      "Description" : "Width of the object"
+    },
+    "h" : {
+      "type" : "number",
+      "default" : 0,
+      "min" : 0,
+      "Description" : "Height of the object"
+    },
+    "enabled" : {
+      "type" : "bool",
+      "default" : "true",
+      "Description" : "Object is touchable, if false, a disabled style is applied"
+    },
+    "hidden" : {
+      "type" : "bool",
+      "default" : "false",
+      "Description" : "Object is hidden"
+    },
+    "opacity" : {
+      "type" : "number",
+      "default" : 255,
+      "min" : 0,
+      "max" : 255,
+      "Description" : "How much the the object is opaque"
+    },
+    "click" : {
+      "type" : "bool",
+      "default" : "true",
+      "Description" : "Object is touch/clickable"
+    }
+  },
+  "btn": {
+    "toggle":{
+      "type": "bool",
+       "default" : "false",
+       "Description" : "When enabled, creates a toggle-on/toggle-off button. If false, creates a normal button"
+      },
+      "val" : {
+        "type" : "number",
+        "default" : 0,
+        "min" : 0,
+        "max" : 1,
+        "Description" : "The value: 0 = untoggled, 1 = toggled"
+      },
+      "text" : {
+        "type" : "string",
+        "Description" : "The text of the label"
+      }
+  }
+  
+}

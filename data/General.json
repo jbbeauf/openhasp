@@ -1,0 +1,77 @@
+{
+    "network" : {
+        "name" : "{{Réseau}}",
+        "command" : {
+            "ip" : {
+                "type" : "info",
+                "format" : "string",
+                "name" : "{{IP}}",
+                "parameter" : "state/statusupdate/ip",
+                "description" : "{{Adresse IP de l'écran}}"
+                },
+            "ssid" : {
+                "type" : "info",
+                "format" : "string",
+                "name" : "{{SSID}}",
+                "parameter" : "state/statusupdate/ssid",
+                "description" : "{{Nom du réseau sans fil}}"
+                },
+            "mac" : {
+                "type" : "info",
+                "format" : "string",
+                "name" : "{{MAC}}",
+                "parameter" : "state/statusupdate/mac",
+                "description" : "{{Adresse MAC de l'écran}}"
+                },
+            "rssi" : {
+                "type" : "info",
+                "format" : "number",
+                "name" : "{{RSSI}}",
+                "parameter" : "state/statusupdate/rssi",
+                "description" : "{{Niveau de puissance WIFI reçu}}"
+                }
+        }
+    },
+    "screen" : {
+        "name" : "{{Ecran}}",
+        "command" : {
+            "tftWidth" : {
+                "type" : "info",
+                "format" : "number",
+                "name" : "{{Largeur écran}}",
+                "parameter" : "state/statusupdate/tftWidth",
+                "unit" : "px",
+                "description" : "{{Largeur de l'écran, en pixel}}"
+                },
+            "tftHeight" : {
+                "type" : "info",
+                "format" : "number",
+                "name" : "{{Hauteur écran}}",
+                "parameter" : "state/statusupdate/tftHeight",
+                "unit" : "px",
+                "description" : "{{Hauteur de l'écran, en pixel}}"
+                }
+        }
+    },
+    "system" : {
+        "name" : "{{Système}}",
+        "command" : {
+            "version" : {
+                "type" : "info",
+                "format" : "string",
+                "name" : "{{Version}}",
+                "parameter" : "state/statusupdate/version",
+                "unit" : "px",
+                "description" : "{{Version de l'écran}}"
+                },
+            "uptime" : {
+                "type" : "info",
+                "format" : "number",
+                "name" : "{{Durée de fonctionnement}}",
+                "parameter" : "state/statusupdate/Uptime",
+                "unit" : "s",
+                "description" : "{{Durée de fonctionnement}}"
+                }
+        }
+    }
+}

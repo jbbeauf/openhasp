@@ -339,6 +339,31 @@ $('#bt_openInNewWindow').off('click').on('click', function () {
   }
 });
 
+
+/**
+ * Equimement ouvert
+ * - Onglet "Commandes générales"
+ *   - Bouton "Gérer les commandes générales"
+ */
+$("#bt_manageCommandGeneral").on('click', function(event) {
+  var id = $('.eqLogicAttr[data-l1key=id]').value();
+  $('#md_modal').dialog({
+    title: "{{Gestion des commandes générales}}",
+    closeOnEscape: false,
+    autoOpen: false,
+    modal: true,
+    open: function() {
+      $('.ui-widget-overlay').click(function(e) {
+        /*This will disable click and close*/
+        e.preventDefault();
+        return false;
+      });
+    },
+    close: function() {}
+  });
+  $('#md_modal').load('index.php?v=d&plugin=openhasp&modal=command.general&id=' + id).dialog('open');
+})
+
 /**
  * Equimement ouvert
  * - Onglet "Commandes générales"
