@@ -1242,6 +1242,9 @@ class openhaspCmd extends cmd {
       throw new Exception(__("Configurer d\'abord l'équipement", __FILE__));
     }
 
+    log::add('openhasp', 'debug', 'Commande Action execute() - eqLogic >' . print_r($eqLogic, true) . '<');
+    log::add('openhasp', 'debug', 'Commande Action execute() - command >' . print_r($this, true) . '<');
+
 		/* Cas du bouton Refresh */
 		if ($this->getLogicalId() == 'command/statusupdate') {
       /* Publie sur MQTT une demande d'actualisation de l'état pour les commandes générales */
