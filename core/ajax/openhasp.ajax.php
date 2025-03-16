@@ -69,9 +69,29 @@ try {
         throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
       }
 
-      ajax::success($eqLogic->commandCreateNew(init('key'), init('typeCommand'), init('type'), init('format'), init('name'), init('parameter')));
+      ajax::success($eqLogic->commandCreateNew(init('typeCommand'), init('newElement')));
     }
 
+    /* Commande : Supprimer */
+    if (init('action') == 'commandDeleteExiting') {
+      $eqLogic = openhasp::byId(init('id'));
+      if (!is_object($eqLogic)) {
+        throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
+      }
+
+      ajax::success($eqLogic->commandDeleteExiting(init('idCommand')));
+    }
+
+    /* Commande : Modifier */
+    if (init('action') == 'commandModify') {
+      $eqLogic = openhasp::byId(init('id'));
+      if (!is_object($eqLogic)) {
+        throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
+      }
+
+      ajax::success($eqLogic->commandModify(init('idCommand'), init('typeCommand'), init('newElement')));
+    }
+    
     throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));
     /*     * *********Catch exeption*************** */
 }

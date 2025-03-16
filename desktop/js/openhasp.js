@@ -14,6 +14,8 @@
 * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
 */
 
+var modalClosedWithChange = false;
+
 /* Permet la réorganisation des commandes dans l'équipement */
 $("#table_cmd_general").sortable({
   axis: "y",
@@ -57,21 +59,24 @@ function addCmdToTable(_cmd) {
   var tr = '<tr class="cmd ' + classPage + '" data-cmd_id="' + init(_cmd.id) + '">'
 
   if ('specific' == _cmd.configuration.type) {
+    /* Colonne ID */
     tr += '<td class="hidden-xs">'
     tr += '<span class="cmdAttr" data-l1key="id"></span>'
     tr += '</td>'
+    /* Colonne Page */
     tr += '<td>'
     tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="type">' + _cmd.configuration.type + '</span>'
     tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="page"/>'
     tr += '</td>'
   } else {
+    /* Colonne ID */
     tr += '<td class="hidden-xs">'
     tr += '<span class="cmdAttr" data-l1key="id"></span>'
     tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="type">' + _cmd.configuration.type + '</span>'
     tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="page" style="width:30%;max-width:80px;display:inline-block;margin-right:2px;">' + _cmd.configuration.page + '</span>'
     tr += '</td>'
   }
-
+  /* Colonne Nom */
   tr += '<td>'
   tr += '<div class="input-group">'
   tr += '<input class="cmdAttr form-control input-sm roundedLeft" data-l1key="name" placeholder="{{Nom de la commande}}">'
@@ -80,21 +85,32 @@ function addCmdToTable(_cmd) {
   tr += '</span>'
   tr += '<span class="cmdAttr input-group-addon roundedRight" data-l1key="display" data-l2key="icon" style="font-size:19px;padding:0 5px 0 0!important;"></span>'
   tr += '</div>'
-  tr += '<select class="cmdAttr form-control input-sm" data-l1key="value" style="display:none;margin-top:5px;" title="{{Commande information liée}}">'
-  tr += '<option value="">{{Aucune}}</option>'
-  tr += '</select>'
+  // tr += '<select class="cmdAttr form-control input-sm" data-l1key="value" style="display:none;margin-top:5px;" title="{{Commande information liée}}">'
+  // tr += '<option value="">{{Aucune}}</option>'
+  // tr += '</select>'
   tr += '</td>'
+  /* Colonne Type */
   tr += '<td>'
   tr += '<span class="type" type="' + init(_cmd.type) + '">' + jeedom.cmd.availableType() + '</span>'
   tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>'
   tr += '</td>'
+  /* Colonne Topic MQTT */
   tr += '<td >'
   tr += '<input class="cmdAttr form-control input-sm" data-l1key="logicalId" placeholder="{{Topic}}" title="{{Topic}}"/> '
   tr += '<input class="cmdAttr form-control input-sm cmdType action" style="margin-top:3px" data-l1key="configuration" data-l2key="message" placeholder="{{Message}}" title="{{Message}}"/> '
   tr += '</td>'
+  /* Colonne Etat */
   tr += '<td>'
   tr += '<span class="cmdAttr" data-l1key="htmlstate"></span>'
   tr += '</td>'
+  /* Colonne Options MQTT */
+  tr += '<td>'
+  if ('action' == init(_cmd.type)) {
+    tr += '<label class="checkbox-inline cmdAction"><input type="checkbox" class="cmdAttr" data-l1key="configuration" data-l2key="retain">{{Retain}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Dire au serveur mqtt de retenir ce message}}"></i></sup></label><br/>'
+    tr += '<label class="checkbox-inline cmdAction"><input type="checkbox" class="cmdAttr" data-l1key="configuration" data-l2key="refresh">{{Refresh}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Envoyer une commande vide pour demander à l\'écran de renvoyer la valeur de l\'élément}}"></i></sup></label>'
+  }
+  tr += '</td>'
+  /* Colonne Options Jeedom */
   tr += '<td>'
   tr += '<label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="isVisible" checked>{{Afficher}}</label> '
   tr += '<label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="isHistorized" checked>{{Historiser}}</label> '
@@ -106,12 +122,21 @@ function addCmdToTable(_cmd) {
   tr += '<input class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="listValue" placeholder="{{Liste de valeur|texte séparé par ;}}" title="{{Liste}}">';
   tr += '</div>'
   tr += '</td>'
+  /* Colonne Info Jeedom */
+  tr += '<td>'
+  if ('action' == init(_cmd.type)) {
+    tr += '<textarea class="cmdAttr form-control input-sm roundedLeft" data-l1key="configuration" data-l2key="cmdInfoJeedomLinked" style="min-height:62px;height:62px;" placeholder="Choisir une commande Info Jeedom"></textarea>';
+    tr += '<a class="btn btn-sm btn-default listEquipementInfo input-group-addon roundedRight" title="{{Rechercher un équipement}}" data-input="cmdInfoJeedomLinked"><i class="fas fa-list-alt "></i></a>';
+  }
+  tr += '</td>'
+  /* Colonne Actions */
   tr += '<td>'
   if (is_numeric(_cmd.id)) {
     tr += '<a class="btn btn-default btn-xs cmdAction" data-action="configure"><i class="fas fa-cogs"></i></a> '
     tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fas fa-rss"></i> {{Tester}}</a>'
   }
-  tr += ' <i class="fas fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i></td>'
+  tr += ' <i class="fas fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i>'
+  tr += '</td>'
   tr += '</tr>'
   $('#table_cmd_' + init(_cmd.configuration.type) + '  tbody').append(tr)
   var tr = $('#table_cmd_' + init(_cmd.configuration.type) + ' tbody tr').last()
@@ -252,9 +277,9 @@ $('#bt_validateConfigByMqtt').off('click').on('click', function() {
  */
 $('body').off('openhasp::equipment::reload').on('openhasp::equipment::reload', function (_event, _options) {
   if (_options != '') {
-      jeeFrontEnd.modifyWithoutSave = false;
-      modifyWithoutSave = false; // Mais pourquoi ?!
-      window.location.href = 'index.php?v=d&m=openhasp&p=openhasp&id=' + _options;
+    jeeFrontEnd.modifyWithoutSave = false;
+    modifyWithoutSave = false; // Mais pourquoi ?!
+    window.location.href = 'index.php?v=d&m=openhasp&p=openhasp&id=' + _options;
   }
 });
 
@@ -268,6 +293,15 @@ $('body').off('openhasp::MainPage::reloadIfVisible').on('openhasp::MainPage::rel
       window.location.href = 'index.php?v=d&m=openhasp&p=openhasp';
     }
   } catch(e)  {}
+});
+
+/**
+ * Evènement reçu du serveur
+ * - Supprimer commande
+//  */
+$('body').off('openhasp::command::delete').on('openhasp::command::delete', function (_event, _options) {
+  $('tr[data-cmd_id=' + _options + ']').remove();
+
 });
 
 /**
@@ -359,7 +393,11 @@ $("#bt_manageCommandGeneral").on('click', function(event) {
         return false;
       });
     },
-    close: function() {}
+    close: function() {
+      if (modalClosedWithChange) {
+        jeedom.openhasp.utils.refreshEqLogicPage();
+      }
+    }
   });
   $('#md_modal').load('index.php?v=d&plugin=openhasp&modal=command.general&id=' + id).dialog('open');
 })
@@ -433,3 +471,15 @@ $('#filter_page').on('click', 'a.commandPageFilter', function() {
     $('#table_cmd_specific').find('tbody>tr').show()
   }
 })
+
+
+
+
+$("#table_cmd_specific, #table_cmd_general").delegate(".listEquipementInfo", 'click', function () {
+  var el = $(this);
+  jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function (result) {
+      var calcul = el.closest('tr').find('.cmdAttr[data-l1key=configuration][data-l2key=' + el.data('input') + ']');
+      calcul.atCaret('insert', result.human);
+      //jmqtt.setPageModified();
+  });
+});

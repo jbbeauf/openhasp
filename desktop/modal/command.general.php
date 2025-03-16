@@ -39,6 +39,7 @@ if (file_exists($file)) {
     if ($json === false) {
         throw new Exception(__('Fonction non disponible', __FILE__) . ' - ' . __('Erreur en chargeant le fichier de définition des commandes générales', __FILE__) . ' : ' . __('Ré-installer le plugin', __FILE__));
     }
+    
     $json_data = json_decode($json, true); 
     if ($json_data === null) {
         throw new Exception(__('Fonction non disponible', __FILE__) . ' - ' . __('Erreur en décodant le fichier de définition des commandes générales', __FILE__) . ' : ' . __('Ré-installer le plugin', __FILE__));
@@ -65,7 +66,7 @@ foreach($json_data as $groupKey => $groupElement) {
         // log::add('openhasp', 'debug', 'Command Element : ' . print_r($commandElement, true));
         foreach ($eqLogic->getCmd() as $cmd) {
             if ( 'general' == $cmd->getConfiguration('type')) {
-                if ($commandElement[parameter] == $cmd->getLogicalId()) {
+                if ($commandElement[topic] == $cmd->getLogicalId()) {
                     $json_data[$groupKey]['command'][$commandKey]['checked'] = 'checked';
                     $json_data[$groupKey]['command'][$commandKey]['cmdLinked'] =  $cmd->getId();;
                     break;
@@ -77,6 +78,7 @@ foreach($json_data as $groupKey => $groupElement) {
         }
     }
 }
+
 sendVarToJS('tableElements', $json_data);
 ?>
 
@@ -121,7 +123,7 @@ sendVarToJS('tableElements', $json_data);
 
                             echo '<td>';
                             echo '<div style="display: none;">' . $groupElement['name'] . ' </div>'; // Pour la recherche
-                            echo '<div style="font-size: larger;font-weight: bold;display: inline;">' . $commandElement[name] . '</div> (' . $commandElement[type] .')<em>&nbsp;&nbsp;&nbsp;&nbsp;' . $commandElement[description] . '</em>';
+                            echo '<div style="font-size: larger;font-weight: bold;display: inline;">' . $commandElement[name]. '</div> (' . $commandElement[type] .')<em>&nbsp;&nbsp;&nbsp;&nbsp;' . $commandElement[description] . '</em>';
                             echo '</td>';
                             
                             echo '<td>';
@@ -161,10 +163,12 @@ sendVarToJS('tableElements', $json_data);
     });
 
     /* Changement d'une valeur d'une des liste de choix de commandes disponibles : indique les valeurs sélectionnées plus d'une fois */
-    $('.selectCommand').change(function (e) {
+    $('.selectCommand, .chkSelectCommand').change(function (e) {
         var arrayAllValues = [];
         $('#table_manage_cmd_general').find("select").each(function() {
-            arrayAllValues.push(this.value);
+            if ($('#checkbox_' +  $(this).attr('key')).is(':checked')) {
+                arrayAllValues.push(this.value);
+            }
             $('#status_' +  $(this).attr('key')).removeClass('statusInvalid');
         });
         $("#messageErrorInvalidStatus").hide();
@@ -214,6 +218,7 @@ sendVarToJS('tableElements', $json_data);
             });
         });
 
+        modalClosedWithChange = false;
 
     });
 
@@ -231,25 +236,102 @@ sendVarToJS('tableElements', $json_data);
     /* Bouton Sauvegarder */
     $("#modalSave").on("click", function() {
         if ($("#messageErrorInvalidStatus").is(":visible")) return;
-
         for (var groupKey in tableElements){
             var groupElement = tableElements[groupKey];
             for (var commandKey in groupElement['command']){
                 var commandElement = groupElement['command'][commandKey];
-                if ('' == commandElement['cmdLinked']) {
-                    if ($('#checkbox_' + groupKey + '_' + commandKey).is(':checked')) {
+                if ($('#checkbox_' + groupKey + '_' + commandKey).is(':checked')) {
+                    /* Checkbox coché */
+                    if ('' != commandElement['cmdLinked']) {
+                        /* Commande liée */
+                        if (commandElement['cmdLinked'] != $("#cmdLinked_" + groupKey + '_' + commandKey).val()) {
+                            /* Commande liée différente de la commande sélectionnée --> modifier */
+                            $.ajax({
+                                type: "POST",
+                                url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
+                                data: {
+                                    action: "commandModify",
+                                    id: $('.eqLogicAttr[data-l1key=id]').value(),
+                                    idCommand : $("#cmdLinked_" + groupKey + '_' + commandKey).val(),
+                                    typeCommand : 'general',
+                                    newElement : commandElement
+                                },
+                                dataType: 'json',
+                                error: function(error) {
+                                    $.fn.showAlert({ message: error.message, level: 'danger' })
+                                },
+                                success: function(data) {
+                                    if (data.state != 'ok') {
+                                        $.fn.showAlert({ message: data.result, level: 'danger' })
+                                        return
+                                    }
+                                }
+                            })
+                            modalClosedWithChange = true;
+                        } /* Pas de else */
+                          /* Si commande liée identique à commande sélectionnée alors ne rien faire */
+                    } else {
+                        /* Pas de commande liée */
+                        if ('new' == $("#cmdLinked_" + groupKey + '_' + commandKey).val()) {
+                            /* Nouvelle commade sélectionnée --> créer  */
+                            $.ajax({
+                                type: "POST",
+                                url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
+                                data: {
+                                    action: "commandCreateNew",
+                                    id: $('.eqLogicAttr[data-l1key=id]').value(),
+                                    typeCommand : 'general',
+                                    newElement : commandElement
+                                },
+                                dataType: 'json',
+                                error: function(error) {
+                                    $.fn.showAlert({ message: error.message, level: 'danger' })
+                                },
+                                success: function(data) {
+                                    if (data.state != 'ok') {
+                                        $.fn.showAlert({ message: data.result, level: 'danger' })
+                                        return
+                                    }
+                                }
+                            })
+                            modalClosedWithChange = true;
+                        } else {
+                            /* Commade sélectionnée est une commande existante --> modifier  */
+                            $.ajax({
+                                type: "POST",
+                                url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
+                                data: {
+                                    action: "commandModify",
+                                    id: $('.eqLogicAttr[data-l1key=id]').value(),
+                                    idCommand : $("#cmdLinked_" + groupKey + '_' + commandKey).val(),
+                                    typeCommand : 'general',
+                                    newElement : commandElement
+                                },
+                                dataType: 'json',
+                                error: function(error) {
+                                    $.fn.showAlert({ message: error.message, level: 'danger' })
+                                },
+                                success: function(data) {
+                                    if (data.state != 'ok') {
+                                        $.fn.showAlert({ message: data.result, level: 'danger' })
+                                        return
+                                    }
+                                }
+                            })
+                            modalClosedWithChange = true;
+                        }
+                    }
+                } else {
+                    /* Checkbox décoché */
+                    if ('' != commandElement['cmdLinked']) {
+                        /* Commande liée --> on supprime donc la commande */
                         $.ajax({
                             type: "POST",
                             url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
                             data: {
-                                action: "commandCreateNew",
+                                action: "commandDeleteExiting",
                                 id: $('.eqLogicAttr[data-l1key=id]').value(),
-                                key : commandKey,
-                                typeCommand : 'general',
-                                type: commandElement['type'],
-                                format : commandElement['format'],
-                                name : commandElement['name'],
-                                parameter : commandElement['parameter'],
+                                idCommand : commandElement['cmdLinked']
                             },
                             dataType: 'json',
                             error: function(error) {
@@ -262,23 +344,13 @@ sendVarToJS('tableElements', $json_data);
                                 }
                             }
                         })
-                        console.log ("Nouvelle commande : " +  commandElement['name']);
-                    }
-                } else {
-                    if ($('#checkbox_' + groupKey + '_' + commandKey).is(':checked')) {
-                        if ( commandElement['cmdLinked'] == $("#cmdLinked_" + groupKey + '_' + commandKey).val()) {
-                            console.log ("Commande conservée : " +  commandElement['name']);
-                        } else {
-                            console.log ("Commande modifiée : " +  commandElement['name']);
-                        }
-                    } else {
-                        console.log ("Commande supprimée : " +   commandElement['cmdLinked']);
-                    }
+                        modalClosedWithChange = true;
+                    } /* Pas de else */
+                      /* Si pas de commande liée alors ne rien faire */
                 }
             }
         }
         $("#md_modal").dialog('close');
-
     });
 
     function getDuplicates(arr) {

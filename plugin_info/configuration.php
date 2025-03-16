@@ -74,7 +74,7 @@ if (!isConnect()) {
         <sup><i class="fas fa-question-circle tooltips" title="{{Correspondance des caractères unicodes par un texte. 1 caractère par ligne selon ce modèle \uXXXX:texte}}"></i></sup>
       </label>
       <div class="col-md-7">
-        <textarea class="configKey form-control autogrow" data-l1key="text::unicode"></textarea>
+        <textarea class="configKey form-control autogrow" data-l1key="text::unicode" style="max-height: 200px;"></textarea>
       </div>
     </div>
   </fieldset>

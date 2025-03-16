@@ -171,14 +171,18 @@ class openhasp extends eqLogic {
     }
   }
 
-  public static function handleMqttPublish($_topic , $_value) {
+  public static function handleMqttPublish($_topic , $_value, $options = array()) {
     try {
       if (!class_exists('mqtt2')) {
         include_file('core', 'mqtt2', 'class', 'mqtt2');
       }
-      $sendValue = self::convertUnicodeInTextToSend($_value);
-      mqtt2::publish($_topic, $sendValue);
-      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic >' . $_topic . '< - Valeur >' . $sendValue . '<');
+      if ('' != $_value) {
+        $sendValue = self::convertUnicodeInTextToSend($_value);
+      } else {
+        $sendValue = '';
+      }
+      mqtt2::publish($_topic, $sendValue, $options);
+      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic >' . $_topic . '< - Valeur >' . $sendValue . '< - Options >' . print_r($options, true) . '<');
     } catch (\Throwable $th) {
       log::add(__CLASS__, 'error', $this->getHumanName() . ' ' . __('Erreur lors de l\'éxécution de la commande', __FILE__) . ' : ' . $th);
     }
@@ -596,6 +600,7 @@ class openhasp extends eqLogic {
       $action->setSubType('other');
       $action->setOrder($commandOrder++);
       $action->setConfiguration('type', 'general');
+      $action->setConfiguration('topic', 'command/statusupdatea');
       $action->save();
     }
     
@@ -612,159 +617,6 @@ class openhasp extends eqLogic {
       $info->setConfiguration('type', 'general');
       $info->save();
     }
-    
-    // /* Commande Info Adresse IP */
-    // $info = $this->getCmd(null, 'state/statusupdate/ip');
-    // if (!is_object($info)) {
-    //   $info = new openhaspCmd();
-    //   $info->setLogicalId('state/statusupdate/ip');
-    //   $info->setEqLogic_id($this->getId());
-    //   $info->setName(__('IP', __FILE__));
-    //   $info->setType('info');
-    //   $info->setSubType('string');
-    //   $info->setOrder($commandOrder++);
-    //   $info->setConfiguration('type', 'general');
-    //   $info->save();
-    // }
-    
-    // /* Commande Info Largeur de l'écran en pixel */
-    // $info = $this->getCmd(null, 'state/statusupdate/tftWidth');
-    // if (!is_object($info)) {
-    //   $info = new openhaspCmd();
-    //   $info->setLogicalId('state/statusupdate/tftWidth');
-    //   $info->setEqLogic_id($this->getId());
-    //   $info->setName(__('Largeur écran', __FILE__));
-    //   $info->setType('info');
-    //   $info->setSubType('numeric');
-    //   $info->setUnite('px');
-    //   $info->setOrder($commandOrder++);
-    //   $info->setConfiguration('type', 'general');
-    //   $info->save();
-    // }
-    
-    // /* Commande Info Hauteur de l'écran en pixel */
-    // $info = $this->getCmd(null, 'state/statusupdate/tftHeight');
-    // if (!is_object($info)) {
-    //   $info = new openhaspCmd();
-    //   $info->setLogicalId('state/statusupdate/tftHeight');
-    //   $info->setEqLogic_id($this->getId());
-    //   $info->setName(__('Hauteur écran', __FILE__));
-    //   $info->setType('info');
-    //   $info->setSubType('numeric');
-    //   $info->setUnite('px');
-    //   $info->setOrder($commandOrder++);
-    //   $info->setConfiguration('type', 'general');
-    //   $info->save();
-    // }
-    
-    // /* Commande Info / Action Numéro de la page courante */
-    // $info = $this->getCmd(null, 'state/page');
-    // if (!is_object($info)) {
-    //   $info = new openhaspCmd();
-    //   $info->setLogicalId('state/page');
-    //   $info->setEqLogic_id($this->getId());
-    //   $info->setName(__('Page courante', __FILE__));
-    //   $info->setType('info');
-    //   $info->setSubType('numeric');
-    //   $info->setOrder($commandOrder++);
-    //   $info->setConfiguration('type', 'general');
-    //   $info->save();
-    // }
-    // $action = $this->getCmd(null, 'command/page');
-    // if (!is_object($action)) {
-    //   $action = new openhaspCmd();
-    //   $action->setLogicalId('command/page');
-    //   $action->setEqLogic_id($this->getId());
-    //   $action->setName(__('Page courante', __FILE__) . ' ' . __('Commande', __FILE__));
-    //   $action->setType('action');
-    //   $action->setSubType('slider');
-    //   $action->setValue($info->getId());
-    //   $action->setConfiguration('message','#slider#');
-    //   $action->setConfiguration('minValue','1');
-    //   $action->setOrder($commandOrder++);
-    //   $action->setConfiguration('type', 'general');
-    //   $action->save();
-    //   // $numberOfObjectsAdded++;
-    // }
-    
-    // /* Commande Info / Action pour la mise en veille de l'écran */
-    // $info = $this->getCmd(null, 'state/idle');
-    // if (!is_object($info)) {
-    //   $info = new openhaspCmd();
-    //   $info->setLogicalId('state/idle');
-    //   $info->setEqLogic_id($this->getId());
-    //   $info->setName(__('Veille de l\'écran', __FILE__));
-    //   $info->setType('info');
-    //   $info->setSubType('string');
-    //   $info->setOrder($commandOrder++);
-    //   $info->setConfiguration('type', 'general');
-    //   $info->save();
-    // }
-    // $action = $this->getCmd(null, 'command/idle');
-    // if (!is_object($action)) {
-    //   $action = new openhaspCmd();
-    //   $action->setLogicalId('command/idle');
-    //   $action->setEqLogic_id($this->getId());
-    //   $action->setName(__('Veille de l\'écran', __FILE__) . ' ' . __('Commande', __FILE__));
-    //   $action->setType('action');
-    //   $action->setSubType('select');
-    //   $action->setValue($info->getId());
-    //   $action->setConfiguration('message','#select#');
-    //   $action->setConfiguration('listValue','off|OFF;short|Court;long|Long');
-    //   $action->setOrder($commandOrder++);
-    //   $action->setConfiguration('type', 'general');
-    //   $action->save();
-    //   // $numberOfObjectsAdded++;
-    // }
-    
-    // /* Commande Info / Action pour l'état et la luminosité de l'écran */
-    // $info = $this->getCmd(null, 'state/backlight/state');
-    // if (!is_object($info)) {
-    //   $info = new openhaspCmd();
-    //   $info->setLogicalId('state/backlight/state');
-    //   $info->setEqLogic_id($this->getId());
-    //   $info->setName(__('État de l\'écran', __FILE__));
-    //   $info->setType('info');
-    //   $info->setSubType('string');
-    //   $info->setOrder($commandOrder++);
-    //   $info->setConfiguration('type', 'general');
-    //   $info->save();
-    // }
-    // $info = $this->getCmd(null, 'state/backlight/brightness');
-    // if (!is_object($info)) {
-    //   $info = new openhaspCmd();
-    //   $info->setLogicalId('state/backlight/brightness');
-    //   $info->setEqLogic_id($this->getId());
-    //   $info->setName(__('Luminosité de l\'écran', __FILE__));
-    //   $info->setType('info');
-    //   $info->setSubType('numeric');
-    //   $info->setOrder($commandOrder++);
-    //   $info->setConfiguration('type', 'general');
-    //   $info->save();
-    // }
-    // $action = $this->getCmd(null, 'command/backlight', null, true);
-    // if (!is_array($action) && !is_object($action)) {
-    //   $action = new openhaspCmd();
-    //   $action->setLogicalId('command/backlight');
-    //   $action->setEqLogic_id($this->getId());
-    //   $action->setName(__('Écran ON', __FILE__) . ' ' . __('Commande', __FILE__));
-    //   $action->setType('action');
-    //   $action->setSubType('slider');
-    //   //$action->setValue($info->getId());
-    //   $action->setConfiguration('message','json::{"state":"on","brightness":#slider#}');
-    //   $action->setConfiguration('minValue','1');
-    //   $action->setConfiguration('maxValue','255');
-    //   $action->save();
-    //   $action = new openhaspCmd();
-    //   $action->setLogicalId('command/backlight');
-    //   $action->setEqLogic_id($this->getId());
-    //   $action->setName(__('Écran OFF', __FILE__) . ' ' . __('Commande', __FILE__));
-    //   $action->setType('action');
-    //   $action->setSubType('other');
-    //   //$action->setValue($info->getId());
-    //   $action->setConfiguration('message','0');
-    //   $action->save();
-    // }
 
     /* S'abonner au topic MQTT */
     if ($this->getIsEnable()) {
@@ -1199,25 +1051,110 @@ class openhasp extends eqLogic {
     }
   }
 
-
-  public function commandCreateNew($key, $typeCommand, $type, $format, $name, $parameter) {
-    log::add(__CLASS__, 'debug', 'commandCreateNew ' . $key . ' ' . $typeCommand . ' ' . $type . ' ' . $format . ' ' . $name . ' ' . $parameter . ' ' );
-    $newCommand = $this->getCmd(null, $parameter);
-    $newCommandOrder = count($this->getCmd(null)) + 1;
-    if (!is_object($newCommand)) {
-      $newCommand = new openhaspCmd();
-      $newCommand->setLogicalId($parameter);
-      $newCommand->setEqLogic_id($this->getId());
-      $newCommand->setName($name);
-      $newCommand->setType($type);
-      $newCommand->setSubType($format);
-      $newCommand->setOrder($newCommandOrder);
-      $newCommand->setConfiguration('type', $typeCommand);
-      $newCommand->save(true);
+  public function getElementWithDefault($array, $key, $defaultValue) {
+    if (array_key_exists($key, $array)) {
+      return $array[$key];
     } else {
-      throw new Exception(__("commandCreateNew erreur : commande déjà existante", __FILE__) . ' "' . $parameter . '"');
+      return $defaultValue;
     }
   }
+
+  /**
+   * Créer une nouvelle commande
+   * @param string $typeCommande 'general' ou 'specific'
+   * @param object $commandElement objet commande à créer 
+   */
+  public function commandCreateNew($typeCommand, $commandElement) {
+    /* Créer une nouvelle commande et la rattacher à l'objet openhasp courant */
+    $newCommand = new openhaspCmd();
+    $newCommand->setEqLogic_id($this->getId());
+    $newCommand->setOrder(count($this->getCmd(null)) + 1); /* Ajoute la nouvelle commande sous les autres existantes */
+    
+    /* Compléter toutes les valeurs possibles de la commande avec les informations de l'objet donné en paramètre */
+    $newCommand->setName($commandElement['name']);
+    $newCommand->setLogicalId($commandElement['topic']);
+    $newCommand->setType($commandElement['type']);
+    $newCommand->setSubType($commandElement['subType']);
+    $newCommand->setConfiguration('type', $typeCommand);
+
+    $newCommand->setConfiguration('message', self::getElementWithDefault($commandElement, 'value', ''));
+    $newCommand->setConfiguration('minValue', self::getElementWithDefault($commandElement, 'min', ''));
+    $newCommand->setConfiguration('maxValue', self::getElementWithDefault($commandElement, 'max', ''));
+    $newCommand->setConfiguration('listValue',self::getElementWithDefault($commandElement, 'listValue', ''));
+    $newCommand->setConfiguration('retain',self::getElementWithDefault($commandElement, 'retain', 0));
+    $newCommand->setUnite(self::getElementWithDefault($commandElement, 'unit', ''));
+
+    /* Le nom de la commande créée doit être unique sinon il y a une erreur */
+    /* En cas d'erreur car une commande existante porte le même nom : alors on change le nomde la commande à créer et on ré-essaie */
+    /* Pour toute autre erreur on remonte l'info comme quoi il y a eu une erreur */
+    try {
+      $newCommand->save(true);
+    } catch (\Throwable $th) {
+      if (strpos($th->getMessage(), 'Duplicate entry \'' . $this->getId() . '-' . $commandElement['name'] . '\' for key \'unique\'') !== false) {
+        log::add(__CLASS__, 'info', 'commandCreateNew Une commande existante avec ce nom ' . $commandElement['name'] . ' existe --> le nom de la commande créé sera modifié');
+        $commandElement['name'] = $commandElement['name'] . ' ' . uniqid();
+        $newCommand->setName($commandElement['name']);
+        try {
+          $newCommand->save(true);
+        } catch (\Throwable $th) {
+          throw new Exception(__("commandCreateNew erreur : Erreur malgré le renommage de la commande ", __FILE__) . ' "' . $th->getMessage() . '"');
+        }
+      } else {
+        throw new Exception(__("commandCreateNew erreur : Erreur inconnue ", __FILE__) . ' "' . $th->getMessage() . '"');
+      }
+    }
+    
+    log::add(__CLASS__, 'debug', 'commandCreateNew Nouvelle commande créée >' . $commandElement['name'] . '< >' . $commandElement['topic'] . '< >' . $commandElement['message'] . '<');
+  }
+
+  /**
+   * Supprimer une commande
+   * @param integer $idCommand ID de la commande à supprimer
+   */
+  public function commandDeleteExiting($idCommand) {
+    $commandToDelete = cmd::byId($idCommand);
+    if (is_object($commandToDelete)) {
+      $commandToDelete->remove();
+      event::add('openhasp::command::delete', $idCommand);
+      log::add(__CLASS__, 'debug', 'commandDeleteExiting Commande supprimée >' . $idCommand . '<');
+    } else {
+      throw new Exception(__("commandDeleteExiting erreur : commande inconnue id=", __FILE__) . ' "' . $idCommand . '"');
+    }
+  }
+
+  /**
+   * Modifier une commande existante
+   * @param integer $idCommand ID de la commande à supprimer
+   * @param string $typeCommande 'general' ou 'specific'
+   * @param object $commandElement objet commande à créer 
+   */
+  public function commandModify($idCommand, $typeCommand, $commandElement) {
+    log::add(__CLASS__, 'debug', 'commandModify Commande à modifier >' . $idCommand . '<');
+    
+    $commandToModify = cmd::byId($idCommand);
+    if (is_object($commandToModify)) {
+      /* Compléter toutes les valeurs possibles de la commande avec les informations de l'objet donné en paramètre */
+      $commandToModify->setLogicalId($commandElement['topic']);
+      $commandToModify->setType($commandElement['type']);
+      $commandToModify->setSubType($commandElement['subType']);
+      $commandToModify->setConfiguration('type', $typeCommand);
+
+      $commandToModify->setConfiguration('message', self::getElementWithDefault($commandElement, 'value', ''));
+      $commandToModify->setConfiguration('minValue', self::getElementWithDefault($commandElement, 'min', ''));
+      $commandToModify->setConfiguration('maxValue', self::getElementWithDefault($commandElement, 'max', ''));
+      $commandToModify->setConfiguration('listValue',self::getElementWithDefault($commandElement, 'listValue', ''));
+      $commandToModify->setUnite(self::getElementWithDefault($commandElement, 'unit', ''));
+
+      try {
+        $commandToModify->save(true);
+      } catch (\Throwable $th) {
+        throw new Exception(__("commandModify erreur : Erreur inconnue ", __FILE__) . ' "' . $th->getMessage() . '"');
+      }
+      log::add(__CLASS__, 'debug', 'commandModify Commande modifiée >' . $idCommand . '<');
+    } else {
+      throw new Exception(__("commandModify erreur : commande inconnue id=", __FILE__) . ' "' . $idCommand . '"');
+    }
+ }
 
   /*     * **********************Getteur Setteur*************************** */
 
@@ -1296,9 +1233,26 @@ class openhaspCmd extends cmd {
     }
     $value = jeedom::evaluateExpression($value);
 
-    $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, $value);
-    /* Demande d'actualisation = commande sans valeur */
-    $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, '');
+    $options = array();
+    if (1 == $this->getConfiguration('retainPrev') && 0 == $this->getConfiguration('retain')) {
+      /* L'option retain a été suprimée : pour la supprimer il faut envoyer une commande sans valeur avec retain = 1 */      
+      $options['retain'] = 1;
+      $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, '', $options);
+      sleep(1);
+    }
+    
+    $options['retain'] = (1 == $this->getConfiguration('retain')) ? 1 : 0;
+    $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, $value, $options);
+    if ($this->getConfiguration('retainPrev') != $this->getConfiguration('retain')) {
+      $this->setConfiguration('retainPrev', $this->getConfiguration('retain'));
+      $this->save(true);
+    }
+
+    if (1 == $this->getConfiguration('refresh')) {
+      /* Demande d'actualisation = commande sans valeur et avec retain = 0 */
+      $options['retain'] = 0;
+      $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, '', $options);
+    }
   }
 
   /*     * **********************Getteur Setteur*************************** */

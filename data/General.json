@@ -1,33 +1,100 @@
 {
+    "global" : {
+        "name" : "{{Général}}",
+        "command" : {
+            "page_info" : {
+                "type" : "info",
+                "subType" : "numeric",
+                "name" : "{{Page Courante}}",
+                "topic" : "state/page",
+                "min" : "1",
+                "max" : "12",
+                "description" : "{{Numéro de la page affichée}}"
+                },
+            "page_action" : {
+                "type" : "action",
+                "subType" : "slider",
+                "name" : "{{Page Commande}}",
+                "topic" : "command/page",
+                "value" : "#slider#",
+                "min" : "1",
+                "max" : "12",
+                "retain" : 1,
+                "description" : "{{Consigne pour changer la page affichée}}"
+                },
+            "idle_info" : {
+                "type" : "info",
+                "subType" : "string",
+                "name" : "{{Mode Veille de l'écran}}",
+                "topic" : "state/idle",
+                "description" : "{{Mode Veille de l'écran : off, short ou long}}"
+                },
+            "idle_action" : {
+                "type" : "action",
+                "subType" : "select",
+                "name" : "{{Changer Mode Veille de l'écran}}",
+                "topic" : "command/idle",
+                "value" : "#select#",
+                "listValue" : "off|OFF;short|Court;long|Long",
+                "description" : "{{Consigne pour changer le Mode Veille de l'écran}}"
+                },
+            "backlight_brightness_info" : {
+                "type" : "info",
+                "subType" : "string",
+                "name" : "{{Luminosité de l'écran}}",
+                "topic" : "state/backlight/brightness",
+                "min" : "0",
+                "max" : "255",
+                "description" : "{{Niveau de luminosité de l'écran}}"
+                },
+            "backlight_state_info" : {
+                "type" : "info",
+                "subType" : "string",
+                "name" : "{{État de l'écran}}",
+                "topic" : "state/backlight/state",
+                "description" : "{{Etat de l'écran : 'on' ou 'off'}}"
+                },
+            "backlight_action" : {
+                "type" : "action",
+                "subType" : "slider",
+                "name" : "{{Changer la Luminosité de l'écran}}",
+                "topic" : "command/backlight",
+                "value" : "{\"state\":\"on\",\"brightness\":#slider#}",
+                "min" : "0",
+                "max" : "255",
+                "description" : "{{Consigne pour changer le Niveau de luminosité de l'écran}}"
+                }
+        }
+    },
     "network" : {
         "name" : "{{Réseau}}",
         "command" : {
             "ip" : {
                 "type" : "info",
-                "format" : "string",
+                "subType" : "string",
                 "name" : "{{IP}}",
-                "parameter" : "state/statusupdate/ip",
+                "topic" : "state/statusupdate/ip",
                 "description" : "{{Adresse IP de l'écran}}"
                 },
             "ssid" : {
                 "type" : "info",
-                "format" : "string",
+                "subType" : "string",
                 "name" : "{{SSID}}",
-                "parameter" : "state/statusupdate/ssid",
+                "topic" : "state/statusupdate/ssid",
                 "description" : "{{Nom du réseau sans fil}}"
                 },
             "mac" : {
                 "type" : "info",
-                "format" : "string",
+                "subType" : "string",
                 "name" : "{{MAC}}",
-                "parameter" : "state/statusupdate/mac",
+                "topic" : "state/statusupdate/mac",
                 "description" : "{{Adresse MAC de l'écran}}"
                 },
             "rssi" : {
                 "type" : "info",
-                "format" : "number",
+                "subType" : "numeric",
                 "name" : "{{RSSI}}",
-                "parameter" : "state/statusupdate/rssi",
+                "topic" : "state/statusupdate/rssi",
                 "description" : "{{Niveau de puissance WIFI reçu}}"
                 }
         }
@@ -37,19 +104,30 @@
         "command" : {
             "tftWidth" : {
                 "type" : "info",
-                "format" : "number",
+                "subType" : "numeric",
                 "name" : "{{Largeur écran}}",
-                "parameter" : "state/statusupdate/tftWidth",
+                "topic" : "state/statusupdate/tftWidth",
                 "unit" : "px",
+                "min" : "0",
                 "description" : "{{Largeur de l'écran, en pixel}}"
                 },
             "tftHeight" : {
                 "type" : "info",
-                "format" : "number",
+                "subType" : "numeric",
                 "name" : "{{Hauteur écran}}",
-                "parameter" : "state/statusupdate/tftHeight",
+                "topic" : "state/statusupdate/tftHeight",
                 "unit" : "px",
+                "min" : "0",
                 "description" : "{{Hauteur de l'écran, en pixel}}"
+                },
+            "antiburn" : {
+                "type" : "action",
+                "subType" : "select",
+                "name" : "{{Antiburn}}",
+                "topic" : "command/antiburn",
+                "value" : "#select#",
+                "listValue" : "off|OFF;on|ON",
+                "description" : "{{Gérer la protection de l'écran LCD}}"
                 }
         }
     },
@@ -58,19 +136,27 @@
         "command" : {
             "version" : {
                 "type" : "info",
-                "format" : "string",
+                "subType" : "string",
                 "name" : "{{Version}}",
-                "parameter" : "state/statusupdate/version",
+                "topic" : "state/statusupdate/version",
                 "unit" : "px",
                 "description" : "{{Version de l'écran}}"
                 },
             "uptime" : {
                 "type" : "info",
-                "format" : "number",
+                "subType" : "numeric",
                 "name" : "{{Durée de fonctionnement}}",
-                "parameter" : "state/statusupdate/Uptime",
+                "topic" : "state/statusupdate/Uptime",
                 "unit" : "s",
+                "min" : "0",
                 "description" : "{{Durée de fonctionnement}}"
+                },
+            "lwt" : {
+                "type" : "info",
+                "subType" : "string",
+                "name" : "{{LWT}}",
+                "topic" : "lwt",
+                "description" : "{{Last Will and Testament (LWT) : pour informer de l'état de connexion de l'écran}}"
                 }
         }
     }
