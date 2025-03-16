@@ -171,14 +171,18 @@ class openhasp extends eqLogic {
     }
   }
 
-  public static function handleMqttPublish($_topic , $_value) {
+  public static function handleMqttPublish($_topic , $_value, $options = array()) {
     try {
       if (!class_exists('mqtt2')) {
         include_file('core', 'mqtt2', 'class', 'mqtt2');
       }
+      if ('' != $_value) {
       $sendValue = self::convertUnicodeInTextToSend($_value);
-      mqtt2::publish($_topic, $sendValue);
-      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic ' . $_topic . ' - Valeur ' . $sendValue);
+      } else {
+        $sendValue = '';
+      }
+      mqtt2::publish($_topic, $sendValue, $options);
+      log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic >' . $_topic . '< - Valeur >' . $sendValue . '< - Options >' . print_r($options, true) . '<');
     } catch (\Throwable $th) {
       log::add(__CLASS__, 'error', $this->getHumanName() . ' ' . __('Erreur lors de l\'éxécution de la commande', __FILE__) . ' : ' . $th);
     }
@@ -1276,9 +1280,26 @@ class openhaspCmd extends cmd {
     }
     $value = jeedom::evaluateExpression($value);
 
-    $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, $value);
-    /* Demande d'actualisation = commande sans valeur */
-    $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, '');
+    $options = array();
+    if (1 == $this->getConfiguration('retainPrev') && 0 == $this->getConfiguration('retain')) {
+      /* L'option retain a été suprimée : pour la supprimer il faut envoyer une commande sans valeur avec retain = 1 */      
+      $options['retain'] = 1;
+      $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, '', $options);
+      sleep(1);
+    }
+    
+    $options['retain'] = (1 == $this->getConfiguration('retain')) ? 1 : 0;
+    $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, $value, $options);
+    if ($this->getConfiguration('retainPrev') != $this->getConfiguration('retain')) {
+      $this->setConfiguration('retainPrev', $this->getConfiguration('retain'));
+      $this->save(true);
+    }
+
+    if (1 == $this->getConfiguration('refresh')) {
+      /* Demande d'actualisation = commande sans valeur et avec retain = 0 */
+      $options['retain'] = 0;
+      $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, '', $options);
+    }
   }
 
   /*     * **********************Getteur Setteur*************************** */

@@ -57,21 +57,24 @@ function addCmdToTable(_cmd) {
   var tr = '<tr class="cmd ' + classPage + '" data-cmd_id="' + init(_cmd.id) + '">'
 
   if ('specific' == _cmd.configuration.type) {
+    /* Colonne ID */
     tr += '<td class="hidden-xs">'
     tr += '<span class="cmdAttr" data-l1key="id"></span>'
     tr += '</td>'
+    /* Colonne Page */
     tr += '<td>'
     tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="type">' + _cmd.configuration.type + '</span>'
     tr += '<input class="cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="page"/>'
     tr += '</td>'
   } else {
+    /* Colonne ID */
     tr += '<td class="hidden-xs">'
     tr += '<span class="cmdAttr" data-l1key="id"></span>'
     tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="type">' + _cmd.configuration.type + '</span>'
     tr += '<span class="cmdAttr form-control input-sm hidden" data-l1key="configuration" data-l2key="page" style="width:30%;max-width:80px;display:inline-block;margin-right:2px;">' + _cmd.configuration.page + '</span>'
     tr += '</td>'
   }
-
+  /* Colonne Nom */
   tr += '<td>'
   tr += '<div class="input-group">'
   tr += '<input class="cmdAttr form-control input-sm roundedLeft" data-l1key="name" placeholder="{{Nom de la commande}}">'
@@ -84,17 +87,28 @@ function addCmdToTable(_cmd) {
   tr += '<option value="">{{Aucune}}</option>'
   tr += '</select>'
   tr += '</td>'
+  /* Colonne Type */
   tr += '<td>'
   tr += '<span class="type" type="' + init(_cmd.type) + '">' + jeedom.cmd.availableType() + '</span>'
   tr += '<span class="subType" subType="' + init(_cmd.subType) + '"></span>'
   tr += '</td>'
+  /* Colonne Topic MQTT */
   tr += '<td >'
   tr += '<input class="cmdAttr form-control input-sm" data-l1key="logicalId" placeholder="{{Topic}}" title="{{Topic}}"/> '
   tr += '<input class="cmdAttr form-control input-sm cmdType action" style="margin-top:3px" data-l1key="configuration" data-l2key="message" placeholder="{{Message}}" title="{{Message}}"/> '
   tr += '</td>'
+  /* Colonne Etat */
   tr += '<td>'
   tr += '<span class="cmdAttr" data-l1key="htmlstate"></span>'
   tr += '</td>'
+  /* Colonne Options MQTT */
+  tr += '<td>'
+  if ('action' == init(_cmd.type)) {
+    tr += '<label class="checkbox-inline cmdAction"><input type="checkbox" class="cmdAttr" data-l1key="configuration" data-l2key="retain">{{Retain}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Dire au serveur mqtt de retenir ce message}}"></i></sup></label><br/>'
+    tr += '<label class="checkbox-inline cmdAction"><input type="checkbox" class="cmdAttr" data-l1key="configuration" data-l2key="refresh">{{Refresh}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Envoyer une commande vide pour demander à l\'écran de renvoyer la valeur de l\'élément}}"></i></sup></label>'
+  }
+  tr += '</td>'
+  /* Colonne Options Jeedom */
   tr += '<td>'
   tr += '<label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="isVisible" checked>{{Afficher}}</label> '
   tr += '<label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="isHistorized" checked>{{Historiser}}</label> '
@@ -106,12 +120,14 @@ function addCmdToTable(_cmd) {
   tr += '<input class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="listValue" placeholder="{{Liste de valeur|texte séparé par ;}}" title="{{Liste}}">';
   tr += '</div>'
   tr += '</td>'
+  /* Colonne Actions */
   tr += '<td>'
   if (is_numeric(_cmd.id)) {
     tr += '<a class="btn btn-default btn-xs cmdAction" data-action="configure"><i class="fas fa-cogs"></i></a> '
     tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fas fa-rss"></i> {{Tester}}</a>'
   }
-  tr += ' <i class="fas fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i></td>'
+  tr += ' <i class="fas fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i>'
+  tr += '</td>'
   tr += '</tr>'
   $('#table_cmd_' + init(_cmd.configuration.type) + '  tbody').append(tr)
   var tr = $('#table_cmd_' + init(_cmd.configuration.type) + ' tbody tr').last()

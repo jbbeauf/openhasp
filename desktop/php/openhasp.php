@@ -299,12 +299,13 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 					<table id="table_cmd_general" class="table table-bordered table-condensed">
 						<thead>
 							<tr>
-								<th class="hidden-xs" style="min-width:50px;width:70px;"> ID</th>
+								<th class="hidden-xs" style="min-width:50px;width:70px;">&nbsp;ID</th>
 								<th style="min-width:150px;width:300px;">{{Nom}}</th>
 								<th style="width:130px;">{{Type}}</th>
-								<th>{{Paramètres}}</th>
+								<th>{{Topic MQTT}}</th>
 								<th>{{Etat}}</th>
-								<th style="min-width:260px;width:400px;">{{Options}}</th>
+								<th style="min-width:150px;width:100px;">{{Options MQTT}}</th>
+								<th style="min-width:150px;width:300px;">{{Options Jeedom}}</th>
 								<th style="min-width:80px;width:180px;">{{Actions}}</th>
 							</tr>
 						</thead>
@@ -331,13 +332,14 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 					<table id="table_cmd_specific" class="table table-bordered table-condensed">
 						<thead>
 							<tr>
-								<th class="hidden-xs" style="min-width:50px;width:70px;"> ID</th>
+								<th class="hidden-xs" style="min-width:50px;width:70px;">&nbsp;ID</th>
 								<th style="width:50px;">{{Page}}</th>
 								<th style="min-width:150px;width:300px;">{{Nom}}</th>
 								<th style="width:130px;">{{Type}}</th>
-								<th>{{Paramètres}}</th>
+								<th>{{Topic MQTT}}</th>
 								<th>{{Etat}}</th>
-								<th style="min-width:260px;width:400px;">{{Options}}</th>
+								<th style="min-width:150px;width:100px;">{{Options MQTT}}</th>
+								<th style="min-width:150px;width:300px;">{{Options Jeedom}}</th>
 								<th style="min-width:80px;width:180px;">{{Actions}}</th>
 							</tr>
 						</thead>
