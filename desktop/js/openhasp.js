@@ -120,13 +120,21 @@ function addCmdToTable(_cmd) {
   tr += '<input class="tooltips cmdAttr form-control input-sm" data-l1key="configuration" data-l2key="listValue" placeholder="{{Liste de valeur|texte séparé par ;}}" title="{{Liste}}">';
   tr += '</div>'
   tr += '</td>'
+  /* Colonne Info Jeedom */
+  tr += '<td>'
+  if ('action' == init(_cmd.type)) {
+    tr += '<label class="checkbox-inline"><input type="checkbox" class="cmdAttr" data-l1key="configuration" data-l2key="linkToCmdInfo">{{Relier à Info}}&nbsp;<sup><i class="fas fa-question-circle tooltips" title="{{Connecter la commande courante à une autre commande info}}</br>{{Quand la valeur de la commande info change alors la commande courante est exécutée avec la valeur de la commande info}}"></i></sup></label> '
+    tr += '<textarea class="cmdAttr form-control input-sm roundedLeft" data-l1key="configuration" data-l2key="cmdInfoJeedomLinked" style="min-height:62px;height:62px;" placeholder="Choisir une commande Info Jeedom"></textarea>';
+    tr += '<a class="btn btn-sm btn-default listEquipementInfo input-group-addon roundedRight" title="{{Rechercher un équipement}}" data-input="cmdInfoJeedomLinked"><i class="fas fa-list-alt "></i></a>';
+  }
+  tr += '</td>'
   /* Colonne Actions */
   tr += '<td>'
   if (is_numeric(_cmd.id)) {
-    tr += '<a class="btn btn-default btn-xs cmdAction" data-action="configure"><i class="fas fa-cogs"></i></a> '
+    tr += '<a class="btn btn-default btn-xs cmdAction" data-action="configure"><i class="fas fa-cogs"></i></a><br/><br/> '
     tr += '<a class="btn btn-default btn-xs cmdAction" data-action="test"><i class="fas fa-rss"></i> {{Tester}}</a>'
   }
-  tr += ' <i class="fas fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i>'
+  tr += '<i class="fas fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i>'
   tr += '</td>'
   tr += '</tr>'
   $('#table_cmd_' + init(_cmd.configuration.type) + '  tbody').append(tr)

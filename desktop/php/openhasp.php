@@ -306,7 +306,8 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 								<th>{{Etat}}</th>
 								<th style="min-width:150px;width:100px;">{{Options MQTT}}</th>
 								<th style="min-width:150px;width:300px;">{{Options Jeedom}}</th>
-								<th style="min-width:80px;width:180px;">{{Actions}}</th>
+								<th style="min-width:150px;width:200px;">{{Info Jeedom liée}}</th>
+								<th style="min-width:80px;width:100px;">{{Actions}}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -340,7 +341,8 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 								<th>{{Etat}}</th>
 								<th style="min-width:150px;width:100px;">{{Options MQTT}}</th>
 								<th style="min-width:150px;width:300px;">{{Options Jeedom}}</th>
-								<th style="min-width:80px;width:180px;">{{Actions}}</th>
+								<th style="min-width:150px;width:200px;">{{Info Jeedom liée}}</th>
+								<th style="min-width:80px;width:100px;">{{Actions}}</th>
 							</tr>
 						</thead>
 						<tbody>

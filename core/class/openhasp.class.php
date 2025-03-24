@@ -781,15 +781,76 @@ class openhasp extends eqLogic {
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
   public function preRemove() {
-
+    // log::add(__CLASS__, 'debug', 'preRemove');
   }
 
   // Fonction exécutée automatiquement après la suppression de l'équipement
   public function postRemove() {
+    // log::add(__CLASS__, 'debug', 'postRemove');
     $rootTopic = $this->getConfiguration('conf::mqtt::rootTopic');
     if ('' != $rootTopic) {
       self::handleMqttSubscription('unsuscribe', $rootTopic);
     }
+  }
+
+  /* Mais pourquoi cette fonction n'est pas dans la doc comme les autres !!!!! */
+  /* https://doc.jeedom.com/fr_FR/dev/plugin_template#M%C3%A9thode%20pre%20et%20post */
+  public function postAjax () {
+    // log::add(__CLASS__, 'debug', 'postAjax');
+    
+    /* Suppression de tous les objets listener attachés à cet équipement */
+    $equipmentListeners = listener::searchClassFunctionOption(
+      __CLASS__,
+      'openhaspListenerAction',
+      '"equipment":"'.$this->getId().'"'
+    );
+    if (0 != count($equipmentListeners)) {
+      while (count($equipmentListeners) > 0) {
+        array_pop($equipmentListeners)->remove();
+      }
+    }
+    
+    /* Parcourir toutes les commandes de type action */
+    foreach ($this->getCmd('action') as $cmdAction) {
+      /* Si la commande courante est reliée à une commande info */
+      if ((1 == $cmdAction->getConfiguration('linkToCmdInfo', 0)) && ('' != $cmdAction->getConfiguration('cmdInfoJeedomLinked', ''))) {
+        /* Récupérer l'objet commande info lié */
+        preg_match("/#([0-9]*)#/", $cmdAction->getConfiguration('cmdInfoJeedomLinked', ''), $matches);
+        $cmdInfoId = $matches[1];
+        $cmdInfo = cmd::byId($cmdInfoId);
+        if (is_object($cmdInfo) && $cmdInfo->getType() == 'info') {
+          /* Si la commande info liée existe */
+          // log::add(__CLASS__, 'debug', 'postAjax cmdInfo >' . print_r($cmdInfo, true) . '<');
+          $listener = new listener();
+          $listener->setClass(__CLASS__);
+          $listener->setFunction('openhaspListenerAction');
+          $listener->emptyEvent();
+          $listener->addEvent($cmdInfoId);
+          $listener->setOption('equipment', $this->getId());
+          $listener->setOption('cmdAction', $cmdAction->getId());
+          $listener->save();
+
+        }
+      }
+    }
+  }
+
+
+  public static function openhaspListenerAction($_options) {
+    
+    /* Récupérer la commande Action à appeler et vérifier qu'elle est valide */
+    $cmdAction = cmd::byId($_options['cmdAction']);
+    if (!is_object($cmdAction) || !$cmdAction->getEqLogic()->getIsEnable() || !$cmdAction->getType() == 'action') {
+      /* Commande non valide : on supprime l'objet listener appelé */
+      log::add(__CLASS__, 'info', __FUNCTION__ . ' Commande id=' . $_options['cmdAction'] . 'non valide : objet listener id=' . $_options['listener_id'] . ' supprimé');
+      listener::byId($_options['listener_id'])->remove();
+      return;
+    } 
+    
+    /* Exécution de la commande */
+    log::add(__CLASS__, 'debug', __FUNCTION__ . ' - Publication automatique de la commande ' . $cmdAction->getHumanName() . ' avec la valeur >' . print_r($_options['value'], true) . '<');
+    $cmdAction->execute($_options);
+
   }
 
   /**
@@ -1242,8 +1303,8 @@ class openhaspCmd extends cmd {
       throw new Exception(__("Configurer d\'abord l'équipement", __FILE__));
     }
 
-    log::add('openhasp', 'debug', 'Commande Action execute() - eqLogic >' . print_r($eqLogic, true) . '<');
-    log::add('openhasp', 'debug', 'Commande Action execute() - command >' . print_r($this, true) . '<');
+    log::add('openhasp', 'debug', __FUNCTION__ . ' - Commande Action execute() - eqLogic >' . print_r($eqLogic, true) . '<');
+    log::add('openhasp', 'debug', __FUNCTION__ . ' - Commande Action execute() - command >' . print_r($this, true) . '<');
 
 		/* Cas du bouton Refresh */
 		if ($this->getLogicalId() == 'command/statusupdate') {
@@ -1266,6 +1327,31 @@ class openhaspCmd extends cmd {
 
     $topicCmd = $this->getLogicalId();
     $value = $this->getConfiguration('message');
+
+    /* Comportement différent si exécution manuelle ou automatique sur une commande info (via listener) */
+    if (isset($_options['listener_id']) && $_options['listener_id'] > 0) {
+      /* Exécution de la commande en automatique : sur un évènement d'une commande info liée */
+      if ('' == $value) {
+        /* Si le message est vide alors on y force la valeur de la commande info */
+        $value = $_options['value'];
+      } else {
+        switch ($this->getSubType()) {
+          case 'slider':
+            $value = str_replace('#slider#', $_options['value'], $value);
+            break;
+          case 'color':
+              $value = str_replace('#color#', $_options['value'], $value);
+              break;
+          case 'select':
+            $value = str_replace('#select#', $_options['value'], $value);
+            break;
+          case 'message':
+            $value = str_replace('#message#', $_options['value'], $value);
+            break;
+        }
+      }
+    } else {
+      /* Autres cas : exécution manuelle */
     switch ($this->getSubType()) {
       case 'slider':
         $value = str_replace('#slider#', $_options['slider'], $value);
@@ -1280,6 +1366,7 @@ class openhaspCmd extends cmd {
         $value = str_replace('#message#', $_options['message'], $value);
         $value = str_replace('#title#', $_options['title'], $value);
         break;
+      }
     }
     $value = jeedom::evaluateExpression($value);
 

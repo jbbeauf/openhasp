@@ -1,5 +1,8 @@
 # Changelog plugin openHASP - beta
 
+# 24/03/2025 / 1.5
+ - Ajout lien avec commande info et publication automatique
+ 
 # 16/03/2025 / 1.4
  - Ajout option Retain et Refresh
 
