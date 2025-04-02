@@ -1,0 +1,44 @@
+
+body[data-type="plugin"] .divStatus.statusInvalid {
+    border: 4px solid red;
+}
+
+div[aria-expanded=true] .fa-chevron-right {
+    display: none;
+}
+
+ div[aria-expanded=false] .fa-chevron-down {
+    display: none;
+}
+
+.modal-body {
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
+}
+
+.cmdSpecific {
+    padding-top: 0px;
+    padding-left: 15px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    border-top: 0px; 
+    border-left: 10px; 
+    border-right: 0px; 
+    border-bottom: 0px; 
+    border-color: rgba(0, 0, 255); 
+    border-style: solid; 
+}
+
+.cmdGeneral {
+    padding-top: 0px;
+    padding-left: 15px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    border-top: 0px; 
+    border-left: 10px; 
+    border-right: 0px; 
+    border-bottom: 0px; 
+    border-color: rgb(255, 106, 0); 
+    border-style: solid; 
+}
+

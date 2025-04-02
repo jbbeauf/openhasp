@@ -292,7 +292,8 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 			<!-- Onglet des commandes générales de l'équipement -->
 			<div role="tabpanel" class="tab-pane" id="commandtabgeneral">
 				<div class="pull-right">
-					<a class="btn btn-default btn-sm cmdAction" id="bt_addCommandGeneral" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
+					<a class="btn btn-default btn-sm cmdAction" id="bt_manageCommandGeneral" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Gérer les commandes générales}}
+					</a> <a class="btn btn-default btn-sm cmdAction" id="bt_addCommandGeneral" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
 				</div>
 				<br><br>
 				<div class="table-responsive">
@@ -324,7 +325,7 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 						<a class="btn btn-success btn-sm commandPageFilter" style="margin-top:5px;" page="all" id="btn_commandPageFilterAllPages">{{Toutes les pages}}</a>
 					</div>
 					<div class="pull-right">
-						<a class="btn btn-default btn-sm cmdAction"id="bt_importCommands" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Importer les objets de l'écran}}
+						<a class="btn btn-default btn-sm cmdAction" id="bt_manageCommandSpecific" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Gérer les commandes des objets de l'écran}}
 						</a> <a class="btn btn-default btn-sm cmdAction" id="bt_addCommandSpecific" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
 					</div>
 				</div>

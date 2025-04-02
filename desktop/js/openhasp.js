@@ -14,6 +14,8 @@
 * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
 */
 
+var modalClosedWithChange = false;
+
 /* Permet la réorganisation des commandes dans l'équipement */
 $("#table_cmd_general").sortable({
   axis: "y",
@@ -185,34 +187,6 @@ $('#table_cmd_pages').on('change', '.cmdAttr[data-l1key=type]', function() {
 
 /**
  * Equimement ouvert
- * - Onglet "Commandes générales"
- *   - Bouton "Importer les commandes"
- */
-$('#bt_importCommands').off('click').on('click', function() {
-  $.ajax({
-    type: "POST",
-    url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
-    data: {
-      action: "importCommands",
-      id: $('.eqLogicAttr[data-l1key=id]').value()
-      // pageName: $('.eqLogicAttr[data-l1key=configuration][data-l2key=conf::startLayout]').value()
-    },
-    dataType: 'json',
-    error: function(error) {
-      $.fn.showAlert({ message: error.message, level: 'danger' })
-    },
-    success: function(data) {
-      if (data.state != 'ok') {
-        $.fn.showAlert({ message: data.result, level: 'danger' })
-        return
-      }
-      $.fn.showAlert({ message: '{{Opération réalisée avec succès}}', level: 'success' });
-    }
-  })
-})
-
-/**
- * Equimement ouvert
  * - Onglet "Configuration Equipement"
  *   - Bouton "Valider IP"
  */
@@ -276,9 +250,9 @@ $('#bt_validateConfigByMqtt').off('click').on('click', function() {
  */
 $('body').off('openhasp::equipment::reload').on('openhasp::equipment::reload', function (_event, _options) {
   if (_options != '') {
-      jeeFrontEnd.modifyWithoutSave = false;
-      modifyWithoutSave = false; // Mais pourquoi ?!
-      window.location.href = 'index.php?v=d&m=openhasp&p=openhasp&id=' + _options;
+    jeeFrontEnd.modifyWithoutSave = false;
+    modifyWithoutSave = false; // Mais pourquoi ?!
+    window.location.href = 'index.php?v=d&m=openhasp&p=openhasp&id=' + _options;
   }
 });
 
@@ -292,6 +266,15 @@ $('body').off('openhasp::MainPage::reloadIfVisible').on('openhasp::MainPage::rel
       window.location.href = 'index.php?v=d&m=openhasp&p=openhasp';
     }
   } catch(e)  {}
+});
+
+/**
+ * Evènement reçu du serveur
+ * - Supprimer commande
+//  */
+$('body').off('openhasp::command::delete').on('openhasp::command::delete', function (_event, _options) {
+  $('tr[data-cmd_id=' + _options + ']').remove();
+
 });
 
 /**
@@ -363,6 +346,63 @@ $('#bt_openInNewWindow').off('click').on('click', function () {
   }
 });
 
+
+/**
+ * Equimement ouvert
+ * - Onglet "Commandes générales"
+ *   - Bouton "Gérer les commandes générales"
+ */
+$("#bt_manageCommandGeneral").on('click', function(event) {
+  var id = $('.eqLogicAttr[data-l1key=id]').value();
+  $('#md_modal').dialog({
+    title: "{{Gestion des commandes générales}}",
+    closeOnEscape: false,
+    autoOpen: false,
+    modal: true,
+    open: function() {
+      $('.ui-widget-overlay').click(function(e) {
+        /*This will disable click and close*/
+        e.preventDefault();
+        return false;
+      });
+    },
+    close: function() {
+      if (modalClosedWithChange) {
+        jeedom.openhasp.utils.refreshEqLogicPage();
+      }
+    }
+  });
+  $('#md_modal').load('index.php?v=d&plugin=openhasp&modal=command.general&id=' + id).dialog('open');
+})
+
+/**
+ * Equimement ouvert
+ * - Onglet "Commandes spécifiques"
+ *   - Bouton "Gérer les commandes des objets de l'écran"
+ */
+$("#bt_manageCommandSpecific").on('click', function(event) {
+  var id = $('.eqLogicAttr[data-l1key=id]').value();
+  $('#md_modal').dialog({
+    title: "{{Gestion des commandes des objets de l'écran}}",
+    closeOnEscape: false,
+    autoOpen: false,
+    modal: true,
+    open: function() {
+      $('.ui-widget-overlay').click(function(e) {
+        /*This will disable click and close*/
+        e.preventDefault();
+        return false;
+      });
+    },
+    close: function() {
+      if (modalClosedWithChange) {
+        jeedom.openhasp.utils.refreshEqLogicPage();
+      }
+    }
+  });
+  $('#md_modal').load('index.php?v=d&plugin=openhasp&modal=command.specific&id=' + id).dialog('open');
+})
+
 /**
  * Equimement ouvert
  * - Onglet "Commandes générales"
@@ -432,3 +472,15 @@ $('#filter_page').on('click', 'a.commandPageFilter', function() {
     $('#table_cmd_specific').find('tbody>tr').show()
   }
 })
+
+
+
+
+$("#table_cmd_specific, #table_cmd_general").delegate(".listEquipementInfo", 'click', function () {
+  var el = $(this);
+  jeedom.cmd.getSelectModal({cmd: {type: 'info'}}, function (result) {
+      var textArea = el.closest('tr').find('.cmdAttr[data-l1key=configuration][data-l2key=' + el.data('input') + ']');
+      textArea.value(result.human);
+
+  });
+});

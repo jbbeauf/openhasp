@@ -177,7 +177,7 @@ class openhasp extends eqLogic {
         include_file('core', 'mqtt2', 'class', 'mqtt2');
       }
       if ('' != $_value) {
-      $sendValue = self::convertUnicodeInTextToSend($_value);
+        $sendValue = self::convertUnicodeInTextToSend($_value);
       } else {
         $sendValue = '';
       }
@@ -509,29 +509,34 @@ class openhasp extends eqLogic {
 	* Descr: Convert data from jsonl file into proper array
  	*/
 	public static function extractObjectsFromJsonl($_jsonl) {
-		$return = array();
+    $return = array();
     $page = -1;
-    $jsonl = preg_replace('/}\s+/', '}', $_jsonl);
-    $jsonl = preg_replace('/\s+{/', '{', $_jsonl);
+    $jsonl = $_jsonl;
+    $jsonl = preg_replace('/}\s+/', '}', $jsonl);
+    $jsonl = preg_replace('/\s+{/', '{', $jsonl);
     foreach (explode('}{', '}' . $jsonl . '{') as $element)
     {
+      /* Pour chaque objet jsonl */
       if ('' != $element) {
+        
         $elementDecoded = json_decode('{' . $element . '}', true, 2147483647, JSON_INVALID_UTF8_IGNORE );
         if (array_key_exists('page', $elementDecoded) || array_key_exists('id', $elementDecoded)) {
+          /* Ajoute l'information de la page de l'objet si elle est absente */
           if (array_key_exists('page', $elementDecoded)) {
-              $page = $elementDecoded['page'];
+            $page = $elementDecoded['page'];
           } else {
             if ($page >= 0){
               $elementDecoded['page'] = $page;
             }
           }
+          /* On ne conserve que les objets jsonl qui possèdent un identifiant */
           if (array_key_exists('id', $elementDecoded)) {
             array_push($return, $elementDecoded);
           }
         }
       }
     }
-    log::add(__CLASS__, 'debug', 'extractObjectsFromJsonl return = ' . print_r($return, true));
+    log::add(__CLASS__, 'debug', 'extractObjectsFromJsonl return (' . count($return) . ') = ' . print_r($return, true));
 		return $return;
 	}
 
@@ -584,10 +589,11 @@ class openhasp extends eqLogic {
   public function preSave() {
     // log::add(__CLASS__, 'debug', 'preSave');
   }
-  
+ 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
     // log::add(__CLASS__, 'debug', 'postSave');
+
     $commandOrder = 1;
     /* Commande Action Refresh */
     $action = $this->getCmd(null, 'command/statusupdate');
@@ -616,159 +622,6 @@ class openhasp extends eqLogic {
       $info->setConfiguration('type', 'general');
       $info->save();
     }
-    
-    /* Commande Info Adresse IP */
-    $info = $this->getCmd(null, 'state/statusupdate/ip');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/statusupdate/ip');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('IP', __FILE__));
-      $info->setType('info');
-      $info->setSubType('string');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
-    
-    /* Commande Info Largeur de l'écran en pixel */
-    $info = $this->getCmd(null, 'state/statusupdate/tftWidth');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/statusupdate/tftWidth');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('Largeur écran', __FILE__));
-      $info->setType('info');
-      $info->setSubType('numeric');
-      $info->setUnite('px');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
-    
-    /* Commande Info Hauteur de l'écran en pixel */
-    $info = $this->getCmd(null, 'state/statusupdate/tftHeight');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/statusupdate/tftHeight');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('Hauteur écran', __FILE__));
-      $info->setType('info');
-      $info->setSubType('numeric');
-      $info->setUnite('px');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
-    
-    /* Commande Info / Action Numéro de la page courante */
-    $info = $this->getCmd(null, 'state/page');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/page');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('Page courante', __FILE__));
-      $info->setType('info');
-      $info->setSubType('numeric');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
-    $action = $this->getCmd(null, 'command/page');
-    if (!is_object($action)) {
-      $action = new openhaspCmd();
-      $action->setLogicalId('command/page');
-      $action->setEqLogic_id($this->getId());
-      $action->setName(__('Page courante', __FILE__) . ' ' . __('Commande', __FILE__));
-      $action->setType('action');
-      $action->setSubType('slider');
-      $action->setValue($info->getId());
-      $action->setConfiguration('message','#slider#');
-      $action->setConfiguration('minValue','1');
-      $action->setOrder($commandOrder++);
-      $action->setConfiguration('type', 'general');
-      $action->save();
-      // $numberOfObjectsAdded++;
-    }
-    
-    /* Commande Info / Action pour la mise en veille de l'écran */
-    $info = $this->getCmd(null, 'state/idle');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/idle');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('Veille de l\'écran', __FILE__));
-      $info->setType('info');
-      $info->setSubType('string');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
-    $action = $this->getCmd(null, 'command/idle');
-    if (!is_object($action)) {
-      $action = new openhaspCmd();
-      $action->setLogicalId('command/idle');
-      $action->setEqLogic_id($this->getId());
-      $action->setName(__('Veille de l\'écran', __FILE__) . ' ' . __('Commande', __FILE__));
-      $action->setType('action');
-      $action->setSubType('select');
-      $action->setValue($info->getId());
-      $action->setConfiguration('message','#select#');
-      $action->setConfiguration('listValue','off|OFF;short|Court;long|Long');
-      $action->setOrder($commandOrder++);
-      $action->setConfiguration('type', 'general');
-      $action->save();
-      // $numberOfObjectsAdded++;
-    }
-    
-    /* Commande Info / Action pour l'état et la luminosité de l'écran */
-    $info = $this->getCmd(null, 'state/backlight/state');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/backlight/state');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('État de l\'écran', __FILE__));
-      $info->setType('info');
-      $info->setSubType('string');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
-    $info = $this->getCmd(null, 'state/backlight/brightness');
-    if (!is_object($info)) {
-      $info = new openhaspCmd();
-      $info->setLogicalId('state/backlight/brightness');
-      $info->setEqLogic_id($this->getId());
-      $info->setName(__('Luminosité de l\'écran', __FILE__));
-      $info->setType('info');
-      $info->setSubType('numeric');
-      $info->setOrder($commandOrder++);
-      $info->setConfiguration('type', 'general');
-      $info->save();
-    }
-    // $action = $this->getCmd(null, 'command/backlight', null, true);
-    // if (!is_array($action) && !is_object($action)) {
-    //   $action = new openhaspCmd();
-    //   $action->setLogicalId('command/backlight');
-    //   $action->setEqLogic_id($this->getId());
-    //   $action->setName(__('Écran ON', __FILE__) . ' ' . __('Commande', __FILE__));
-    //   $action->setType('action');
-    //   $action->setSubType('slider');
-    //   //$action->setValue($info->getId());
-    //   $action->setConfiguration('message','json::{"state":"on","brightness":#slider#}');
-    //   $action->setConfiguration('minValue','1');
-    //   $action->setConfiguration('maxValue','255');
-    //   $action->save();
-    //   $action = new openhaspCmd();
-    //   $action->setLogicalId('command/backlight');
-    //   $action->setEqLogic_id($this->getId());
-    //   $action->setName(__('Écran OFF', __FILE__) . ' ' . __('Commande', __FILE__));
-    //   $action->setType('action');
-    //   $action->setSubType('other');
-    //   //$action->setValue($info->getId());
-    //   $action->setConfiguration('message','0');
-    //   $action->save();
-    // }
 
     /* S'abonner au topic MQTT */
     if ($this->getIsEnable()) {
@@ -783,7 +636,7 @@ class openhasp extends eqLogic {
   public function preRemove() {
     // log::add(__CLASS__, 'debug', 'preRemove');
   }
-
+  
   // Fonction exécutée automatiquement après la suppression de l'équipement
   public function postRemove() {
     // log::add(__CLASS__, 'debug', 'postRemove');
@@ -851,7 +704,7 @@ class openhasp extends eqLogic {
     log::add(__CLASS__, 'debug', __FUNCTION__ . ' - Publication automatique de la commande ' . $cmdAction->getHumanName() . ' avec la valeur >' . print_r($_options['value'], true) . '<');
     $cmdAction->execute($_options);
 
-  }
+}
 
   /**
    * Valider la configuration de l'équipemet depuis son adresse IO
@@ -977,292 +830,143 @@ class openhasp extends eqLogic {
     $url = 'http://' . $ip . $pageName;
     $jsonl = self::getAsJsonl($url);
     $objects = $this->extractObjectsFromJsonl($jsonl);
-    $numberOfObjectsAdded = 0;
-    foreach ($objects as $object) {
-      /* On saute les objets qui ont des actions associées : c'est du fonctionnement interne à l'écran */
-      if (isset($object['action'])) {
-        continue;
-      }
 
+    foreach ($objects as $key => $object) {
       /* Cas particulier : bouton toggle*/
       if ('btn' == $object['obj'] && isset($object['toggle']) && true == $object['toggle']) {
-        $object['obj'] = 'btn_toggle';
+        $objects[$key]['obj'] = 'btn_toggle';
       }
 
-      /* La propriété text contient ce qui est affiché (bref le texte) */
-      if ('' == $object['text']) {
-        /* Le texte d'un objet peut être vide : on affichera son type et son id à la place */
-        $object['text'] = $object['obj'] . ' ' . $object['id'];
-      } else {
-        /* Gestion de l'unicode pour les objets qui ont la propriété 'text' définie */
-        $object['text'] = self::convertReceivedTextToReadableText($object['text']);
-      }
-
-      $objectReference = 'p' . $object['page'] . 'b' . $object['id'];
-      log::add(__CLASS__, 'debug', 'importCommands - Reference = ' . $objectReference . ' - Object = ' . print_r($object, true));
-      
-      if (in_array($object['obj'], array('btn'))) {
-        if ('btn' == $object['obj']) {
-          $displayableTypeName = __('Bouton', __FILE__);
-        }
-        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['text']);
-        $info = $this->getCmd(null, 'state/' . $objectReference . '/event');
-        if (!is_object($info)) {
-          $info = new openhaspCmd();
-          $info->setLogicalId('state/' . $objectReference . '/event');
-          $info->setEqLogic_id($this->getId());
-          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['text']);
-          $info->setType('info');
-          $info->setSubType('string');
-          $info->setConfiguration('type', 'specific');
-          $info->setConfiguration('page',  $object['page']);
-          $info->save();
-          $numberOfObjectsAdded++;
-        }
-      }
-
-      if (in_array($object['obj'], array('checkbox', 'switch', 'btn_toggle'))) {
-        if ('checkbox' == $object['obj']) {
-          $displayableTypeName = __('Checkbox', __FILE__);
-        }
-        if ('switch' == $object['obj']) {
-          $displayableTypeName = __('Switch', __FILE__);
-        }
-        if ('btn_toggle' == $object['obj']) {
-          $displayableTypeName = __('Bouton Toggle', __FILE__);
-        }
-        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['text']);
-        $info = $this->getCmd(null, 'state/' . $objectReference . '/val');
-        if (!is_object($info)) {
-          $info = new openhaspCmd();
-          $info->setLogicalId('state/' . $objectReference . '/val');
-          $info->setEqLogic_id($this->getId());
-          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['text']);
-          $info->setType('info');
-          $info->setSubType('string');
-          $info->setConfiguration('type', 'specific');
-          $info->setConfiguration('page',  $object['page']);
-          $info->save();
-          $numberOfObjectsAdded++;
-        }
-        $action = $this->getCmd(null, 'command/' . $objectReference . '.val');
-        if (!is_object($action)) {
-          $action = new openhaspCmd();
-          $action->setLogicalId('command/' . $objectReference . '.val');
-          $action->setEqLogic_id($this->getId());
-          $action->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['text'] . ' ' . __('Commande', __FILE__));
-          $action->setType('action');
-          $action->setSubType('select');
-          $action->setValue($info->getId()); /* $info précédente */
-          $action->setConfiguration('message','#select#');
-          $action->setConfiguration('listValue','0|OFF;1|ON');
-          $action->setConfiguration('type', 'specific');
-          $action->setConfiguration('page',  $object['page']);
-          $action->save();
-          $numberOfObjectsAdded++;
-        }
-      }
-
+      /* Cas particulier : roller et dropdown list */
       if (in_array($object['obj'], array('roller', 'dropdown'))) {
-        if ('roller' == $object['obj']) {
-          $displayableTypeName = __('Liste tournate', __FILE__);
-        }
-        if ('dropdown' == $object['obj']) {
-          $displayableTypeName = __('Liste déroulante', __FILE__);
-        }
         $rollerOptions = $object['options'];
         $rollerOptionsArray = explode("\n", $rollerOptions);
         for($i = 0; $i < count($rollerOptionsArray); $i++) {
             $rollerOptionsArray[$i] = $i . '|' . $rollerOptionsArray[$i];
         }
-        $listoptions = implode(";", $rollerOptionsArray);
-        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['id']);
-        $info = $this->getCmd(null, 'state/' . $objectReference . '/val');
-        if (!is_object($info)) {
-          $info = new openhaspCmd();
-          $info->setLogicalId('state/' . $objectReference . '/val');
-          $info->setEqLogic_id($this->getId());
-          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['id'] . ' ' . __('Valeur', __FILE__));
-          $info->setType('info');
-          $info->setSubType('string');
-          $info->setConfiguration('type', 'specific');
-          $info->setConfiguration('page',  $object['page']);
-          $info->save();
-          $numberOfObjectsAdded++;
-        }
-        $action = $this->getCmd(null, 'command/' . $objectReference . '.val');
-        if (!is_object($action)) {
-          $action = new openhaspCmd();
-          $action->setLogicalId('command/' . $objectReference . '.val');
-          $action->setEqLogic_id($this->getId());
-          $action->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['id'] . ' ' . __('Commande', __FILE__));
-          $action->setType('action');
-          $action->setSubType('select');
-          $action->setValue($info->getId()); /* $info précédente */
-          $action->setConfiguration('message','#select#');
-          $action->setConfiguration('listValue', $listoptions);
-          $action->setConfiguration('type', 'specific');
-          $action->setConfiguration('page',  $object['page']);
-          $action->save();
-          $numberOfObjectsAdded++;
-        }
-        $info = $this->getCmd(null, 'state/' . $objectReference . '/text');
-        if (!is_object($info)) {
-          $info = new openhaspCmd();
-          $info->setLogicalId('state/' . $objectReference . '/text');
-          $info->setEqLogic_id($this->getId());
-          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['id']. ' ' . __('Texte', __FILE__));
-          $info->setType('info');
-          $info->setSubType('string');
-          $info->setConfiguration('type', 'specific');
-          $info->setConfiguration('page',  $object['page']);
-          $info->save();
-          $numberOfObjectsAdded++;
-        }
+        $objects[$key]['listValue'] = implode(";", $rollerOptionsArray);
       }
 
-      if (in_array($object['obj'], array('qrcode',))) {
-        if ('qrcode' == $object['obj']) {
-          $displayableTypeName = __('Qrcode', __FILE__);
-        }
-        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['text']);
-        $info = $this->getCmd(null, 'state/' . $objectReference . '/text');
-        if (!is_object($info)) {
-          $info = new openhaspCmd();
-          $info->setLogicalId('state/' . $objectReference . '/text');
-          $info->setEqLogic_id($this->getId());
-          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['id']);
-          $info->setType('info');
-          $info->setSubType('string');
-          $info->setConfiguration('type', 'specific');
-          $info->setConfiguration('page',  $object['page']);
-          $info->save();
-          $numberOfObjectsAdded++;
-        }
-        $action = $this->getCmd(null, 'command/' . $objectReference . '.text');
-        if (!is_object($action)) {
-          $action = new openhaspCmd();
-          $action->setLogicalId('command/' . $objectReference . '.text');
-          $action->setEqLogic_id($this->getId());
-          $action->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['id'] . ' ' . __('Commande', __FILE__));
-          $action->setType('action');
-          $action->setSubType('other');
-          $action->setValue($info->getId()); /* $info précédente */
-          $action->setConfiguration('type', 'specific');
-          $action->setConfiguration('page',  $object['page']);
-          $action->save();
-          $numberOfObjectsAdded++;
-        }
-      }
-
-      if (in_array($object['obj'], array('cpicker'))) {
-        if ('cpicker' == $object['obj']) {
-          $displayableTypeName = __('Sélecteur de couleurs', __FILE__);
-        }
-        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['text']);
-        $info = $this->getCmd(null, 'state/' . $objectReference . '/color');
-        if (!is_object($info)) {
-          $info = new openhaspCmd();
-          $info->setLogicalId('state/' . $objectReference . '/color');
-          $info->setEqLogic_id($this->getId());
-          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['text']);
-          $info->setType('info');
-          $info->setSubType('string');
-          $info->setConfiguration('type', 'specific');
-          $info->setConfiguration('page',  $object['page']);
-          $info->save();
-          $numberOfObjectsAdded++;
-        }
-        /* TODO : couleur envoyée (command) != couleur reçue (state), à investiguer */
-        $action = $this->getCmd(null, 'command/' . $objectReference . '.color');
-        if (!is_object($action)) {
-          $action = new openhaspCmd();
-          $action->setLogicalId('command/' . $objectReference . '.color');
-          $action->setEqLogic_id($this->getId());
-          $action->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . __('Sélecteur de couleurs', __FILE__) . ' ' . $object['text'] . ' ' . __('Commande', __FILE__));
-          $action->setType('action');
-          $action->setSubType('color');
-          $action->setValue($info->getId()); /* $info précédente */
-          $action->setConfiguration('message','#color#');
-          $action->setConfiguration('type', 'specific');
-          $action->setConfiguration('page',  $object['page']);
-          $action->save();
-          $numberOfObjectsAdded++;
-        }
-      }
-
-      if (in_array($object['obj'], array('arc', 'bar', 'gauge', 'led', 'linemeter', 'slider'))) {
-        if ('arc' == $object['obj']) {
-          $displayableTypeName = __('Arc', __FILE__);
-          $defaultMin = 0;
-          $defaultMax = 100;
-        }
-        if ('bar' == $object['obj']) {
-          $displayableTypeName = __('Barre de progression', __FILE__);
-          $defaultMin = 0;
-          $defaultMax = 100;
-        }
-        if ('gauge' == $object['obj']) {
-          $displayableTypeName = __('Jauge', __FILE__);
-          $defaultMin = 0;
-          $defaultMax = 100;
-        }
-        if ('led' == $object['obj']) {
-          $displayableTypeName = __('LED', __FILE__);
-          $defaultMin = 0;
-          $defaultMax = 255;
-        }
-        if ('linemeter' == $object['obj']) {
-          $displayableTypeName = __('Line meter', __FILE__);
-          $defaultMin = 0;
-          $defaultMax = 100;
-        }
-        if ('slider' == $object['obj']) {
-          $displayableTypeName = __('Curseur', __FILE__);
-          $defaultMin = 0;
-          $defaultMax = 100;
-        }
-        log::add(__CLASS__, 'debug', 'importCommands ' . $displayableTypeName . ' = ' . $object['text']);
-        $info = $this->getCmd(null, 'state/' . $objectReference . '/val');
-        if (!is_object($info)) {
-          $info = new openhaspCmd();
-          $info->setLogicalId('state/' . $objectReference . '/val');
-          $info->setEqLogic_id($this->getId());
-          $info->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['text']);
-          $info->setType('info');
-          $info->setSubType('numeric');
-          $info->setConfiguration('type', 'specific');
-          $info->setConfiguration('page',  $object['page']);
-          $info->save();
-          $numberOfObjectsAdded++;
-        }
-        $action = $this->getCmd(null, 'command/' . $objectReference . '.val');
-        if (!is_object($action)) {
-          $action = new openhaspCmd();
-          $action->setLogicalId('command/' . $objectReference . '.val');
-          $action->setEqLogic_id($this->getId());
-          $action->setName(__('Page', __FILE__) . ' ' . $object['page'] . ' - ' . $displayableTypeName . ' ' . $object['text'] . ' ' . __('Commande', __FILE__));
-          $action->setType('action');
-          $action->setSubType('slider');
-          $action->setValue($info->getId()); /* $info précédente */
-          $action->setConfiguration('message','#slider#');
-          $action->setConfiguration('minValue', self::checkAndGetValue($object['min'], $defaultMin));
-          $action->setConfiguration('maxValue', self::checkAndGetValue($object['max'], $defaultMax));
-          $action->setConfiguration('type', 'specific');
-          $action->setConfiguration('page',  $object['page']);
-          $action->save();
-          $numberOfObjectsAdded++;
-        }
+      /* La propriété text contient ce qui est affiché (bref le texte) */
+      if ('' != $object['text']) {
+        /* Gestion de l'unicode pour les objets qui ont la propriété 'text' définie */
+        $objects[$key]['text'] = self::convertReceivedTextToReadableText($object['text']);
       }
     }
+    
+    log::add(__CLASS__, 'debug', 'importCommands - Nombre = ' . count($objects) . ' - objects = ' . print_r($objects, true));
+    return $objects;
+  }
 
-    if ($numberOfObjectsAdded > 0 ) {
-      log::add(__CLASS__, 'debug', 'importCommands ' . $numberOfObjectsAdded . ' objet(s) ajouté(s)');
-      $this->save(true);
-      $this->setChanged(0);
-      event::add('openhasp::equipment::reload', $this->getId());
+  public function getElementWithDefault($array, $key, $defaultValue) {
+    if (array_key_exists($key, $array)) {
+      return $array[$key];
+    } else {
+      return $defaultValue;
     }
   }
+
+  /**
+   * Créer une nouvelle commande
+   * @param string $typeCommande 'general' ou 'specific'
+   * @param object $commandElement objet commande à créer 
+   */
+  public function commandCreateNew($typeCommand, $commandElement) {
+    log::add(__CLASS__, 'debug', 'commandCreateNew debug >' . print_r($commandElement, true) . '<');
+    /* Créer une nouvelle commande et la rattacher à l'objet openhasp courant */
+    $newCommand = new openhaspCmd();
+    $newCommand->setEqLogic_id($this->getId());
+    $newCommand->setOrder(count($this->getCmd(null)) + 1); /* Ajoute la nouvelle commande sous les autres existantes */
+    
+    /* Compléter toutes les valeurs possibles de la commande avec les informations de l'objet donné en paramètre */
+    $newCommand->setName(str_replace('&#39;', '\'', $commandElement['name']));
+    $newCommand->setLogicalId($commandElement['topic']);
+    $newCommand->setType($commandElement['type']);
+    $newCommand->setSubType($commandElement['subType']);
+    $newCommand->setConfiguration('type', $typeCommand);
+    if ('specific' == $typeCommand) {
+      $newCommand->setConfiguration('page', self::getElementWithDefault($commandElement, 'page', 'all'));
+    }
+
+    $newCommand->setConfiguration('message', self::getElementWithDefault($commandElement, 'value', ''));
+    $newCommand->setConfiguration('minValue', self::getElementWithDefault($commandElement, 'min', ''));
+    $newCommand->setConfiguration('maxValue', self::getElementWithDefault($commandElement, 'max', ''));
+    $newCommand->setConfiguration('listValue',self::getElementWithDefault($commandElement, 'listValue', ''));
+    $newCommand->setConfiguration('retain',self::getElementWithDefault($commandElement, 'retain', 0));
+    $newCommand->setConfiguration('refresh',self::getElementWithDefault($commandElement, 'refresh', 0));
+    $newCommand->setUnite(self::getElementWithDefault($commandElement, 'unit', ''));
+
+    /* Le nom de la commande créée doit être unique sinon il y a une erreur */
+    /* En cas d'erreur car une commande existante porte le même nom : alors on change le nomde la commande à créer et on ré-essaie */
+    /* Pour toute autre erreur on remonte l'info comme quoi il y a eu une erreur */
+    try {
+      $newCommand->save(true);
+    } catch (\Throwable $th) {
+      if (strpos($th->getMessage(), 'Duplicate entry \'' . $this->getId() . '-' . $commandElement['name'] . '\' for key \'unique\'') !== false) {
+        log::add(__CLASS__, 'info', 'commandCreateNew Une commande existante avec ce nom ' . $commandElement['name'] . ' existe --> le nom de la commande créé sera modifié');
+        $commandElement['name'] = $commandElement['name'] . ' ' . uniqid();
+        $newCommand->setName($commandElement['name']);
+        try {
+          $newCommand->save(true);
+        } catch (\Throwable $th) {
+          throw new Exception(__("commandCreateNew erreur : Erreur malgré le renommage de la commande ", __FILE__) . ' "' . $th->getMessage() . '"');
+        }
+      } else {
+        throw new Exception(__("commandCreateNew erreur : Erreur inconnue ", __FILE__) . ' "' . $th->getMessage() . '"');
+      }
+    }
+    
+    log::add(__CLASS__, 'debug', 'commandCreateNew Nouvelle commande créée >' . $commandElement['name'] . '< >' . $commandElement['topic'] . '< >' . $commandElement['message'] . '<');
+  }
+
+  /**
+   * Supprimer une commande
+   * @param integer $idCommand ID de la commande à supprimer
+   */
+  public function commandDeleteExiting($idCommand) {
+    $commandToDelete = cmd::byId($idCommand);
+    if (is_object($commandToDelete)) {
+      $commandToDelete->remove();
+      event::add('openhasp::command::delete', $idCommand);
+      log::add(__CLASS__, 'debug', 'commandDeleteExiting Commande supprimée >' . $idCommand . '<');
+    } else {
+      throw new Exception(__("commandDeleteExiting erreur : commande inconnue id=", __FILE__) . ' "' . $idCommand . '"');
+    }
+  }
+
+  /**
+   * Modifier une commande existante
+   * @param integer $idCommand ID de la commande à supprimer
+   * @param string $typeCommande 'general' ou 'specific'
+   * @param object $commandElement objet commande à créer 
+   */
+  public function commandModify($idCommand, $typeCommand, $commandElement) {
+    log::add(__CLASS__, 'debug', 'commandModify Commande à modifier >' . $idCommand . '<');
+    
+    $commandToModify = cmd::byId($idCommand);
+    if (is_object($commandToModify)) {
+      /* Compléter toutes les valeurs possibles de la commande avec les informations de l'objet donné en paramètre */
+      $commandToModify->setLogicalId($commandElement['topic']);
+      $commandToModify->setType($commandElement['type']);
+      $commandToModify->setSubType($commandElement['subType']);
+      $commandToModify->setConfiguration('type', $typeCommand);
+
+      $commandToModify->setConfiguration('message', self::getElementWithDefault($commandElement, 'value', ''));
+      $commandToModify->setConfiguration('minValue', self::getElementWithDefault($commandElement, 'min', ''));
+      $commandToModify->setConfiguration('maxValue', self::getElementWithDefault($commandElement, 'max', ''));
+      $commandToModify->setConfiguration('listValue',self::getElementWithDefault($commandElement, 'listValue', ''));
+      $commandToModify->setUnite(self::getElementWithDefault($commandElement, 'unit', ''));
+
+      try {
+        $commandToModify->save(true);
+      } catch (\Throwable $th) {
+        throw new Exception(__("commandModify erreur : Erreur inconnue ", __FILE__) . ' "' . $th->getMessage() . '"');
+      }
+      log::add(__CLASS__, 'debug', 'commandModify Commande modifiée >' . $idCommand . '<');
+    } else {
+      throw new Exception(__("commandModify erreur : commande inconnue id=", __FILE__) . ' "' . $idCommand . '"');
+    }
+ }
 
   /*     * **********************Getteur Setteur*************************** */
 
@@ -1316,6 +1020,10 @@ class openhaspCmd extends cmd {
           /* Ne pas refaire la commande Refresh */
           continue;
         }
+        if (0 == $cmd->getConfiguration('refresh', 0)) {
+          /* Ne rien faire si l'option Refresh n'est pas cochée */
+          continue;
+        }
         $topicCmd = $cmd->getLogicalId();
         $value = $cmd->getConfiguration('message');
         /* Demande d'actualisation = commande sans valeur */
@@ -1352,20 +1060,20 @@ class openhaspCmd extends cmd {
       }
     } else {
       /* Autres cas : exécution manuelle */
-    switch ($this->getSubType()) {
-      case 'slider':
-        $value = str_replace('#slider#', $_options['slider'], $value);
-        break;
-      case 'color':
-          $value = str_replace('#color#', $_options['color'], $value);
+      switch ($this->getSubType()) {
+        case 'slider':
+          $value = str_replace('#slider#', $_options['slider'], $value);
           break;
-      case 'select':
-        $value = str_replace('#select#', $_options['select'], $value);
-        break;
-      case 'message':
-        $value = str_replace('#message#', $_options['message'], $value);
-        $value = str_replace('#title#', $_options['title'], $value);
-        break;
+        case 'color':
+            $value = str_replace('#color#', $_options['color'], $value);
+            break;
+        case 'select':
+          $value = str_replace('#select#', $_options['select'], $value);
+          break;
+        case 'message':
+          $value = str_replace('#message#', $_options['message'], $value);
+          $value = str_replace('#title#', $_options['title'], $value);
+          break;
       }
     }
     $value = jeedom::evaluateExpression($value);

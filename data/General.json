@@ -1,0 +1,172 @@
+{
+  "global": {
+    "name": "{{Général}}",
+    "command": {
+      "page_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Page Courante}}",
+        "topic": "state/page",
+        "min": "1",
+        "max": "12",
+        "description": "{{Numéro de la page affichée}}"
+      },
+      "page_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Page Courante}}",
+        "topic": "command/page",
+        "value": "#slider#",
+        "min": "1",
+        "max": "12",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la page affichée}}"
+      },
+      "idle_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Mode Veille de l'écran}}",
+        "topic": "state/idle",
+        "description": "{{Mode Veille de l'écran : off, short ou long}}"
+      },
+      "idle_action": {
+        "type": "action",
+        "subType": "select",
+        "name": "{{Changer Mode Veille de l'écran}}",
+        "topic": "command/idle",
+        "value": "#select#",
+        "listValue": "off|OFF;short|Court;long|Long",
+        "refresh": 1,
+        "description": "{{Consigne pour changer le Mode Veille de l'écran}}"
+      },
+      "backlight_brightness_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Luminosité de l'écran}}",
+        "topic": "state/backlight/brightness",
+        "min": "0",
+        "max": "255",
+        "description": "{{Niveau de luminosité de l'écran}}"
+      },
+      "backlight_state_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{État de l'écran}}",
+        "topic": "state/backlight/state",
+        "description": "{{Etat de l'écran : 'on' ou 'off'}}"
+      },
+      "backlight_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Luminosité de l'écran}}",
+        "topic": "command/backlight",
+        "value": "{\"state\":\"on\",\"brightness\":#slider#}",
+        "min": "0",
+        "max": "255",
+        "refresh": 1,
+        "description": "{{Consigne pour changer le Niveau de luminosité de l'écran}}"
+      }
+    }
+  },
+  "network": {
+    "name": "{{Réseau}}",
+    "command": {
+      "ip": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{IP}}",
+        "topic": "state/statusupdate/ip",
+        "description": "{{Adresse IP de l'écran}}"
+      },
+      "ssid": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{SSID}}",
+        "topic": "state/statusupdate/ssid",
+        "description": "{{Nom du réseau sans fil}}"
+      },
+      "mac": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{MAC}}",
+        "topic": "state/statusupdate/mac",
+        "description": "{{Adresse MAC de l'écran}}"
+      },
+      "rssi": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{RSSI}}",
+        "topic": "state/statusupdate/rssi",
+        "description": "{{Niveau de puissance WIFI reçu}}"
+      }
+    }
+  },
+  "screen": {
+    "name": "{{Écran}}",
+    "command": {
+      "tftWidth": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Largeur écran}}",
+        "topic": "state/statusupdate/tftWidth",
+        "unit": "px",
+        "min": "0",
+        "description": "{{Largeur de l'écran, en pixel}}"
+      },
+      "tftHeight": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Hauteur écran}}",
+        "topic": "state/statusupdate/tftHeight",
+        "unit": "px",
+        "min": "0",
+        "description": "{{Hauteur de l'écran, en pixel}}"
+      },
+      "antiburn": {
+        "type": "action",
+        "subType": "select",
+        "name": "{{Activer Antiburn}}",
+        "topic": "command/antiburn",
+        "value": "#select#",
+        "listValue": "off|OFF;on|ON",
+        "description": "{{Gérer la protection de l'écran LCD}}"
+      }
+    }
+  },
+  "system": {
+    "name": "{{Système}}",
+    "command": {
+      "version": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Version}}",
+        "topic": "state/statusupdate/version",
+        "unit": "px",
+        "description": "{{Version de l'écran}}"
+      },
+      "uptime": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Durée de fonctionnement}}",
+        "topic": "state/statusupdate/uptime",
+        "unit": "s",
+        "min": "0",
+        "description": "{{Durée de fonctionnement, en seconde}}"
+      },
+      "lwt": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{LWT}}",
+        "topic": "lwt",
+        "description": "{{Last Will and Testament (LWT) : pour informer de l'état de connexion de l'écran}}"
+      },
+      "reboot": {
+        "type": "action",
+        "subType": "other",
+        "name": "{{Redémarrer}}",
+        "topic": "command/reboot",
+        "description": "{{Redémarrer l'écran}}"
+      }
+    }
+  }
+}
