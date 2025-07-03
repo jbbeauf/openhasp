@@ -141,7 +141,6 @@
         "subType": "string",
         "name": "{{Version}}",
         "topic": "state/statusupdate/version",
-        "unit": "px",
         "description": "{{Version de l'écran}}"
       },
       "uptime": {

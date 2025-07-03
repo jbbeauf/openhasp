@@ -218,24 +218,51 @@ L'écran communique via MQTT avec le broker (configuration, commande et informat
 | Graphique | Page JSONL       | Nom de la page utilisée par l'écran au démarrage  | oui :white_check_mark:       | non :x:                    |
 
 #### 8.2 Page Commandes générales
-Les commandes générales sont automatiquement créées à chaque enregistrement de l'équipement.
-Si une commande générale est supprimée, alors elle sera recréée.
-Vous pouvez également ajouter une commande personnalisée en cliquant sur le bouton "Ajouter une commande".
+2 commandes générales sont créées avec l'équipement : "Rafraîchir" et "Vu pour la dernière fois". Si une est supprimée, alors elle sera recréée au prochain enregistrement de l'équipement.
 
-**Liste des commandes générales**
-| Commande                   | Type   | Description                                                               | Valeur possible /<br>Exemple valeur                                                                       | Documentation openHASP                                                               |
-| -------------------------- | ------ | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Rafraîchir                 | Action | Demander à l'écran une mise à jour pour toutes commandes info disponibles |                                                                                                           | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
-| Vu pour la dernière fois   | Info   | Horodatage de la dernière fois qu'une information de l'écran a été reçue  |                                                                                                           |                                                                                      |
-| IP                         | Info   | Adresse IP de l'écran                                                     | 192.168.1.1                                                                                               | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
-| Largeur écran              | Info   | Largeur de l'écran en pixel, unité px                                     | 300 px                                                                                                    | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
-| Hauteur écran              | Info   | Hauteur de l'écran en pixel, unité px                                     | 300 px                                                                                                    | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
-| Page courante              | info   | Numéro de la page affichée à l'écran                                      | 1                                                                                                         | [Command page](https://www.openhasp.com/0.7.0/commands/global/#page)                 |
-| Page courante Commande     | Action | Changer la page affichée à l'écran                                        | 1                                                                                                         | [Command page](https://www.openhasp.com/0.7.0/commands/global/#page)                 |
-| Veille de l'écran          | info   | Etat de veille de l'écran                                                 | <li>_off_ : écran allumé</li><li>_short_ : veille niveau 1, luminosité réduite</li><li>_long_ : veille niveau 2, écran éteint</li> | [Command idle](https://www.openhasp.com/0.7.0/commands/global/#idle)                 |
-| Veille de l'écran Commande | Action | Changer l'état de veille de l'écran                                       | <li>_off_ : écran allumé</li><li>_short_ : veille niveau 1, luminosité réduite</li><li>_long_ : veille niveau 2, écran éteint</li> | [Command idle](https://www.openhasp.com/0.7.0/commands/global/#idle)                 |
-| Etat de l'écran            | info   | Etat de l'écran                                                           | <li>_on_ : écran allumé</li><li>_off_ : écran éteint</li>                                                                   | [Command backlight](https://www.openhasp.com/0.7.0/commands/global/#backlight)       |
-| Luminosité de l'écran      | Info   | Niveau de luminosité de l'écran                                           | 1 à 255                                                                                                   | [Command backlight](https://www.openhasp.com/0.7.0/commands/global/#backlight)       |
+Vous pouvez :
+* gérer les autres commandes générales en cliquant sur le bouton "Gérer les commandes générales"
+* ajouter une commande personnalisée en cliquant sur le bouton "Ajouter une commande"
+
+L'objectif est de n'avoir dans vos commandes générales que des commandes utiles.
+
+**Fenêtre de gestion des commandes générales**
+Cette fenêtre permet 
+1. d'ajouter une nouvelle commande générale prédéfinie
+  Cocher la case "Utiliser ?" et laisser la liste "Commandes associées" à la valeur "Nouvelle commande"
+  Cliquer sur "Enregistrer"
+2. de supprimer une commande générale prédéfinie existante
+  Décocher la case "Utiliser ?"
+  Cliquer sur "Enregistrer"
+3. de modifier une comande générale prédéfinie existante
+  Changer la valeur de la liste "Commandes associées"
+  Cliquer sur "Enregistrer"
+
+**Liste des commandes générales disponibles **
+
+| Groupe  | Commande                       | Type   | Description                                                                     | Valeur possible /<br>Exemple valeur                                                                                                | Documentation openHASP                                                               |
+|---------|--------------------------------|--------|---------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| Aucun   | Rafraîchir                     | Action | Demander à l'écran une mise à jour pour toutes commandes info disponibles       |                                                                                                                                    | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
+| Aucun   | Vu pour la dernière fois       | Info   | Horodatage de la dernière fois qu'une information de l'écran a été reçue        |                                                                                                                                    |                                                                                      |
+| Général | Page courante                  | Info   | Numéro de la page affichée à l'écran                                            | 1                                                                                                                                  | [Command page](https://www.openhasp.com/0.7.0/commands/global/#page)                 |
+| Général | Changer Page courante          | Action | Changer la page affichée à l'écran                                              | 1                                                                                                                                  | [Command page](https://www.openhasp.com/0.7.0/commands/global/#page)                 |
+| Général | Mode Veille de l'écran         | Info   | Etat de veille de l'écran                                                       | <li>_off_ : écran allumé</li><li>_short_ : veille niveau 1, luminosité réduite</li><li>_long_ : veille niveau 2, écran éteint</li> | [Command idle](https://www.openhasp.com/0.7.0/commands/global/#idle)                 |
+| Général | Changer Mode Veille de l'écran | Action | Changer l'état de veille de l'écran                                             | <li>_off_ : écran allumé</li><li>_short_ : veille niveau 1, luminosité réduite</li><li>_long_ : veille niveau 2, écran éteint</li> | [Command idle](https://www.openhasp.com/0.7.0/commands/global/#idle)                 |
+| Général | Luminosité de l'écran          | Info   | Niveau de luminosité de l'écran                                                 | 1 à 255                                                                                                                            | [Command backlight](https://www.openhasp.com/0.7.0/commands/global/#backlight)       |
+| Général | Etat de l'écran                | Info   | Etat de l'écran                                                                 | <li>_on_ : écran allumé</li><li>_off_ : écran éteint</li>                                                                          | [Command backlight](https://www.openhasp.com/0.7.0/commands/global/#backlight)       |
+| Général | Changer Luminosité de l'écran  | Action | Changer le niveau de luminosité de l'écran                                      | 1 à 255                                                                                                                            | [Command backlight](https://www.openhasp.com/0.7.0/commands/global/#backlight)       |
+| Réseau  | IP                             | Info   | Adresse IP de l'écran                                                           | 192.168.1.1                                                                                                                        | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
+| Réseau  | SSID                           | Info   | Nom du réseau sans fil                                                          | Toto                                                                                                                               | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
+| Réseau  | MAC                            | Info   | Adresse MAC de l'écran                                                          | AA:BB:CC:DD:EE:FF                                                                                                                  | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
+| Réseau  | RSSI                           | Info   | Niveau de puissance WIFI reçu                                                   | -50                                                                                                                                | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
+| Écran   | Largeur écran                  | Info   | Largeur de l'écran en pixel, unité px                                           | 300 px                                                                                                                             | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
+| Écran   | Hauteur écran                  | Info   | Hauteur de l'écran en pixel, unité px                                           | 300 px                                                                                                                             | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
+| Écran   | Activer Antiburn               | Action | Gérer la protection de l'écran LCD                                              | <li>_on_ : démarrer la protection </li><li>_off_ : arrête la protection</li>                                                       | [Command antiburn](https://www.openhasp.com/0.7.0/commands/system/#antiburn)         |
+| Système | Version                        | Info   | Version de l'écran                                                              | 0.7.0-rc12                                                                                                                         | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
+| Système | Durée de fonctionnement        | Info   | Durée de fonctionnement, en seconde                                             | 30 s                                                                                                                               | [Command statusupdate](https://www.openhasp.com/0.7.0/commands/system/#statusupdate) |
+| Système | LWT                            | Info   | Last Will and Testament (LWT) : pour informer de l'état de connexion de l'écran |                                                                                                                                    | [LWT](https://www.hivemq.com/blog/mqtt-essentials-part-9-last-will-and-testament/)   |
+| Système | Redémarrer                     | Action | Redémarrer l'écran                                                              |                                                                                                                                    | [Command reboot](https://www.openhasp.com/0.7.0/commands/system/#reboot-or-restart)  |
+
 
 #### 8.3 Page Commandes spécifiques
 La page des commandes spécifiques sert à afficher les commandes créées automatiquement à partir des objets de l'écran.
@@ -244,52 +271,59 @@ Vous pouvez également ajouter une commande personnalisée en cliquant sur le bo
 
 Pour créer automatiquement les commandes à partir des objets de l'écran, cliquer sur le bouton "Importer les objets de l'écran"
 1. Le plugin openHASP va télécharger la page JSONL utilisée par l'écran au démarrage 
-1. Des commandes info / actions vont être créées pour tous les objets supportés
-    * Nom de la commande info au format : "Page X - TYPE_OBJET TEXT_OBJET"
-     Exemple : "Page 1 - Checkbox Douche"
-    * Nom de la commande info au format : "Page X - TYPE_OBJET TEXT_OBJET Commande"
-     Exemple : "Page 1 - Checkbox Douche Commande"
+1. Tous les objets supportés sont listés et proposent
+  2.1 Des commandes spécifiques, en bleu : spécifique au type d'objet
+  2.2 Des commandes communes, en orange : commun à tous les objets
 
-> **TYPE_OBJET** : voir le tableau ci-dessous
-
-> **TEXT_OBJET** :
-> Utilisation de la propiété 'text' de l'objet
-> Si la propriété 'text' n'est pas définie ou si elle est vide, alors la propriété 'id' sera utilisée à la place
+__Important__ : Toutes les commandes spécifiques ou communes ne sont pas décrites dans cette documentation. Un texte explication est disponible pour chaque commande disponible.
 
 Liste des objets openHASP (version 0.7.0)
-| Objet     | Propriété      | Supporté par le<br>plugin openHASP\* | Documentation                                                                 | Commande info                              | Commande action                                     | Valeur possible                       |
-| --------- | -------------- | ------------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------ | --------------------------------------------------- | ------------------------------------- |
-| btn       | toggle = false | oui :white_check_mark:               | [Button](https://www.openhasp.com/0.7.0/design/objects/#button)               | Page x - Bouton TEXT                       | \-                                                  | down<br>up<br>long<br>hold<br>release |
-| btn       | toggle = true  | oui :white_check_mark:               | [Button](https://www.openhasp.com/0.7.0/design/objects/#button)               | Page x - Bouton Toggle TEXT                | Page x - Bouton Toggle TEXT Commande                | 0<br>1                                |
-| switch    |                | oui :white_check_mark:               | [Switch](https://www.openhasp.com/0.7.0/design/objects/#switch)               | Page x - Bouton Checkbox TEXT              | Page x - Bouton Checkbox TEXT Commande              | 0<br>1                                |
-| checkbox  |                | oui :white_check_mark:               | [Checkbox](https://www.openhasp.com/0.7.0/design/objects/#checkbox)           | Page x - Bouton Switch TEXT                | Page x - Bouton Switch TEXT Commande                | 0<br>1                                |
-| label     |                |                                      | [Label](https://www.openhasp.com/0.7.0/design/objects/#text-label)            |                                            |                                                     |                                       |
-| led       |                | oui :white_check_mark:               | [LED](https://www.openhasp.com/0.7.0/design/objects/#led-indicator)           | Page x - Bouton LED TEXT                   | Page x - Bouton LED TEXT Commande                   | 0 à 255                               |
-| spinner   |                | non :x:                              | [Spinner](https://www.openhasp.com/0.7.0/design/objects/#spinner)             |                                            |                                                     |                                       |
-| obj       |                | non :x:                              | [Base Object](https://www.openhasp.com/0.7.0/design/objects/#base-object)     |                                            |                                                     |                                       |
-| line      |                | non :x:                              | [Line](https://www.openhasp.com/0.7.0/design/objects/#line)                   |                                            |                                                     |                                       |
-| img       |                | non :x:                              | [Image](https://www.openhasp.com/0.7.0/design/objects/#image)                 |                                            |                                                     |                                       |
-| cpicker   |                | oui :white_check_mark:               | [Color picker](https://www.openhasp.com/0.7.0/design/objects/#color-picker)   | Page x - Bouton Sélecteur de couleurs TEXT | Page x - Bouton Sélecteur de couleurs TEXT Commande | #RRGGBB                               |
-| roller    |                | oui :white_check_mark:                              | [Roller](https://www.openhasp.com/0.7.0/design/objects/#roller)               |  - Page x - Bouton Liste tournante ID Valeur<br/> - Page x - Bouton Liste tournante ID Texte                                     | Page x - Bouton Liste tournate ID Commande                                                    | Liste avec les valeurs de la propriété "option" de l'objet                                      |
-| dropdown  |                |oui :white_check_mark:                              | [Dropdown List](https://www.openhasp.com/0.7.0/design/objects/#dropdown-list) |  - Page x - Bouton Liste déroulante ID Valeur<br/> - Page x - Bouton Liste déroulante ID Texte                                     | Page x - Bouton Liste déroulante ID Commande                                                    | Liste avec les valeurs de la propriété "option" de l'objet                                       |
-| btnmatrix |                | non :x:                              | [Button Matrix](https://www.openhasp.com/0.7.0/design/objects/#button-matrix) |                                            |                                                     |                                       |
-| msgbox    |                | non :x:                              | [Messagebox](https://www.openhasp.com/0.7.0/design/objects/#messagebox)       |                                            |                                                     |                                       |
-| tabview   |                | non :x:                              | [Tabview](https://www.openhasp.com/0.7.0/design/objects/#tabview)             |                                            |                                                     |                                       |
-| tab       |                | non :x:                              | [Tab](https://www.openhasp.com/0.7.0/design/objects/#tab)                     |                                            |                                                     |                                       |
-| bar       |                | oui :white_check_mark:               | [Progress Bar](https://www.openhasp.com/0.7.0/design/objects/#progress-bar)   | Page x - Bouton Barre de progression TEXT  | Page x - Bouton Barre de progression TEXT Commande  | 0 à 100                               |
-| slider    |                | oui :white_check_mark:               | [Slider](https://www.openhasp.com/0.7.0/design/objects/#slider)               | Page x - Bouton Curseur TEXT               | Page x - Bouton Curseur TEXT Commande               | 0 à 100                               |
-| arc       |                | oui :white_check_mark:               | [Arc](https://www.openhasp.com/0.7.0/design/objects/#arc)                     | Page x - Bouton Arc TEXT                   | Page x - Bouton Arc TEXT Commande                   | 0 à 100                               |
-| linemeter |                | oui :white_check_mark:               | [Line Meter](https://www.openhasp.com/0.7.0/design/objects/#line-meter)       | Page x - Bouton Line meter TEXT            | Page x - Bouton Line meter TEXT Commande            | 0 à 100                               |
-| gauge     |                | oui :white_check_mark:               | [Gauge](https://www.openhasp.com/0.7.0/design/objects/#gauge)                 | Page x - Bouton Jauge TEXT                 | Page x - Bouton Jauge TEXT Commande                 | 0 à 100                               |
-| qrcode    |                | oui :white_check_mark:                               | [Qrcode](https://www.openhasp.com/0.7.0/design/objects/#qrcode)               | Page x - Qrcode ID                                       | Page x - Qrcode ID Commande                                                    | Texte de 122 caractères maximum                                     |
+| Objet     | Supporté par le<br>plugin openHASP\* | Documentation                                                                 |
+|-----------|--------------------------------------|-------------------------------------------------------------------------------|
+| btn       | oui :white_check_mark:               | [Button](https://www.openhasp.com/0.7.0/design/objects/#button)               |
+| switch    | oui :white_check_mark:               | [Switch](https://www.openhasp.com/0.7.0/design/objects/#switch)               |
+| checkbox  | oui :white_check_mark:               | [Checkbox](https://www.openhasp.com/0.7.0/design/objects/#checkbox)           |
+| label     | oui :white_check_mark:               | [Label](https://www.openhasp.com/0.7.0/design/objects/#text-label)            |
+| led       | oui :white_check_mark:               | [LED](https://www.openhasp.com/0.7.0/design/objects/#led-indicator)           |
+| spinner   | non :x:                              | [Spinner](https://www.openhasp.com/0.7.0/design/objects/#spinner)             |
+| obj       | non :x:                              | [Base Object](https://www.openhasp.com/0.7.0/design/objects/#base-object)     |
+| line      | non :x:                              | [Line](https://www.openhasp.com/0.7.0/design/objects/#line)                   |
+| img       | non :x:                              | [Image](https://www.openhasp.com/0.7.0/design/objects/#image)                 |
+| cpicker   | oui :white_check_mark:               | [Color picker](https://www.openhasp.com/0.7.0/design/objects/#color-picker)   |
+| roller    | oui :white_check_mark:               | [Roller](https://www.openhasp.com/0.7.0/design/objects/#roller)               |
+| dropdown  | oui :white_check_mark:               | [Dropdown List](https://www.openhasp.com/0.7.0/design/objects/#dropdown-list) |
+| btnmatrix | non :x:                              | [Button Matrix](https://www.openhasp.com/0.7.0/design/objects/#button-matrix) |
+| msgbox    | non :x:                              | [Messagebox](https://www.openhasp.com/0.7.0/design/objects/#messagebox)       |
+| tabview   | non :x:                              | [Tabview](https://www.openhasp.com/0.7.0/design/objects/#tabview)             |
+| tab       | non :x:                              | [Tab](https://www.openhasp.com/0.7.0/design/objects/#tab)                     |
+| bar       | oui :white_check_mark:               | [Progress Bar](https://www.openhasp.com/0.7.0/design/objects/#progress-bar)   |
+| slider    | oui :white_check_mark:               | [Slider](https://www.openhasp.com/0.7.0/design/objects/#slider)               |
+| arc       | oui :white_check_mark:               | [Arc](https://www.openhasp.com/0.7.0/design/objects/#arc)                     |
+| linemeter | oui :white_check_mark:               | [Line Meter](https://www.openhasp.com/0.7.0/design/objects/#line-meter)       |
+| gauge     | oui :white_check_mark:               | [Gauge](https://www.openhasp.com/0.7.0/design/objects/#gauge)                 |
+| qrcode    | oui :white_check_mark:               | [Qrcode](https://www.openhasp.com/0.7.0/design/objects/#qrcode)               |
+|           |                                      |                                                                               |
 
-> &ast; _non supporté_ = l'objet sera ignoré par le plugin openHASP lors de l'import des objets de l'écran et aucune commande ne lui sera créé automatiquement
-> L'objet reste utilisable avec une commande ajoutée manuellement
+#### 8.4 Commande Action
 
-> _Page x_ : remplace x par le numéro de la page
-> _TEXT_ : remplace TEXT par la propriété "text" de l'objet, correspond souvent au texte affiché
-> _ID_ : remplace ID par la propriété "id" de l'objet
+##### 8.4.1 Option Retain et Refresh
+Les 2 options sont disponibles dans la colonne "Options MQTT" :
+1. **Retain** → dire au serveur de retenir la valeur
+   Penser à Enregistrer l’équipement avant de tester
+   Si coché : la valeur sera conservée par le serveur MQTT
+   Si décoché : la valeur ne sera pas conservée, le plugin gère la suppression du tag Retain auprès du serveur
+2. **Refresh** → demander à l’écran d’envoyer la valeur de l’objet
+   Penser à Enregistrer l’équipement avant de tester
+   Si coché la commande est envoyée 2 fois : 1 première fois avec la valeur demandée et 1 seconde fois avec une valeur vide → l’écran va alors envoyer la valeur qu’il affiche via MQTT
+   Par exemple avec ces 2 commandes : 1 action et 1 info, si vous voulez que l’info soit mise à jour alors il faut cocher cette option Refresh
 
+##### 8.4.2 Ajouter un lien avec une commande info
+Cette option est disponible dans la colonne "Info Jeedom liée" :
+1. **Relier à info** : checkbox pour activer / désactiver le lien avec une commande info
+2. **Champ texte de choix de la commande** : ouvre une popup Jeedom pour sélectionner une commande de type info. Une seule commande info possible, pas de combinaison
+
+Le mécanisme de lien avec une commande info est actif lorsque la checkbox est cochée et qu'une commande info sélectionnée est valide.
+Quand la valeur de la commande info liée change alors la commande action est exécutée avec la valeur de la commande info liée.
 
 # 9. Liens utiles
 * Site officiel de [openHASP](https://www.openhasp.com/)
