@@ -1,0 +1,605 @@
+{
+  "all": {
+    "name": "{{Commun à tous les objets}}",
+    "command" : {
+      "enabled_info": {
+        "type": "info",
+        "subType": "binary",
+        "name": "{{Enabled}}",
+        "topic": "state/pXbY/enabled",
+        "description": "{{Objet activé ou non}}"
+      },
+      "enabled_action": {
+        "type": "action",
+        "subType": "select",
+        "name": "{{Changer Enabled}}",
+        "topic": "command/pXbY.enabled",
+        "value": "\"#select#\"",
+        "listValue": "0|Désactivé;1|Activé",
+        "refresh": 1,
+        "description": "{{Consigne pour changer si l'objet est activé ou non}}"
+      },
+      "hidden_info": {
+        "type": "info",
+        "subType": "binary",
+        "name": "{{Hidden}}",
+        "topic": "state/pXbY/hidden",
+        "description": "{{Objet caché ou non}}"
+      },
+      "hidden_action": {
+        "type": "action",
+        "subType": "select",
+        "name": "{{Changer Hidden}}",
+        "topic": "command/pXbY.hidden",
+        "value": "\"#select#\"",
+        "listValue": "1|Caché;0|Visible",
+        "refresh": 1,
+        "description": "{{Consigne pour changer si l'objet est caché ou non}}"
+      },
+      "x_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Position x}}",
+        "topic": "state/pXbY/x",
+        "min": 0,
+        "unit": "px",
+        "description": "{{Position horizontale sur la page}}"
+      },
+      "x_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Position x}}",
+        "topic": "command/pXbY.x",
+        "value": "#slider#",
+        "min": 0,
+        "unit": "px",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la position horizontale sur la page}}"
+      },
+      "y_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Position y}}",
+        "topic": "state/pXbY/y",
+        "min": 0,
+        "unit": "px",
+        "description": "{{Position verticale sur la page}}"
+      },
+      "y_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Position y}}",
+        "topic": "command/pXbY.y",
+        "value": "#slider#",
+        "min": 0,
+        "unit": "px",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la position verticale sur la page}}"
+      },
+      "w_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Largeur}}",
+        "topic": "state/pXbY/w",
+        "min": 0,
+        "unit": "px",
+        "description": "{{Largeur de l'objet}}"
+      },
+      "w_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Largeur}}",
+        "topic": "command/pXbY.w",
+        "value": "#slider#",
+        "min": 0,
+        "unit": "px",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la largeur de l'objet}}"
+      },
+      "h_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Hauteur}}",
+        "topic": "state/pXbY/h",
+        "min": 0,
+        "unit": "px",
+        "description": "{{Hauteur de l'objet}}"
+      },
+      "h_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Hauteur}}",
+        "topic": "command/pXbY.h",
+        "value": "#slider#",
+        "min": 0,
+        "unit": "px",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la hauteur de l'objet}}"
+      }
+    }
+  },
+  "label": {
+    "name": "{{Texte}}",
+    "command" : {
+      "text_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Texte affiché}}",
+        "topic": "state/pXbY/text",
+        "description": "{{Texte affiché}}"
+      },
+      "text_action": {
+        "type": "action",
+        "subType": "other",
+        "name": "{{Changer Texte affiché}}",
+        "topic": "command/pXbY.text",
+        "refresh": 1,
+        "description": "{{Consigne pour changer le texte affiché}}"
+      },
+      "text_color_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Couleur texte}}",
+        "topic": "state/pXbY/text_color",
+        "description": "{{Couleur du texte affiché}}"
+      },
+      "text_color_action": {
+        "type": "action",
+        "subType": "color",
+        "name": "{{Changer Couleur texte}}",
+        "topic": "command/pXbY.text_color",
+        "value": "#color#",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la couleur du texte affiché}}"
+      }
+    }
+  },
+  "btn_toggle": {
+    "name": "{{Bouton Toggle}}",
+    "command" : {
+      "text_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Texte affiché}}",
+        "topic": "state/pXbY/text",
+        "description": "{{Texte affiché}}"
+      },
+      "text_action": {
+        "type": "action",
+        "subType": "other",
+        "name": "{{Changer Texte affiché}}",
+        "topic": "command/pXbY.text",
+        "refresh": 1,
+        "description": "{{Consigne pour changer le texte affiché}}"
+      },
+      "state_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{État}}",
+        "topic": "state/pXbY/val",
+        "description": "{{État : 0 = relâché, 1 = appuyé}}"
+      },
+      "state_action": {
+        "type": "action",
+        "subType": "select",
+        "name": "{{Changer État}}",
+        "topic": "command/pXbY.val",
+        "value": "#select#",
+        "listValue": "0|OFF;1|ON",
+        "refresh": 1,
+        "description": "{{Consigne pour changer l'état}}"
+      }
+    }
+  },
+  "btn": {
+    "name": "{{Bouton}}",
+    "command" : {
+      "text_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Texte affiché}}",
+        "topic": "state/pXbY/text",
+        "description": "{{Texte affiché}}"
+      },
+      "text_action": {
+        "type": "action",
+        "subType": "other",
+        "name": "{{Changer Texte affiché}}",
+        "topic": "command/pXbY.text",
+        "refresh": 1,
+        "description": "{{Consigne pour changer le texte affiché}}"
+      },
+      "event_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Évènement}}",
+        "topic": "state/pXbY/event",
+        "description": "{{Évènement du bouton}}"
+      }
+    }
+  },
+  "checkbox": {
+    "name": "{{Checkbox}}",
+    "command" : {
+      "text_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Texte affiché}}",
+        "topic": "state/pXbY/text",
+        "description": "{{Texte affiché}}"
+      },
+      "text_action": {
+        "type": "action",
+        "subType": "other",
+        "name": "{{Changer Texte affiché}}",
+        "topic": "command/pXbY.text",
+        "refresh": 1,
+        "description": "{{Consigne pour changer le texte affiché}}"
+      },
+      "state_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{État}}",
+        "topic": "state/pXbY/val",
+        "description": "{{État : 0 = décoché, 1 = coché}}"
+      },
+      "state_action": {
+        "type": "action",
+        "subType": "select",
+        "name": "{{Changer État}}",
+        "topic": "command/pXbY.val",
+        "value": "#select#",
+        "listValue": "0|OFF;1|ON",
+        "refresh": 1,
+        "description": "{{Consigne pour changer l'état}}"
+      },
+      "event_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Évènement}}",
+        "topic": "state/pXbY/event",
+        "description": "{{Évènement du checkbox}}"
+      }
+    }
+  },
+  "switch": {
+    "name": "{{Switch}}",
+    "command" : {
+      "state_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{État}}",
+        "topic": "state/pXbY/val",
+        "description": "{{État : 0 = OFF, 1 = ON}}"
+      },
+      "state_action": {
+        "type": "action",
+        "subType": "select",
+        "name": "{{Changer État}}",
+        "topic": "command/pXbY.val",
+        "value": "#select#",
+        "listValue": "0|OFF;1|ON",
+        "refresh": 1,
+        "description": "{{Consigne pour changer l'état}}"
+      },
+      "event_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Évènement}}",
+        "topic": "state/pXbY/event",
+        "description": "{{Évènement du switch}}"
+      },
+      "bg_color10__info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Couleur Font dégradé}}",
+        "topic": "state/pXbY/bg_color10",
+        "description": "{{Couleur du fond dégradé}}"
+      },
+      "bg_color10_action": {
+        "type": "action",
+        "subType": "color",
+        "name": "{{Changer Couleur Font dégradé}}",
+        "topic": "command/pXbY.bg_color10",
+        "value": "#color#",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la couleur du font dégradé}}"
+      },
+      "bg_color20__info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Couleur Bouton}}",
+        "topic": "state/pXbY/bg_color20",
+        "description": "{{Couleur du bouton}}"
+      },
+      "bg_color20_action": {
+        "type": "action",
+        "subType": "color",
+        "name": "{{Changer Couleur Bouton}}",
+        "topic": "command/pXbY.bg_color20",
+        "value": "#color#",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la couleur du bouton}}"
+      }
+    }
+  },
+  "roller": {
+    "name": "{{Liste tournante}}",
+    "command" : {
+      "val_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Numéro élément}}",
+        "topic": "state/pXbY/val",
+        "description": "{{Le numéro de l'élément sélectionné}}"
+      },
+      "val_action": {
+        "type": "action",
+        "subType": "select",
+        "name": "{{Changer Numéro élément}}",
+        "topic": "command/pXbY.val",
+        "value": "#select#",
+        "listValue": "#GET#toto",
+        "refresh": 1,
+        "description": "{{Consigne pour changer le numéro de l'élément sélectionné}}"
+      },
+      "text_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Texte élément}}",
+        "topic": "state/pXbY/text",
+        "description": "{{Le texte de l'élément sélectionné<br/><strong><u>ATTENTION : Cette information n'est actualisée que lorsque l'utilisateur touche l'écran !</u></strong>}}"
+      }
+    }
+  },
+  "dropdown": {
+    "name": "{{Liste déroulante}}",
+    "command" : {
+      "val_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Numéro élément}}",
+        "topic": "state/pXbY/val",
+        "description": "{{Le numéro de l'élément sélectionné}}"
+      },
+      "val_action": {
+        "type": "action",
+        "subType": "select",
+        "name": "{{Changer Numéro élément}}",
+        "topic": "command/pXbY.val",
+        "value": "#select#",
+        "listValue": "#GET#listValue",
+        "refresh": 1,
+        "description": "{{Consigne pour changer le numéro de l'élément sélectionné}}"
+      },
+      "text_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Texte élément}}",
+        "topic": "state/pXbY/text",
+        "description": "{{Le texte de l'élément sélectionné<br/><strong><u>ATTENTION : Cette information n'est actualisée que lorsque l'utilisateur touche l'écran !</u></strong>}}"
+      },
+      "event_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Évènement}}",
+        "topic": "state/pXbY/event",
+        "description": "{{Évènement de l'indicateur}}"
+      }
+    }
+  },
+  "qrcode": {
+    "name": "{{QR-Code}}",
+    "command" : {
+      "text_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Texte encodé}}",
+        "topic": "state/pXbY/text",
+        "description": "{{Texte encodé en QR-Code}}"
+      },
+      "text_action": {
+        "type": "action",
+        "subType": "other",
+        "name": "{{Changer Texte encodé}}",
+        "topic": "command/pXbY.text",
+        "refresh": 1,
+        "description": "{{Consigne pour changer le texte encodé en QR-Code}}"
+      }
+    }
+  },
+  "cpicker": {
+    "name": "{{Sélecteur de couleurs}}",
+    "command" : {
+      "color_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Couleur sélectionnée}}",
+        "topic": "state/pXbY/color",
+        "description": "{{Couleur du fond dégradé}}"
+      },
+      "color_action": {
+        "type": "action",
+        "subType": "color",
+        "name": "{{Changer Couleur sélectionnée}}",
+        "topic": "command/pXbY.color",
+        "value": "#color#",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la couleur sélectionnée}}"
+      }
+    }
+  },
+  "arc": {
+    "name": "{{Arc}}",
+    "command" : {
+      "val_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Valeur}}",
+        "topic": "state/pXbY/val",
+        "description": "{{Valeur actuelle de l'indicateur}}"
+      },
+      "val_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Valeur}}",
+        "topic": "command/pXbY.val",
+        "value": "#slider#",
+        "min": "#GET#min#0",
+        "max": "#GET#max#100",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la valeur actuelle de l'indicateur}}"
+      },
+      "event_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Évènement}}",
+        "topic": "state/pXbY/event",
+        "description": "{{Évènement de l'indicateur}}"
+      }
+    }
+  },
+  "bar": {
+    "name": "{{Barre de progression}}",
+    "command" : {
+      "val_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Valeur}}",
+        "topic": "state/pXbY/val",
+        "description": "{{Valeur actuelle de l'indicateur}}"
+      },
+      "val_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Valeur}}",
+        "topic": "command/pXbY.val",
+        "value": "#slider#",
+        "min": "#GET#min#0",
+        "max": "#GET#max#100",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la valeur actuelle de l'indicateur}}"
+      },
+      "event_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Évènement}}",
+        "topic": "state/pXbY/event",
+        "description": "{{Évènement de l'indicateur}}"
+      }
+    }
+  },
+  "gauge": {
+    "name": "{{Jauge}}",
+    "command" : {
+      "val_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Valeur}}",
+        "topic": "state/pXbY/val",
+        "description": "{{Valeur actuelle de l'indicateur}}"
+      },
+      "val_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Valeur}}",
+        "topic": "command/pXbY.val",
+        "value": "#slider#",
+        "min": "#GET#min#0",
+        "max": "#GET#max#100",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la valeur actuelle de l'indicateur}}"
+      },
+      "event_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Évènement}}",
+        "topic": "state/pXbY/event",
+        "description": "{{Évènement de l'indicateur}}"
+      }
+    }
+  },
+  "led": {
+    "name": "{{LED}}",
+    "command" : {
+      "val_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Valeur}}",
+        "topic": "state/pXbY/val",
+        "description": "{{Valeur actuelle de l'indicateur}}"
+      },
+      "val_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Valeur}}",
+        "topic": "command/pXbY.val",
+        "value": "#slider#",
+        "min": "#GET#min#0",
+        "max": "#GET#max#100",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la valeur actuelle de l'indicateur}}"
+      }
+    }
+  },
+  "linemeter": {
+    "name": "{{Line meter}}",
+    "command" : {
+      "val_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Valeur}}",
+        "topic": "state/pXbY/val",
+        "description": "{{Valeur actuelle de l'indicateur}}"
+      },
+      "val_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Valeur}}",
+        "topic": "command/pXbY.val",
+        "value": "#slider#",
+        "min": "#GET#min#0",
+        "max": "#GET#max#100",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la valeur actuelle de l'indicateur}}"
+      },
+      "event_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Évènement}}",
+        "topic": "state/pXbY/event",
+        "description": "{{Évènement de l'indicateur}}"
+      }
+    }
+  },
+  "slider": {
+    "name": "{{Curseur}}",
+    "command" : {
+      "val_info": {
+        "type": "info",
+        "subType": "numeric",
+        "name": "{{Valeur}}",
+        "topic": "state/pXbY/val",
+        "description": "{{Valeur actuelle de l'indicateur}}"
+      },
+      "val_action": {
+        "type": "action",
+        "subType": "slider",
+        "name": "{{Changer Valeur}}",
+        "topic": "command/pXbY.val",
+        "value": "#slider#",
+        "min": "#GET#min#0",
+        "max": "#GET#max#100",
+        "refresh": 1,
+        "description": "{{Consigne pour changer la valeur actuelle de l'indicateur}}"
+      },
+      "event_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Évènement}}",
+        "topic": "state/pXbY/event",
+        "description": "{{Évènement de l'indicateur}}"
+      }
+    }
+  }
+}

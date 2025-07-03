@@ -292,20 +292,23 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 			<!-- Onglet des commandes générales de l'équipement -->
 			<div role="tabpanel" class="tab-pane" id="commandtabgeneral">
 				<div class="pull-right">
-					<a class="btn btn-default btn-sm cmdAction" id="bt_addCommandGeneral" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
+					<a class="btn btn-default btn-sm cmdAction" id="bt_manageCommandGeneral" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Gérer les commandes générales}}
+					</a> <a class="btn btn-default btn-sm cmdAction" id="bt_addCommandGeneral" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
 				</div>
 				<br><br>
 				<div class="table-responsive">
 					<table id="table_cmd_general" class="table table-bordered table-condensed">
 						<thead>
 							<tr>
-								<th class="hidden-xs" style="min-width:50px;width:70px;"> ID</th>
+								<th class="hidden-xs" style="min-width:50px;width:70px;">&nbsp;ID</th>
 								<th style="min-width:150px;width:300px;">{{Nom}}</th>
 								<th style="width:130px;">{{Type}}</th>
-								<th>{{Paramètres}}</th>
+								<th>{{Topic MQTT}}</th>
 								<th>{{Etat}}</th>
-								<th style="min-width:260px;width:400px;">{{Options}}</th>
-								<th style="min-width:80px;width:180px;">{{Actions}}</th>
+								<th style="min-width:150px;width:100px;">{{Options MQTT}}</th>
+								<th style="min-width:150px;width:300px;">{{Options Jeedom}}</th>
+								<th style="min-width:150px;width:200px;">{{Info Jeedom liée}}</th>
+								<th style="min-width:80px;width:100px;">{{Actions}}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -322,7 +325,7 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 						<a class="btn btn-success btn-sm commandPageFilter" style="margin-top:5px;" page="all" id="btn_commandPageFilterAllPages">{{Toutes les pages}}</a>
 					</div>
 					<div class="pull-right">
-						<a class="btn btn-default btn-sm cmdAction"id="bt_importCommands" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Importer les objets de l'écran}}
+						<a class="btn btn-default btn-sm cmdAction" id="bt_manageCommandSpecific" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Gérer les commandes des objets de l'écran}}
 						</a> <a class="btn btn-default btn-sm cmdAction" id="bt_addCommandSpecific" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
 					</div>
 				</div>
@@ -331,14 +334,16 @@ sendVarToJS('openhasp_mqttRootTopics', $rootTopics);
 					<table id="table_cmd_specific" class="table table-bordered table-condensed">
 						<thead>
 							<tr>
-								<th class="hidden-xs" style="min-width:50px;width:70px;"> ID</th>
+								<th class="hidden-xs" style="min-width:50px;width:70px;">&nbsp;ID</th>
 								<th style="width:50px;">{{Page}}</th>
 								<th style="min-width:150px;width:300px;">{{Nom}}</th>
 								<th style="width:130px;">{{Type}}</th>
-								<th>{{Paramètres}}</th>
+								<th>{{Topic MQTT}}</th>
 								<th>{{Etat}}</th>
-								<th style="min-width:260px;width:400px;">{{Options}}</th>
-								<th style="min-width:80px;width:180px;">{{Actions}}</th>
+								<th style="min-width:150px;width:100px;">{{Options MQTT}}</th>
+								<th style="min-width:150px;width:300px;">{{Options Jeedom}}</th>
+								<th style="min-width:150px;width:200px;">{{Info Jeedom liée}}</th>
+								<th style="min-width:80px;width:100px;">{{Actions}}</th>
 							</tr>
 						</thead>
 						<tbody>

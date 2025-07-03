@@ -1,5 +1,11 @@
 # Changelog plugin openHASP - beta
 
+# 24/03/2025 / 1.5
+ - Ajout lien avec commande info et publication automatique
+ 
+# 16/03/2025 / 1.4
+ - Ajout option Retain et Refresh
+
 # 05/02/2025 / 1.3
  - Refonte gestion caractères unicode reçus et envoyés avec l'écran
  - Correction bug qui empêchait les Info xxx.text ou xxx.val de s'afficher (commande Info)

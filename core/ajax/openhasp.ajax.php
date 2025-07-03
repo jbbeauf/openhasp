@@ -47,21 +47,41 @@ try {
       ajax::success($eqLogic->validateConfigByMqtt(init('rootTopic'), init('rootName')));
     }
 
-    /* Bouton Charger les objets de la page */
-    if (init('action') == 'importCommands') {
-      $eqLogic = openhasp::byId(init('id'));
-      if (!is_object($eqLogic)) {
-        throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
-      }
-
-      ajax::success($eqLogic->importCommands());
-    }
-
     /* Boutons pour découverte automatique */
     if (init('action') == 'discovery') {      
       ajax::success(openhasp::mqttDiscovery(init('mode'), init('mqttRootTopic')));
     }
 
+    /* Commande : nouvelle */
+    if (init('action') == 'commandCreateNew') {
+      $eqLogic = openhasp::byId(init('id'));
+      if (!is_object($eqLogic)) {
+        throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
+      }
+
+      ajax::success($eqLogic->commandCreateNew(init('typeCommand'), init('newElement')));
+    }
+
+    /* Commande : Supprimer */
+    if (init('action') == 'commandDeleteExiting') {
+      $eqLogic = openhasp::byId(init('id'));
+      if (!is_object($eqLogic)) {
+        throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
+      }
+
+      ajax::success($eqLogic->commandDeleteExiting(init('idCommand')));
+    }
+
+    /* Commande : Modifier */
+    if (init('action') == 'commandModify') {
+      $eqLogic = openhasp::byId(init('id'));
+      if (!is_object($eqLogic)) {
+        throw new \Exception(__('Equipement introuvable', __FILE__) . ' : ' . init('id'));
+      }
+
+      ajax::success($eqLogic->commandModify(init('idCommand'), init('typeCommand'), init('newElement')));
+    }
+    
     throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));
     /*     * *********Catch exeption*************** */
 }
