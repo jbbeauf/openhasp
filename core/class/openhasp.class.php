@@ -176,10 +176,14 @@ class openhasp extends eqLogic {
       if (!class_exists('mqtt2')) {
         include_file('core', 'mqtt2', 'class', 'mqtt2');
       }
+      if (is_numeric($_value)) {
+        $sendValue = $_value;
+      } else {
       if ('' != $_value) {
         $sendValue = self::convertUnicodeInTextToSend($_value);
       } else {
         $sendValue = '';
+        }
       }
       mqtt2::publish($_topic, $sendValue, $options);
       log::add(__CLASS__, 'debug', 'handleMqttPublish Publication Topic >' . $_topic . '< - Valeur >' . $sendValue . '< - Options >' . print_r($options, true) . '<');
@@ -1096,6 +1100,7 @@ class openhaspCmd extends cmd {
     if (1 == $this->getConfiguration('refresh')) {
       /* Demande d'actualisation = commande sans valeur et avec retain = 0 */
       $options['retain'] = 0;
+      log::add('openhasp', 'debug', __FUNCTION__ . ' - Commande Action execute() - Demande de actualisation');
       $eqLogic->handleMqttPublish($rootTopic . '/' . $rootName . '/' . $topicCmd, '', $options);
     }
   }
