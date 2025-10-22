@@ -292,7 +292,7 @@ Liste des objets openHASP (version 0.7.0)
 | cpicker   | oui :white_check_mark:               | [Color picker](https://www.openhasp.com/0.7.0/design/objects/#color-picker)   |
 | roller    | oui :white_check_mark:               | [Roller](https://www.openhasp.com/0.7.0/design/objects/#roller)               |
 | dropdown  | oui :white_check_mark:               | [Dropdown List](https://www.openhasp.com/0.7.0/design/objects/#dropdown-list) |
-| btnmatrix | non :x:                              | [Button Matrix](https://www.openhasp.com/0.7.0/design/objects/#button-matrix) |
+| btnmatrix | oui :white_check_mark:                              | [Button Matrix](https://www.openhasp.com/0.7.0/design/objects/#button-matrix) |
 | msgbox    | non :x:                              | [Messagebox](https://www.openhasp.com/0.7.0/design/objects/#messagebox)       |
 | tabview   | non :x:                              | [Tabview](https://www.openhasp.com/0.7.0/design/objects/#tabview)             |
 | tab       | non :x:                              | [Tab](https://www.openhasp.com/0.7.0/design/objects/#tab)                     |

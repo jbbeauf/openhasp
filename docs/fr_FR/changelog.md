@@ -4,6 +4,9 @@
 >
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
+# 22/10/2025
+ - Ajout gestion objet "Button Matrix"
+
 # 03/07/2025
  - Commande Action : Ajout de l'option Retain et Refresh
  - Commande Action : Ajout du lien avec une commande Info pour exécuter la commande Action sur changement de valeur de la commande Info
