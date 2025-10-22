@@ -339,7 +339,7 @@
         "name": "{{Changer Numéro élément}}",
         "topic": "command/pXbY.val",
         "value": "#select#",
-        "listValue": "#GET#toto",
+        "listValue": "#GET#listValue",
         "refresh": 1,
         "description": "{{Consigne pour changer le numéro de l'élément sélectionné}}"
       },
@@ -599,6 +599,32 @@
         "name": "{{Évènement}}",
         "topic": "state/pXbY/event",
         "description": "{{Évènement de l'indicateur}}"
+      }
+    }
+  },
+  "btnmatrix": {
+    "name": "{{Matrice de bouton}}",
+    "command" : {
+      "text_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Texte appuyé}}",
+        "topic": "state/pXbY/text",
+        "description": "{{Valeur du texte du bouton appuyé}}"
+      },
+      "value_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Numéro bouton appuyé}}",
+        "topic": "state/pXbY/val",
+        "description": "{{Numéro du bouton appuyé}}"
+      },
+      "event_info": {
+        "type": "info",
+        "subType": "string",
+        "name": "{{Évènement}}",
+        "topic": "state/pXbY/event",
+        "description": "{{Évènement du bouton}}"
       }
     }
   }
