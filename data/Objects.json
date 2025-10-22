@@ -339,7 +339,7 @@
         "name": "{{Changer Numéro élément}}",
         "topic": "command/pXbY.val",
         "value": "#select#",
-        "listValue": "#GET#toto",
+        "listValue": "#GET#listValue",
         "refresh": 1,
         "description": "{{Consigne pour changer le numéro de l'élément sélectionné}}"
       },
