@@ -199,7 +199,7 @@ sendVarToJS('tableElements', $objects);
                             echo '<td>';
                             echo '<div class="divStatus" id="status_' . $groupKey . '_' . $commandKey . '">';
                             echo '<select class="cmdAttr form-control input-sm selectCommand invalid" style="margin-top:5px;" id="cmdLinked_' . $groupKey . '_' . $commandKey . '" key="' . $groupKey . '_' . $commandKey . '" title="{{Commande liée}}">';
-                            if ('' == $commandElement[cmdLinked]) {
+                            if ('' == $commandElement['cmdLinked']) {
                                 echo '<option value="new" selected>{{Nouvelle commande}}</option>'; 
                             }
                             foreach ($listAvailableCommands as $key => $availableCommand) {
@@ -344,7 +344,7 @@ sendVarToJS('tableElements', $objects);
                     } else {
                         /* Pas de commande liée */
                         if ('new' == $("#cmdLinked_" + groupKey + '_' + commandKey).val()) {
-                            /* Nouvelle commade sélectionnée --> créer  */
+                            /* Nouvelle commande sélectionnée --> créer  */
                             $.ajax({
                                 type: "POST",
                                 url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
@@ -367,7 +367,7 @@ sendVarToJS('tableElements', $objects);
                             })
                             modalClosedWithChange = true;
                         } else {
-                            /* Commade sélectionnée est une commande existante --> modifier  */
+                            /* Commande sélectionnée est une commande existante --> modifier  */
                             $.ajax({
                                 type: "POST",
                                 url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
