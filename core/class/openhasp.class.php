@@ -55,7 +55,7 @@ class openhasp extends eqLogic {
         foreach (eqLogic::byType(__CLASS__, true) as $openhasp) {
           $conMqttRootTopic = $openhasp->getConfiguration('conf::mqtt::rootTopic');
           $confMqttName = $openhasp->getConfiguration('conf::mqtt::name');
-          if ($conMqttRootTopic . '/' . $confMqttName . '/' == $currentPlateDiscovered[node_t] ) {
+          if ($conMqttRootTopic . '/' . $confMqttName . '/' == $currentPlateDiscovered['node_t'] ) {
             $isNewPlate = false;
             break;
           }
@@ -63,12 +63,12 @@ class openhasp extends eqLogic {
         
         if ($isNewPlate) {
           $eqLogic = new openhasp();
-          $eqLogic->setLogicalId($currentPlateDiscovered[node_t]);
-          $eqLogic->setName($currentPlateDiscovered[node]);
+          $eqLogic->setLogicalId($currentPlateDiscovered['node_t']);
+          $eqLogic->setName($currentPlateDiscovered['node']);
           $eqLogic->setEqType_name('openhasp');
           $eqLogic->save();
-          $eqLogic->validateConfigByIp(str_replace('http://', '', $currentPlateDiscovered[uri]), '', '', false);
-          log::add(__CLASS__, 'info', __('Mode inclusion automatique', __FILE__) . ' - ' . __('Nouvel équipement ajouté', __FILE__) . ' ' . $currentPlateDiscovered[node] . ' ' . __('IP', __FILE__) . ' ' . $currentPlateDiscovered[uri]);
+          $eqLogic->validateConfigByIp(str_replace('http://', '', $currentPlateDiscovered['uri']), '', '', false);
+          log::add(__CLASS__, 'info', __('Mode inclusion automatique', __FILE__) . ' - ' . __('Nouvel équipement ajouté', __FILE__) . ' ' . $currentPlateDiscovered['node'] . ' ' . __('IP', __FILE__) . ' ' . $currentPlateDiscovered['uri']);
           event::add('openhasp::MainPage::reloadIfVisible', 0);
         }
         

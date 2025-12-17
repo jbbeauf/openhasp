@@ -132,7 +132,7 @@ sendVarToJS('tableElements', $json_data);
 
                             echo '<td>';
                             echo '<div style="display: none;">' . $groupElement['name'] . ' </div>'; // Pour la recherche
-                            echo '<div style="font-size: larger;font-weight: bold;display: inline;">' . $commandElement[name] . '</div> (' . $commandElement[type] .')<em>&nbsp;&nbsp;&nbsp;&nbsp;' . $commandElement[description] . '</em>';
+                            echo '<div style="font-size: larger;font-weight: bold;display: inline;">' . $commandElement['name'] . '</div> (' . $commandElement['type'] .')<em>&nbsp;&nbsp;&nbsp;&nbsp;' . $commandElement['description'] . '</em>';
                             echo '</td>';
                             
                             echo '<td>';
@@ -141,8 +141,8 @@ sendVarToJS('tableElements', $json_data);
                             echo '<td>';
                             echo '<div class="divStatus" id="status_' . $groupKey . '_' . $commandKey . '">';
                             echo '<select class="cmdAttr form-control input-sm selectCommand invalid" style="margin-top:5px;" id="cmdLinked_' . $groupKey . '_' . $commandKey . '" key="' . $groupKey . '_' . $commandKey . '" title="{{Commande liée}}">';
-                            if ('' == $commandElement[cmdLinked]) {
-                                echo '<option value="new" selected>{{Nouvelle commande}}</option>'; 
+                            if ('' == $commandElement['cmdLinked']) {
+                              echo '<option value="new" selected>{{Nouvelle commande}}</option>'; 
                             }
                             foreach ($listAvailableCommands as $key => $availableCommand) {
                                 echo '<option value="' . $availableCommand['id'] . '">' . $availableCommand['name'] . '</option>';
@@ -283,7 +283,7 @@ sendVarToJS('tableElements', $json_data);
                     } else {
                         /* Pas de commande liée */
                         if ('new' == $("#cmdLinked_" + groupKey + '_' + commandKey).val()) {
-                            /* Nouvelle commade sélectionnée --> créer  */
+                            /* Nouvelle commande sélectionnée --> créer  */
                             $.ajax({
                                 type: "POST",
                                 url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
@@ -306,7 +306,7 @@ sendVarToJS('tableElements', $json_data);
                             })
                             modalClosedWithChange = true;
                         } else {
-                            /* Commade sélectionnée est une commande existante --> modifier  */
+                            /* commande sélectionnée est une commande existante --> modifier  */
                             $.ajax({
                                 type: "POST",
                                 url: "plugins/openhasp/core/ajax/openhasp.ajax.php",
